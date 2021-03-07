@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<PackageId>Airslip.Common.Contracts</PackageId>
+		<Company>Airslip</Company>
+		<Authors>Airslip</Authors>
+		<PackageProjectUrl>https://github.com/airslip-ltd/common-contracts</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/airslip-ltd/common-contracts</RepositoryUrl>
+		<PackageLicenseExpression></PackageLicenseExpression>
+		<Version>0.0.5</Version>
+		<PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\LICENSE.md">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="NuGet.CommandLine" Version="5.8.1">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
+
+</Project>

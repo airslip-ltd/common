@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NewtonsoftJson>12.0.3</NewtonsoftJson>
+	</PropertyGroup>
+
+</Project>

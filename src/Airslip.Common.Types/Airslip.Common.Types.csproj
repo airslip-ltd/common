@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Airslip.Common.Contracts\Airslip.Common.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>
