@@ -39,7 +39,7 @@ namespace Airslip.Common.Types
             Regex upperCaseInside = new("(?<=[A-Z])[A-Z]+?((?=[A-Z][a-z])|(?=[0-9]))");
 
             return invalidCharsRgx.Replace(whiteSpace.Replace(original, "_"), string.Empty)
-                .Split(new[] {'_'}, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(w => startsWithLowerCaseChar.Replace(w, m => m.Value.ToUpper()))
                 .Select(w => firstCharFollowedByUpperCasesOnly.Replace(w, m => m.Value.ToLower()))
                 .Select(w => lowerCaseNextToNumber.Replace(w, m => m.Value.ToUpper()))
