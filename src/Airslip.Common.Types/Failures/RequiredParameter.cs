@@ -10,8 +10,8 @@ namespace Airslip.Common.Types.Failures
                 "The parameter {parameter} is required. {validation}.",
                 new Dictionary<string, object>
                 {
-                    {"parameter", parameter},
-                    {"validation", validation}
+                    { "parameter", parameter },
+                    { "validation", validation }
                 }
             )
         {

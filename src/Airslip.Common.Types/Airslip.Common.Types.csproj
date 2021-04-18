@@ -3,11 +3,12 @@
 	<Import Project="..\common.props" />
 
 	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnotations)" />
 		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Airslip.Common.Contracts\Airslip.Common.Contracts.csproj" />
+		<ProjectReference Include="..\Airslip.Common.Contracts\Airslip.Common.Contracts.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -10,9 +10,9 @@ namespace Airslip.Common.Types.Failures
                 "The attribute {attribute} with the value {value} is invalid. {validation}.",
                 new Dictionary<string, object>
                 {
-                    {"attribute", attribute},
-                    {"value", value},
-                    {"validation", validation}
+                    { "attribute", attribute },
+                    { "value", value },
+                    { "validation", validation }
                 }
             )
         {

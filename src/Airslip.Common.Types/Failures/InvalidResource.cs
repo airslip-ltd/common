@@ -10,8 +10,8 @@ namespace Airslip.Common.Types.Failures
                 "The {resource} is invalid. {validation}.",
                 new Dictionary<string, object>
                 {
-                    {"resource", resource},
-                    {"validation", validation}
+                    { "resource", resource },
+                    { "validation", validation }
                 }
             )
         {
