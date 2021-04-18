@@ -8,9 +8,8 @@ namespace Airslip.Common.Types.Failures
             : base(
                 "UNAUTHORISED",
                 "Access is not allowed to the {resource} resource. {validation}.",
-                new Dictionary<string, object> { { "resource", resource }, { "validation", validation } })
+                new Dictionary<string, object> {{"resource", resource}, {"validation", validation}})
         {
-
         }
     }
 }

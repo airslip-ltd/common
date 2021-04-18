@@ -10,12 +10,11 @@ namespace Airslip.Common.Types.Failures
                 "The resource could not be found. {validation}.",
                 new Dictionary<string, object>
                 {
-                    { "resource", resource },
-                    { "validation", validation }
+                    {"resource", resource},
+                    {"validation", validation}
                 }
             )
         {
-
         }
 
         public ResourceNotFound(string resource, string property, string value, string validation)
@@ -24,14 +23,13 @@ namespace Airslip.Common.Types.Failures
                 "The resource {resource} for {property} with the value {value} could not be found. {validation}.",
                 new Dictionary<string, object>
                 {
-                    { "resource", resource },
-                    { "property", property },
-                    { "value", value },
-                    { "validation", validation }
+                    {"resource", resource},
+                    {"property", property},
+                    {"value", value},
+                    {"validation", validation}
                 }
-                )
+            )
         {
-
         }
     }
 }

@@ -5,6 +5,6 @@
         FR,
         GB,
         IE,
-        NL,
+        NL
     }
 }

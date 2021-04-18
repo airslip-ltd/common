@@ -10,11 +10,10 @@ namespace Airslip.Common.Types.Failures
                 "The provider {provider} rejected login.",
                 new Dictionary<string, object>
                 {
-                    { "provider", provider }
+                    {"provider", provider}
                 }
             )
         {
-
         }
     }
 }

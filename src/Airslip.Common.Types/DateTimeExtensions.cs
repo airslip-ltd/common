@@ -6,7 +6,9 @@ namespace Airslip.Common.Types
     public static class DateTimeExtensions
     {
         public static long ToUnixTimeMilliseconds(this DateTime value)
-            => new DateTimeOffset(value).ToUnixTimeMilliseconds();
+        {
+            return new DateTimeOffset(value).ToUnixTimeMilliseconds();
+        }
 
         public static bool IsBetweenTwoDates(this long dt, long start, long end)
         {
@@ -20,7 +22,7 @@ namespace Airslip.Common.Types
 
         public static string ToIso8601(this long datetime)
         {
-            var date = DateTimeOffset.FromUnixTimeMilliseconds(datetime);
+            DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(datetime);
             return DateTime.SpecifyKind(date.DateTime, DateTimeKind.Utc).ToString("O");
         }
 
@@ -31,7 +33,7 @@ namespace Airslip.Common.Types
 
         public static int GetMonthsBetweenDates(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            return (int)Math.Round(endDate.Subtract(startDate).Days / (365.25 / 12));
+            return (int) Math.Round(endDate.Subtract(startDate).Days / (365.25 / 12));
         }
     }
 }

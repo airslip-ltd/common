@@ -8,9 +8,8 @@ namespace Airslip.Common.Types.Failures
             : base(
                 "RESOURCE_NOT_FOUND",
                 message,
-                new Dictionary<string, object> { { "Attribute", attribute }, { "Value", value }, { "Validation", message } })
+                new Dictionary<string, object> {{"Attribute", attribute}, {"Value", value}, {"Validation", message}})
         {
-
         }
     }
 }

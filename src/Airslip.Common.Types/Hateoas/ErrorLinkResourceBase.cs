@@ -5,10 +5,10 @@ namespace Airslip.Common.Types.Hateoas
 {
     public abstract class ErrorLinkResourceBase
     {
-        [JsonProperty("_links")]
-        public List<Link> Links { get; set; } = new(2);
+        [JsonProperty("_links")] public List<Link> Links { get; set; } = new(2);
 
-        public virtual T AddHateoasLinks<T>(string baseUri, string? selfRelativeEndpoint, string? nextRelativeEndpoint) where T : class
+        public virtual T AddHateoasLinks<T>(string baseUri, string? selfRelativeEndpoint, string? nextRelativeEndpoint)
+            where T : class
         {
             if (selfRelativeEndpoint != null)
                 Links.Add(new Link($"{baseUri}/{selfRelativeEndpoint}", "self", "GET"));
