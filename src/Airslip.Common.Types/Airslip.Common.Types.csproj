@@ -1,14 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\common.props" />
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Airslip.Common.Types</PackageId>
+		<Company>Airslip</Company>
+		<Authors>Airslip</Authors>
+		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/airslip-ltd/common</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Version>1.0.4</Version>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnotations)" />
-		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Airslip.Common.Contracts\Airslip.Common.Contracts.csproj" />
+		<PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Airslip.Common.Contracts" Version="1.*" />
 	</ItemGroup>
 
 </Project>
