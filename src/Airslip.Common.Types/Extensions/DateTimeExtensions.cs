@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Airslip.Common.Types
+namespace Airslip.Common.Types.Extensions
 {
     public static class DateTimeExtensions
     {

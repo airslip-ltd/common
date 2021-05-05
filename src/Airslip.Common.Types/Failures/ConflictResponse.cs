@@ -11,7 +11,7 @@ namespace Airslip.Common.Types.Failures
                 new Dictionary<string, object>
                 {
                     { "Attribute", attribute },
-                    { "Value", value }, 
+                    { "Value", value },
                     { "Validation", message }
                 })
         {

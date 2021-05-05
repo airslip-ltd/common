@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Airslip.Common.Types
+namespace Airslip.Common.Types.Extensions
 {
     public static class StringExtensions
     {
