@@ -26,14 +26,20 @@ namespace Airslip.Common.Types.Extensions
             return DateTime.SpecifyKind(date.DateTime, DateTimeKind.Utc).ToString("O");
         }
 
-        public static long? GetEarliestDate(params DateTimeOffset?[] dates)
+        public static DateTimeOffset GetEarliestDate(params DateTimeOffset[] dates)
         {
-            return dates.Min()?.ToUnixTimeMilliseconds();
+            return dates.Min();
+        }
+
+        public static long GetEarliestDateInEpoch(params DateTimeOffset[] dates)
+        {
+            return GetEarliestDate(dates).ToUnixTimeMilliseconds();
         }
 
         public static int GetMonthsBetweenDates(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            return (int) Math.Round(endDate.Subtract(startDate).Days / (365.25 / 12));
+            double oneMonthExact = 365.25 / 12;
+            return (int) Math.Round(endDate.Subtract(startDate).Days / oneMonthExact);
         }
     }
 }

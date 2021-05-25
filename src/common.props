@@ -1,12 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <NetVersion>5.0.*</NetVersion>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
 
-	<PropertyGroup>
-		<NewtonsoftJson>12.0.3</NewtonsoftJson>
-		<JetBrainsAnnotations>2021.1.0</JetBrainsAnnotations>
-	</PropertyGroup>
+    <PropertyGroup>
+        <Moq>4.16.1</Moq>
+        <FluentAssertions>5.10.3</FluentAssertions>
+        <NetTestSdk>16.9.4</NetTestSdk>
+        <Xunit>2.4.1</Xunit>
+        <XunitRunner>2.4.3</XunitRunner>
+    </PropertyGroup>
 
 </Project>
