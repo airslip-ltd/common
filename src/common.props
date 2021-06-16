@@ -10,11 +10,17 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <JetBrainsAnnoations>2021.1.0</JetBrainsAnnoations>
         <Moq>4.16.1</Moq>
         <FluentAssertions>5.10.3</FluentAssertions>
+        <NewtonsoftJson>13.0.1</NewtonsoftJson>
         <NetTestSdk>16.9.4</NetTestSdk>
         <Xunit>2.4.1</Xunit>
         <XunitRunner>2.4.3</XunitRunner>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AirslipCommonContracts>1.*</AirslipCommonContracts>
     </PropertyGroup>
 
 </Project>
