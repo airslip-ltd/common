@@ -1,6 +1,6 @@
 ﻿namespace Airslip.Common.Types.Validator
 {
-    public class InvalidConstants
+    public static class InvalidConstants
     {
         public const string ErrorCode = "INVALID_ATTRIBUTE";
         public const string Message = "Invalid {PropertyName}. '{PropertyValue}' {Validation}.";
@@ -18,7 +18,7 @@
             "A problem has happened our end, the issue has been logged and someone from our team is looking at it";
     }
 
-    public class InvalidConstantsForEach
+    public static class InvalidConstantsForEach
     {
         public const string ErrorCode = "INVALID_ATTRIBUTE";
 
@@ -28,19 +28,19 @@
         public const string OneOf = "must be one of: ";
     }
 
-    public class RequiredConstants
+    public static class RequiredConstants
     {
         public const string ErrorCode = "REQUIRED_ATTRIBUTE";
         public const string Message = "The attribute {PropertyName} is required.";
     }
 
-    public class RequiredConstantsForEach
+    public static class RequiredConstantsForEach
     {
         public const string ErrorCode = "REQUIRED_ATTRIBUTE";
         public const string Message = "The attribute {PropertyName} at index {CollectionIndex} is required.";
     }
 
-    public class ResourceNotFoundConstants
+    public static class ResourceNotFoundConstants
     {
         public const string ErrorCode = "RESOURCE_NOT_FOUND";
         public const string Message = "The resource could not be found. {Validation}.";
@@ -49,7 +49,7 @@
         public const string ErrorCreatingUser = "Error creating user";
     }
 
-    public class InvalidResourceConstants
+    public static class InvalidResourceConstants
     {
         public const string UseCreateAccountAuthorisation =
             "Use CreateAccountAuthorisation endpoint and complete the process to retrieve";

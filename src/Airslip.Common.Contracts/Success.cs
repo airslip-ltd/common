@@ -2,7 +2,7 @@
 {
     public class Success : ISuccess
     {
-        public static Success Instance = new();
+        public static readonly Success Instance = new();
 
         private Success()
         {
