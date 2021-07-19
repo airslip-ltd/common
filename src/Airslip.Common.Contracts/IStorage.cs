@@ -7,5 +7,6 @@ namespace Airslip.Common.Contracts
     {
         Task SaveFileAsync(T value);
         Task<(Stream, string?)> DownloadToStreamAsync(string name);
+        Task DeleteFileAsync(string name);
     }
 }
