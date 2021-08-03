@@ -41,5 +41,7 @@ namespace Airslip.Common.Types.Extensions
             double oneMonthExact = 365.25 / 12;
             return (int) Math.Round(endDate.Subtract(startDate).Days / oneMonthExact);
         }
+
+        public static long GetTimestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }

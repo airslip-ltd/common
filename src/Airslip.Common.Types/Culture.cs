@@ -16,7 +16,7 @@ namespace Airslip.Common.Types
         {
             RegionInfo regionInfo = CultureInfo.GetCultures(CultureTypes.AllCultures)
                 .Where(culture => culture.Name.Length > 0 && !culture.IsNeutralCulture)
-                .Select(culture => new { culture, region = new RegionInfo(culture.LCID) })
+                .Select(culture => new { culture, region = new RegionInfo(culture.Name) })
                 .Where(t =>
                     string.Equals(t.region.ISOCurrencySymbol, currencyCode, StringComparison.InvariantCultureIgnoreCase))
                 .Select(t => t.region).First();
