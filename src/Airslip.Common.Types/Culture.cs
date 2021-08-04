@@ -20,7 +20,7 @@ namespace Airslip.Common.Types
                 .Where(t =>
                     string.Equals(t.region.ISOCurrencySymbol, currencyCode, StringComparison.InvariantCultureIgnoreCase))
                 .Select(t => t.region).First();
-
+            
             return regionInfo.CurrencySymbol;
         }
 
