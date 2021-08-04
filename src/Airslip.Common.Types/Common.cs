@@ -2,7 +2,7 @@
 
 namespace Airslip.Common.Types
 {
-    public static class Common
+    public static class CommonFunctions
     {
         public static string GetId()
         {
