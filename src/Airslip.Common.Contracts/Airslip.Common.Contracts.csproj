@@ -10,8 +10,6 @@
 		<RepositoryUrl>https://github.com/airslip-ltd/common</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<Version>1.0.8</Version>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 </Project>
