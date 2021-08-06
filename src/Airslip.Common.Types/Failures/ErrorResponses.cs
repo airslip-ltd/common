@@ -5,9 +5,16 @@ namespace Airslip.Common.Types.Failures
 {
     public class ErrorResponses : IResponse
     {
-        public IEnumerable<ErrorResponse> Errors { get; }
+        public static readonly ErrorResponses Empty = new();
 
-        public ErrorResponses(IEnumerable<ErrorResponse> errors)
+        private ErrorResponses()
+        {
+            Errors = new List<ErrorResponse>();
+        }
+
+        public ICollection<ErrorResponse> Errors { get; }
+
+        public ErrorResponses(ICollection<ErrorResponse> errors)
         {
             Errors = errors;
         }
