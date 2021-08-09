@@ -11,15 +11,7 @@ namespace Airslip.Common.Types.Failures
         public string? Message { get; }
         public IDictionary<string, object> Metadata { get; }
 
-        public ErrorResponse(string errorCode) : this(errorCode, null, null)
-        {
-        }
-
-        public ErrorResponse(string errorCode, string messageTemplate) : this(errorCode, messageTemplate, null)
-        {
-        }
-
-        public ErrorResponse(string errorCode, string? messageTemplate, IDictionary<string, object>? metadata)
+        public ErrorResponse(string errorCode, string? messageTemplate = null, IDictionary<string, object>? metadata = null)
         {
             Message = metadata == null
                 ? messageTemplate
