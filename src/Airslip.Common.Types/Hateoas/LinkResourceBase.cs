@@ -5,7 +5,7 @@ namespace Airslip.Common.Types.Hateoas
 {
     public abstract class LinkResourceBase
     {
-        [JsonProperty("_links")] public IEnumerable<Link> Links { get; set; } = new List<Link>();
+        [JsonProperty("links")] public IEnumerable<Link> Links { get; set; } = new List<Link>();
 
         public virtual T AddHateoasLinks<T>(string baseUri, params string[] identifiers) where T : class
         {
