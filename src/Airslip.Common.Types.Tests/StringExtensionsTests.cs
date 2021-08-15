@@ -1,5 +1,4 @@
-﻿using System;
-using Airslip.Common.Types.Extensions;
+﻿using Airslip.Common.Types.Extensions;
 using FluentAssertions;
 using Xunit;
 

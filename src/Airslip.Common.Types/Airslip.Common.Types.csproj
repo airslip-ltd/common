@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<Import Project="..\common.props" />
+	<Import Project="..\common.props"/>
 
 	<PropertyGroup>
 		<PackageId>Airslip.Common.Types</PackageId>
@@ -13,9 +13,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
-		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)" />
-		<PackageReference Include="Airslip.Common.Contracts" Version="$(AirslipCommonContracts)" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="$(MicrosoftAspNetCoreHttp)"/>
+		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)"/>
+		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)"/>
+		<PackageReference Include="Airslip.Common.Contracts" Version="$(AirslipCommonContracts)"/>
 	</ItemGroup>
 
 </Project>

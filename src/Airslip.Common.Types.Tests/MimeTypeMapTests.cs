@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Airslip.Common.Types.Extensions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Xunit;
 
 namespace Airslip.Common.Types.Tests
