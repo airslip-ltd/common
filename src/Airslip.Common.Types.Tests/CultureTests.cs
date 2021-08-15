@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using Airslip.Common.Types.Extensions;
+﻿using System.Globalization;
 using FluentAssertions;
 using Xunit;
 

@@ -26,7 +26,7 @@ namespace Airslip.Common.Types.Extensions
             string result =
                 pascalCaseWords.Aggregate(string.Empty, (current, pascalCase) => current + $"{pascalCase} ");
 
-            return result is null ? string.Empty : result.Substring(0, result.Length - 1);
+            return result.Substring(0, result.Length - 1);
         }
 
         private static IEnumerable<string> GetEnumerablePascalCase(this string original)
