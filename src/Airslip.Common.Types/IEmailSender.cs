@@ -7,9 +7,10 @@ namespace Airslip.Common.Types
     public interface IEmailSender
     {
         Task<EmailOutcome> SendEmail(
-            IEnumerable<string> to,
+            IEnumerable<EmailAddressRecipient> emailAddressTos,
             string subject,
-            string content,
+            string plainTextContent,
+            string htmlContent,
             IFormFileCollection? attachments = null);
     }
 }
