@@ -14,4 +14,14 @@
       <PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
     </ItemGroup>
 
+	<PropertyGroup>
+		<PackageId>Airslip.Common.Monitoring</PackageId>
+		<Company>Airslip</Company>
+		<Authors>Airslip</Authors>
+		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/airslip-ltd/common</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
 </Project>
