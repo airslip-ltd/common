@@ -6,7 +6,7 @@ namespace Airslip.Common.Monitoring
 {
     public static class HealthCheckExtensions
     {
-        public static IServiceCollection UseHealChecks(this IServiceCollection services)
+        public static IServiceCollection UseHealthChecks(this IServiceCollection services)
         {
             services.AddSingleton<IHealthCheckService, HealthCheckService>();
             return services;

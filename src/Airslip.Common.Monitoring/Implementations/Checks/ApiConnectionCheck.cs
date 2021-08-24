@@ -34,7 +34,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             foreach (var api in apiToCheck)
             {
                 // Make an assumption the API has had the heartbeat endpoint added
-                var uri = $"{api.BaseUri}/{api.UriSuffix}/v1/heartbeat/ping";
+                var uri = $"{api.BaseUri}/{api.UriSuffix ?? ""}/v1/heartbeat/ping";
                 try
                 {
                     HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
@@ -45,9 +45,10 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
                 }
                 catch (WebException we)
                 {
-                    results.Add(checkStatusCode((HttpWebResponse) we.Response, uri, we));
+                    var response = (HttpWebResponse) we.Response!;
+                    results.Add(checkStatusCode(response, uri, we));
                 }
-                catch (Exception ee) {
+                catch (Exception? ee) {
                     results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
                         ee));
                 }
@@ -56,7 +57,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             return new HealthCheckResults(results);
         }
 
-        private HealthCheckResult checkStatusCode(HttpWebResponse response, string uri, Exception ee = null)
+        private HealthCheckResult checkStatusCode(HttpWebResponse response, string uri, Exception? ee = null)
         {
             if (response.StatusCode != HttpStatusCode.OK)
             {

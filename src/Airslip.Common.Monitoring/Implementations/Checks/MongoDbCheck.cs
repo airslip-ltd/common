@@ -35,7 +35,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
                     _logger.Information("Found collections {CollectionNames}",string.Join(", ", collectionNames.Current));
                 }
             }
-            catch (Exception ee)
+            catch (Exception? ee)
             {
                 checkResult = new HealthCheckResult(nameof(MongoDbCheck), _settings.DatabaseName, false, ee);
             }
