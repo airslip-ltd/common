@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+	
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Airslip.Common.Types" Version="$(AirslipCommonTypes)" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetVersion)" />
+      <PackageReference Include="MongoDB.Driver" Version="$(MongoDb)" />
+      <PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
+    </ItemGroup>
+
+</Project>
