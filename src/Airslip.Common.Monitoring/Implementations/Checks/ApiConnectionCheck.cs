@@ -50,7 +50,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
                 }
                 catch (Exception? ee) {
                     results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
-                        ee));
+                        ee.Message));
                 }
             }
 
@@ -62,12 +62,12 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 return new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
-                    new Exception(
-                        $"Incorrect status code returned calling {uri}, received {response.StatusCode}"));
+                    $"Incorrect status code returned calling {uri}, received {response.StatusCode}");
             }
             else
             {
-                return new HealthCheckResult(nameof(ApiConnectionCheck), uri, ee == null, ee);
+                return new HealthCheckResult(nameof(ApiConnectionCheck), uri, ee == null, 
+                    ee?.Message ?? "");
             }
         }
     }
