@@ -22,7 +22,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
         
         public async Task<HealthCheckResults> Execute()
         {
-            HealthCheckResult checkResult = new(nameof(MongoDbCheck), _settings.DatabaseName, true, null);
+            HealthCheckResult checkResult = new(nameof(MongoDbCheck), _settings.DatabaseName, true, "");
 
             try
             {
@@ -37,7 +37,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             }
             catch (Exception? ee)
             {
-                checkResult = new HealthCheckResult(nameof(MongoDbCheck), _settings.DatabaseName, false, ee);
+                checkResult = new HealthCheckResult(nameof(MongoDbCheck), _settings.DatabaseName, false, ee.Message);
             }
 
             return new HealthCheckResults(new []{ checkResult });
