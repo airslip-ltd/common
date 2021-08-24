@@ -2,21 +2,14 @@ namespace Airslip.Common.Types.Configuration
 {
     public class PublicApiSettings
     {
-        public IPublicApiSetting Base { get; set; } = new PublicApiSetting();
-        public IPublicApiSetting? MerchantTransactions { get; set; }
-        public IPublicApiSetting? MerchantDatabase { get; set; }
-        public IPublicApiSetting? Identity { get; set; }
-        public IPublicApiSetting? BankTransactions { get; set; }
+        public PublicApiSetting Base { get; set; } = new PublicApiSetting();
+        public PublicApiSetting? MerchantTransactions { get; set; }
+        public PublicApiSetting? MerchantDatabase { get; set; }
+        public PublicApiSetting? Identity { get; set; }
+        public PublicApiSetting? BankTransactions { get; set; }
     }
 
-    public interface IPublicApiSetting
-    {
-        public string BaseUri { get; set; }
-        public string UriSuffix { get; set; }
-        public string Version { get; set; }
-    }
-
-    public class PublicApiSetting : IPublicApiSetting
+    public class PublicApiSetting 
     {
         public string BaseUri { get; set; } = string.Empty;
         public string UriSuffix { get; set; } = string.Empty;
