@@ -15,6 +15,8 @@ ProjectSection(SolutionItems) = preProject
 	.editorconfig = .editorconfig
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Monitoring", "Airslip.Common.Monitoring\Airslip.Common.Monitoring.csproj", "{32A1B61A-0FE8-4CB6-95DE-FEF9EA100E28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5138C4B6-3575-4963-BBD3-F33C69B0B439}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5138C4B6-3575-4963-BBD3-F33C69B0B439}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5138C4B6-3575-4963-BBD3-F33C69B0B439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32A1B61A-0FE8-4CB6-95DE-FEF9EA100E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A1B61A-0FE8-4CB6-95DE-FEF9EA100E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32A1B61A-0FE8-4CB6-95DE-FEF9EA100E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32A1B61A-0FE8-4CB6-95DE-FEF9EA100E28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
