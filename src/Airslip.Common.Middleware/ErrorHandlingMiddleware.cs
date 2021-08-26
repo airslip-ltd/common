@@ -63,19 +63,10 @@ namespace Airslip.Common.Middleware
                 });
             }
 
-            string result = JsonConvert.SerializeObject(errorResponse.Value, new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            });
-
             context.Response.ContentType = Json.MediaType;
             context.Response.StatusCode = errorResponse.StatusCode ?? (int) HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsync(result);
+            await context.Response.WriteAsync(Json
+                .Serialize(errorResponse.Value, Casing.CAMEL_CASE, Formatting.Indented, NullValueHandling.Ignore));
         }
     }
 }
