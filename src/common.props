@@ -12,7 +12,8 @@
     <PropertyGroup>
         <JetBrainsAnnoations>2021.2.0</JetBrainsAnnoations>
         <Moq>4.16.1</Moq>
-        <FluentAssertions>5.10.3</FluentAssertions>
+		<FluentAssertions>6.1.0</FluentAssertions>
+		<FluentValidation>10.3.3</FluentValidation>
         <MicrosoftAspNetCoreHttp>2.2.2</MicrosoftAspNetCoreHttp>
         <NewtonsoftJson>13.0.1</NewtonsoftJson>
         <NetTestSdk>16.10.0</NetTestSdk>
