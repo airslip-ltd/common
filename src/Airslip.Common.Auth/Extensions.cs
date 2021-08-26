@@ -34,7 +34,7 @@ namespace Airslip.Common.Auth
         /// <param name="services">The service collection to append services to</param>
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <returns>The updated service collection</returns>
-        public static IServiceCollection AddAirslipJwtAuth(IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration)
         {
             services
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
