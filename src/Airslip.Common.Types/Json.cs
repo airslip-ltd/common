@@ -10,7 +10,12 @@ namespace Airslip.Common.Types
 
         public static string Serialize(object value, Casing casing = Casing.CAMEL_CASE, Formatting formatting = Formatting.None)
         {
-            JsonSerializerSettings jsonSerializerSettings = GetJsonSerializerSettings(casing, formatting);
+            return Serialize(value, casing, formatting, NullValueHandling.Include);
+        }
+        
+        public static string Serialize(object value, Casing casing, Formatting formatting, NullValueHandling nullValueHandling)
+        {
+            JsonSerializerSettings jsonSerializerSettings = GetJsonSerializerSettings(casing, formatting, nullValueHandling);
 
             return JsonConvert.SerializeObject(value, jsonSerializerSettings);
         }
@@ -21,14 +26,16 @@ namespace Airslip.Common.Types
                    throw new InvalidOperationException("Value deserialized to null");
         }
         
-        private static JsonSerializerSettings GetJsonSerializerSettings(Casing casing, Formatting formatting)
+        private static JsonSerializerSettings GetJsonSerializerSettings(Casing casing, Formatting formatting, 
+            NullValueHandling nullValueHandling)
         {
             return casing switch
             {
                 Casing.CAMEL_CASE => new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Formatting = formatting
+                    Formatting = formatting,
+                    NullValueHandling = nullValueHandling
                 },
                 Casing.SNAKE_CASE => new JsonSerializerSettings
                 {
@@ -36,12 +43,14 @@ namespace Airslip.Common.Types
                     {
                         NamingStrategy = new SnakeCaseNamingStrategy()
                     },
-                    Formatting = formatting
+                    Formatting = formatting,
+                    NullValueHandling = nullValueHandling
                 },
                 _ => new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Formatting = formatting
+                    Formatting = formatting,
+                    NullValueHandling = nullValueHandling
                 }
             };
         }
