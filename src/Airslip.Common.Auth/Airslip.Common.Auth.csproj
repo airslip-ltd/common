@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<PropertyGroup>
+		<PackageId>Airslip.Common.Auth</PackageId>
+		<Company>Airslip</Company>
+		<Authors>Airslip</Authors>
+		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/airslip-ltd/common</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
+		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
+	</ItemGroup>
+
+</Project>
