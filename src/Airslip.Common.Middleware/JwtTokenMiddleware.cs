@@ -23,7 +23,8 @@ namespace Airslip.Common.Middleware
             try
             {
                 IIdentity? identity = httpContext.User.Identity;
-                if ((identity != null ? !identity.IsAuthenticated ? 1 : 0 : 1) != 0)
+                
+                if (identity?.IsAuthenticated ?? false)
                 {
                     AuthenticateResult authenticateResult = await httpContext.AuthenticateAsync("Bearer");
                     if (authenticateResult.Succeeded && authenticateResult.Principal != null)
