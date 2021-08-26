@@ -1,4 +1,4 @@
-name: Auth - Pack and Publish
+name: Middleware - Pack and Publish
 
 on: 
   workflow_dispatch:
