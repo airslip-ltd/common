@@ -7,6 +7,7 @@ namespace Airslip.Common.Types.Configuration
         public PublicApiSetting? MerchantDatabase { get; set; }
         public PublicApiSetting? Identity { get; set; }
         public PublicApiSetting? BankTransactions { get; set; }
+        public PublicApiSetting? Notifications { get; set; }
     }
 
     public class PublicApiSetting 
