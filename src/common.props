@@ -10,13 +10,14 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <Coverlet>3.1.0</Coverlet>
         <JetBrainsAnnoations>2021.2.0</JetBrainsAnnoations>
         <Moq>4.16.1</Moq>
 		<FluentAssertions>6.1.0</FluentAssertions>
 		<FluentValidation>10.3.3</FluentValidation>
         <MicrosoftAspNetCoreHttp>2.2.2</MicrosoftAspNetCoreHttp>
         <NewtonsoftJson>13.0.1</NewtonsoftJson>
-        <NetTestSdk>16.10.0</NetTestSdk>
+        <NetTestSdk>16.11.0</NetTestSdk>
         <Xunit>2.4.1</Xunit>
         <XunitRunner>2.4.3</XunitRunner>
 		<MongoDb>2.13.1</MongoDb>
@@ -25,7 +26,7 @@
 
     <PropertyGroup>
         <AirslipCommonContracts>1.1.7</AirslipCommonContracts>
-		<AirslipCommonTypes>3.1.4</AirslipCommonTypes>
+		<AirslipCommonTypes>3.1.6</AirslipCommonTypes>
     </PropertyGroup>
 
 </Project>

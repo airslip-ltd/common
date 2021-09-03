@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Airslip.Common.Types.Extensions
@@ -84,8 +85,14 @@ namespace Airslip.Common.Types.Extensions
                 @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
                 RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
         }
-        
-         public static string ToSnakeCase(this string str)
+
+        public static string ToSnakeCase(this string str)
             => string.Concat(str.Replace(" ", "").Select((x, i) => i > 0 && char.IsUpper(x) && !char.IsUpper(str[i-1]) ? $"_{x}" : x.ToString())).ToLower();
+
+        public static string RemoveAccents(this string accentedStr)
+        {
+            byte[] tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(accentedStr);
+            return Encoding.UTF8.GetString(tempBytes);
+        }
     }
 }
