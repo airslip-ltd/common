@@ -26,7 +26,7 @@
 
     <PropertyGroup>
         <AirslipCommonContracts>1.1.7</AirslipCommonContracts>
-		<AirslipCommonTypes>3.1.6</AirslipCommonTypes>
+		<AirslipCommonTypes>3.1.8</AirslipCommonTypes>
     </PropertyGroup>
 
 </Project>

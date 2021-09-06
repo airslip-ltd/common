@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System;
@@ -26,7 +27,7 @@ namespace Airslip.Common.Middleware
                 
                 if (identity?.IsAuthenticated ?? false)
                 {
-                    AuthenticateResult authenticateResult = await httpContext.AuthenticateAsync("Bearer");
+                    AuthenticateResult authenticateResult = await httpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
                     if (authenticateResult.Succeeded && authenticateResult.Principal != null)
                         httpContext.User = authenticateResult.Principal;
                 }

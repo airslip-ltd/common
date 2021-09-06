@@ -10,6 +10,7 @@
 		<PackageReference Include="Airslip.Common.Types" Version="$(AirslipCommonTypes)" />
 		<PackageReference Include="Airslip.Common.Contracts" Version="$(AirslipCommonContracts)" />
 		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
 	</ItemGroup>
 
 	<PropertyGroup>
