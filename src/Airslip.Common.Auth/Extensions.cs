@@ -1,9 +1,18 @@
+using Airslip.Common.Auth.Enums;
+using Airslip.Common.Auth.Handlers;
 using Airslip.Common.Auth.Implementations;
+using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
+using Airslip.Common.Types.Extensions;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Airslip.Common.Auth
 {
@@ -23,7 +32,7 @@ namespace Airslip.Common.Auth
         ///         "ValidateLifetime": "true"
         ///      }
         /// }
-        ///
+        /// 
         /// Environment Variables:
         /// JwtSettings:Key = Example key
         /// JwtSettings:Issuer = Example issuer
@@ -33,18 +42,59 @@ namespace Airslip.Common.Auth
         /// </summary>
         /// <param name="services">The service collection to append services to</param>
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
+        /// <param name="authType">The auth type that is supported by this Api</param>
         /// <returns>The updated service collection</returns>
-        public static IServiceCollection AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration, 
+            AuthType authType = AuthType.User)
         {
             services
+                .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
+                .AddScoped<IUserAgentService, UserAgentService>()
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
-                .AddScoped<Token>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
-                .AddAuthorization()
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer();
+                .AddAuthorization();
+
+            if (authType.InList(AuthType.User, AuthType.All))
+            {
+                services
+                    .AddScoped<ITokenService<UserToken, GenerateUserToken>, UserTokenService>()
+                    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer();
+            }
+            
+            if (authType.InList(AuthType.ApiKey, AuthType.All))
+            {
+                services
+                    .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
+                    .AddSingleton<IApiKeyValidator, ApiKeyValidator>()
+                    .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
+            }
 
             return services;
+        }
+        
+        public static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationSchemeOptions> configureOptions)
+        {
+            return builder
+                .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthHandler>(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, configureOptions);
+        }
+        
+        public static bool IsNullOrWhitespace(this string? s)
+        {
+            return s == null || string.IsNullOrWhiteSpace(s);
+        }
+
+        public static List<string> SplitCsv(this string csvList)
+        {
+            if (string.IsNullOrWhiteSpace(csvList))
+                return new List<string>();
+
+            return csvList
+                .TrimEnd(',')
+                .Split(',')
+                .AsEnumerable<string>()
+                .Select(s => s.Trim())
+                .ToList();
         }
     }
 }
