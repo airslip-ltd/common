@@ -29,5 +29,16 @@ namespace Airslip.Common.Auth.UnitTests
 
             userAgent.Should().BeNull();
         }
+        
+        [Fact]
+        public void Does_return_other_with_invalid_user_agent()
+        {
+            IUserAgentService service = HelperFunctions
+                .GenerateUserAgentService(withUserAgent: "I'm an invalid user agent");
+
+            string userAgent = service.GetRequestUserAgent();
+
+            userAgent.Should().Be("Other .");
+        }
     }
 }
