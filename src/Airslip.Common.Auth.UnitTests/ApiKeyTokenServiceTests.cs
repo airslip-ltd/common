@@ -1,7 +1,6 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using System;
@@ -17,7 +16,7 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Fails_with_invalid_key()
         {
-            ApiKeyTokenService service = HelperFunctions.GenerateTokenService("", "", "Insecure Key");
+            ApiKeyTokenService service = HelperFunctions.GenerateApiKeyTokenService("", "", "Insecure Key");
 
             GenerateApiKeyToken apiTokenKey = new("SomeApiKey",
                 "SomeEntityId", 
@@ -57,7 +56,7 @@ namespace Airslip.Common.Auth.UnitTests
                 apiKeyUsageType);
 
             ApiKeyTokenService service = HelperFunctions.
-                GenerateTokenService("", newToken);
+                GenerateApiKeyTokenService("", newToken);
             
             Tuple<ApiKeyToken, IEnumerable<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
@@ -85,7 +84,7 @@ namespace Airslip.Common.Auth.UnitTests
             ClaimsPrincipal claimsPrincipal = await tempService.IsApiKeyTokenValid(newToken);
 
             ApiKeyTokenService service = HelperFunctions.
-                GenerateTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);
+                GenerateApiKeyTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);
             
             ApiKeyToken currentToken = service.GetCurrentToken();
 
@@ -101,7 +100,7 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Can_generate_new_token_with_claims()
         {
-            ApiKeyTokenService service = HelperFunctions.GenerateTokenService("10.0.0.1", "");
+            ApiKeyTokenService service = HelperFunctions.GenerateApiKeyTokenService("10.0.0.1", "");
 
             List<Claim> claims = new()
             {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Airslip.Common.Auth.Models
+﻿namespace Airslip.Common.Auth.Models
 {
     public record UserToken(
         bool? IsAuthenticated,
