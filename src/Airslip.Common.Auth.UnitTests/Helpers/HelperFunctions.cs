@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
+using System.Security.Claims;
 
 namespace Airslip.Common.Auth.UnitTests.Helpers
 {
@@ -28,12 +29,14 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return options;
         }
 
-        public static Mock<IHttpContextAccessor> GenerateContextWithApiKey(string apiKey)
+        public static Mock<IHttpContextAccessor> GenerateContext(string apiKey, ClaimsPrincipal withClaimsPrincipal = null)
         {
             Mock<IHttpContextAccessor> mockHttpContextAccessor = new();
             DefaultHttpContext context = new();
             
             context.Request.Headers[ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField] = apiKey;
+            if (withClaimsPrincipal != null) context.User = withClaimsPrincipal;
+            
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
             
             return mockHttpContextAccessor;
@@ -46,12 +49,20 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
 
             return remoteIpAddressService;
         }
+
+        public static ApiKeyValidator GenerateApiKeyValidator()
+        {
+            ApiKeyValidator apiKeyValidator = new(GenerateTokenService("", ""));
+
+            return apiKeyValidator;
+        }
         
         public static ApiKeyTokenService GenerateTokenService(string withIpAddress, string withApiKey, 
-            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt")
+            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
+            ClaimsPrincipal withClaimsPrincipal = null)
         {
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = GenerateContextWithApiKey(withApiKey);
+            Mock<IHttpContextAccessor> contextAccessor = GenerateContext(withApiKey, withClaimsPrincipal);
             Mock<IRemoteIpAddressService> ipService = GenerateRemoteIpAddressService(withIpAddress);
             
             ApiKeyTokenService service = new(contextAccessor.Object,

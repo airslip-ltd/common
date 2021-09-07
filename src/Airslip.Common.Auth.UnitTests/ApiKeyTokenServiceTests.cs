@@ -1,9 +1,13 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Airslip.Common.Auth.UnitTests
@@ -55,7 +59,7 @@ namespace Airslip.Common.Auth.UnitTests
             ApiKeyTokenService service = HelperFunctions.
                 GenerateTokenService("", newToken);
             
-            var decodedToken = service.DecodeExistingToken(newToken);
+            Tuple<ApiKeyToken, IEnumerable<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
             decodedToken.Should().NotBeNull();
 
@@ -63,6 +67,50 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.ApiKey.Should().Be(apiKey);
             decodedToken.Item1.EntityId.Should().Be(entityId);
             decodedToken.Item1.ApiKeyUsageType.Should().Be(apiKeyUsageType);
+        }
+        
+        [Fact]
+        public async Task Can_decode_token_from_principal()
+        {
+            const string ipAddress = "10.0.0.0";
+            const string apiKey = "MyNewApiKey";
+            const string entityId = "MyEntityId";
+            const ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant;
+            
+            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, null, apiKey, 
+                entityId, apiKeyUsageType);
+
+            // Prepare test data...
+            ApiKeyValidator tempService = HelperFunctions.GenerateApiKeyValidator();
+            ClaimsPrincipal claimsPrincipal = await tempService.IsApiKeyTokenValid(newToken);
+
+            ApiKeyTokenService service = HelperFunctions.
+                GenerateTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);
+            
+            ApiKeyToken currentToken = service.GetCurrentToken();
+
+            currentToken.Should().NotBeNull();
+
+            currentToken.IpAddress.Should().Be(ipAddress);
+            currentToken.ApiKey.Should().Be(apiKey);
+            currentToken.EntityId.Should().Be(entityId);
+            currentToken.ApiKeyUsageType.Should().Be(apiKeyUsageType);
+        }
+        
+                
+        [Fact]
+        public void Can_generate_new_token_with_claims()
+        {
+            ApiKeyTokenService service = HelperFunctions.GenerateTokenService("10.0.0.1", "");
+
+            List<Claim> claims = new()
+            {
+                new Claim("Name", "Value")
+            };
+
+            string newToken = service.GenerateNewToken(claims);
+            
+            newToken.Should().NotBeNullOrWhiteSpace();
         }
     }
 }

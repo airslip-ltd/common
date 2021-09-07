@@ -31,7 +31,7 @@ namespace Airslip.Common.Auth.Handlers
                 return AuthenticateResult.NoResult();
             }
 
-            var apiKeyToken = Request
+            KeyValuePair<string, StringValues> apiKeyToken = Request
                 .Headers
                 .First(o => o.Key == ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField);
                 
