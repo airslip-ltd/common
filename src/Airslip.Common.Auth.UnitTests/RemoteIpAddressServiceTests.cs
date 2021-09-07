@@ -39,7 +39,7 @@ namespace Airslip.Common.Auth.UnitTests
                 .GenerateRemoteIpAddressService();
 
             service.Invoking(o => o.GetRequestIP())
-                .Should().Throw<Exception>();
+                .Should().Throw<ArgumentException>();
         }
     }
 }

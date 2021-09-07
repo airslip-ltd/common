@@ -27,7 +27,7 @@ namespace Airslip.Common.Auth.Implementations
                 ip = GetHeaderValueAsString("REMOTE_ADDR");
 
             if (ip.IsNullOrWhitespace())
-                throw new Exception("Unable to determine caller's IP.");
+                throw new ArgumentException("Unable to determine caller's IP.");
 
             return ip;
         }
