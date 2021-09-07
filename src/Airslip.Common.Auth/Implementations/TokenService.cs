@@ -15,9 +15,9 @@ namespace Airslip.Common.Auth.Implementations
         where TGenerateTokenType : GenerateTokenBase
     {
         private readonly JwtSettings _jwtSettings;
-        protected readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
-        public TokenService(IOptions<JwtSettings> jwtSettings)
+        protected TokenService(IOptions<JwtSettings> jwtSettings)
         {
             _jwtSettings = jwtSettings.Value;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
