@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 
@@ -29,7 +28,7 @@ namespace Airslip.Common.Auth.Implementations
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
-        public override string GenerateNewToken(GenerateUserToken token, DateTime? expiresTime = null)
+        public override string GenerateNewToken(GenerateUserToken token)
         {
             List<Claim> claims = new()
             {
@@ -41,7 +40,7 @@ namespace Airslip.Common.Auth.Implementations
                 new Claim("ua", _userAgentService.GetRequestUserAgent() ?? "UNKNOWN")
             };
 
-            return GenerateNewToken(claims, expiresTime);
+            return GenerateNewToken(claims);
         }
 
         public override UserToken GetCurrentToken()
