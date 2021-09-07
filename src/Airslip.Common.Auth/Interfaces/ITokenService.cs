@@ -11,7 +11,7 @@ namespace Airslip.Common.Auth.Interfaces
     {
         TTokenType GetCurrentToken();
 
-        Tuple<TTokenType, IEnumerable<Claim>> DecodeExistingToken(string tokenValue);
+        Tuple<TTokenType, IEnumerable<Claim>>? DecodeExistingToken(string tokenValue);
 
         string GenerateNewToken(ICollection<Claim> claims, DateTime? expiresTime = null);
         

@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;

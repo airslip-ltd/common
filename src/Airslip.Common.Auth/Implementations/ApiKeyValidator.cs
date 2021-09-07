@@ -17,9 +17,12 @@ namespace Airslip.Common.Auth.Implementations
             _tokenService = tokenService;
         }
         
-        public async Task<ClaimsPrincipal?> IsApiKeyTokenValid(string tokenValue)
+        public async Task<ClaimsPrincipal?> GetClaimsPrincipalFromApiKeyToken(string tokenValue)
         {
-            Tuple<ApiKeyToken, IEnumerable<Claim>> tokenDetails = _tokenService.DecodeExistingToken(tokenValue);
+            Tuple<ApiKeyToken, IEnumerable<Claim>>? tokenDetails = _tokenService.DecodeExistingToken(tokenValue);
+
+            if (tokenDetails == null) 
+                return null;
             
             List<ClaimsIdentity> claimsIdentities = new()
             {
