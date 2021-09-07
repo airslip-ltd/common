@@ -19,8 +19,7 @@ namespace Airslip.Common.Auth.Implementations
         {
             string? result = null;
             
-            if (_httpContext?.Request.Headers
-                .FirstOrDefault(o => o.Key == "User-Agent") != null)
+            if (_httpContext?.Request.Headers.ContainsKey("User-Agent") ?? false)
             {
                 StringValues? userAgent = _httpContext?.Request.Headers["User-Agent"];
                 Parser? uaParser = Parser.GetDefault();
