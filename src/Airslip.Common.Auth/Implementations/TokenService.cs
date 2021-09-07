@@ -37,7 +37,7 @@ namespace Airslip.Common.Auth.Implementations
             return _jwtSecurityTokenHandler.WriteToken(token);
         }
         
-        public Tuple<TTokenType, IEnumerable<Claim>>? DecodeExistingToken(string tokenValue)
+        public Tuple<TTokenType, IEnumerable<Claim>> DecodeExistingToken(string tokenValue)
         {
             try
             {

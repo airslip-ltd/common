@@ -15,7 +15,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             DefaultHttpContext context = new();
             
             context.Request.Headers["Authorization"] = $"Bearer {bearerToken}";
-            context.Request.Headers["User-Agent"] = userAgent;
+            if (userAgent != null) context.Request.Headers["User-Agent"] = userAgent;
             if (withClaimsPrincipal != null) context.User = withClaimsPrincipal;
             
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
