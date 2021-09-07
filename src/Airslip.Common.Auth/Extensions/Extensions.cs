@@ -44,9 +44,11 @@ namespace Airslip.Common.Auth.Extensions
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <param name="authType">The auth type that is supported by this Api</param>
         /// <returns>The updated service collection</returns>
-        public static IServiceCollection AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration, 
+        public static AuthenticationBuilder? AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration, 
             AuthType authType = AuthType.User)
         {
+            AuthenticationBuilder? result = null;
+            
             services
                 .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
                 .AddScoped<IUserAgentService, UserAgentService>()
@@ -56,7 +58,7 @@ namespace Airslip.Common.Auth.Extensions
 
             if (authType.InList(AuthType.User, AuthType.All))
             {
-                services
+                result = services
                     .AddScoped<ITokenService<UserToken, GenerateUserToken>, UserTokenService>()
                     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer();
@@ -64,14 +66,14 @@ namespace Airslip.Common.Auth.Extensions
             
             if (authType.InList(AuthType.ApiKey, AuthType.All))
             {
-                services
+                result = services
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
                     .AddSingleton<IApiKeyValidator, ApiKeyValidator>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(_ => {});
             }
 
-            return services;
+            return result;
         }
         
         public static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationSchemeOptions> options)
