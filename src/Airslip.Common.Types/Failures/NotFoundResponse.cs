@@ -16,5 +16,17 @@ namespace Airslip.Common.Types.Failures
                 })
         {
         }
+        
+        public NotFoundResponse(string attribute, string value)
+            : base(
+                "RESOURCE_NOT_FOUND",
+                $"{attribute} not found with the value {value}",
+                new Dictionary<string, object>
+                {
+                    { "Attribute", attribute }, 
+                    { "Value", value }
+                })
+        {
+        }
     }
 }
