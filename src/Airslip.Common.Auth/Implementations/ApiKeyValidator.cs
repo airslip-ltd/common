@@ -21,12 +21,12 @@ namespace Airslip.Common.Auth.Implementations
         {
             Tuple<ApiKeyToken, IEnumerable<Claim>> tokenDetails = _tokenService.DecodeExistingToken(tokenValue);
             
-            List<ClaimsIdentity> identities = new()
+            List<ClaimsIdentity> claimsIdentities = new()
             {
                 new ClaimsIdentity(tokenDetails.Item2, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
             };
             
-            ClaimsPrincipal principal = new(identities);
+            ClaimsPrincipal principal = new(claimsIdentities);
 
             return await Task.FromResult(principal);
         }
