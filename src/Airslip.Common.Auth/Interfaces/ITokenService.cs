@@ -13,8 +13,10 @@ namespace Airslip.Common.Auth.Interfaces
 
         Tuple<TTokenType, ICollection<Claim>> DecodeExistingToken(string tokenValue);
 
-        string GenerateNewToken(ICollection<Claim> claims);
+        NewToken GenerateNewToken(ICollection<Claim> claims);
         
-        string GenerateNewToken(TGenerateTokenType token);
+        NewToken GenerateNewToken(TGenerateTokenType token);
     }
+
+    
 }

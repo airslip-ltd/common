@@ -24,7 +24,7 @@ namespace Airslip.Common.Auth.Implementations
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
-        public override string GenerateNewToken(GenerateApiKeyToken token)
+        public override NewToken GenerateNewToken(GenerateApiKeyToken token)
         {
             List<Claim> claims = new()
             {

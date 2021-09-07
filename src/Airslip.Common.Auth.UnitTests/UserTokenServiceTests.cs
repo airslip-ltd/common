@@ -83,7 +83,7 @@ namespace Airslip.Common.Auth.UnitTests
                 new Claim("Name", "Value")
             };
 
-            string newToken = service.GenerateNewToken(claims);
+            string newToken = service.GenerateNewToken(claims).TokenValue;
             
             newToken.Should().NotBeNullOrWhiteSpace();
         }
