@@ -13,8 +13,8 @@ namespace Airslip.Common.Auth.Interfaces
 
         Tuple<TTokenType, IEnumerable<Claim>>? DecodeExistingToken(string tokenValue);
 
-        string GenerateNewToken(ICollection<Claim> claims, DateTime? expiresTime = null);
+        string GenerateNewToken(ICollection<Claim> claims);
         
-        string GenerateNewToken(TGenerateTokenType token, DateTime? expiresTime = null);
+        string GenerateNewToken(TGenerateTokenType token);
     }
 }

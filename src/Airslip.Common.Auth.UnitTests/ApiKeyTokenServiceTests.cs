@@ -52,7 +52,7 @@ namespace Airslip.Common.Auth.UnitTests
             const string entityId = "MyEntityId";
             const ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant;
             
-            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, null, apiKey, entityId, 
+            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, entityId, 
                 apiKeyUsageType);
 
             ApiKeyTokenService service = HelperFunctions.
@@ -76,7 +76,7 @@ namespace Airslip.Common.Auth.UnitTests
             const string entityId = "MyEntityId";
             const ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant;
             
-            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, null, apiKey, 
+            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, 
                 entityId, apiKeyUsageType);
 
             // Prepare test data...

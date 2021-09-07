@@ -30,7 +30,16 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return options;
         }
 
-        public static Mock<IRemoteIpAddressService> GenerateRemoteIpAddressService(string ipAddress)
+        public static IRemoteIpAddressService GenerateRemoteIpAddressService(string withForwarder = null,
+            string withRemoteAddr = null)
+        {
+            Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContextWithForwarder(withForwarder, withRemoteAddr);
+            RemoteIpAddressService service = new(context.Object);
+
+            return service;
+        }
+        
+        public static Mock<IRemoteIpAddressService> GenerateMockRemoteIpAddressService(string ipAddress)
         {
             Mock<IRemoteIpAddressService> remoteIpAddressService = new();
             remoteIpAddressService.Setup(_ => _.GetRequestIP()).Returns(ipAddress);
@@ -40,7 +49,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
 
         public static IUserAgentService GenerateUserAgentService(string withUserAgent = Constants.UA_WINDOWS_10_EDGE)
         {
-            Mock<IHttpContextAccessor> accessor = GenerateContextWithBearerToken("", withUserAgent);
+            Mock<IHttpContextAccessor> accessor = ContextHelpers.GenerateContextWithBearerToken("", withUserAgent);
             UserAgentService userAgentService = new(accessor.Object);
 
             return userAgentService;
@@ -54,30 +63,14 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         }
         
         // User specifics
-        public static Mock<IHttpContextAccessor> GenerateContextWithBearerToken(string bearerToken, 
-            string userAgent = Constants.UA_WINDOWS_10_EDGE,
-            ClaimsPrincipal withClaimsPrincipal = null)
-        {
-            Mock<IHttpContextAccessor> mockHttpContextAccessor = new();
-            DefaultHttpContext context = new();
-            
-            context.Request.Headers["Authorization"] = $"Bearer {bearerToken}";
-            context.Request.Headers["User-Agent"] = userAgent;
-            if (withClaimsPrincipal != null) context.User = withClaimsPrincipal;
-            
-            mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
-            
-            return mockHttpContextAccessor;
-        }
-        
         public static UserTokenService GenerateUserTokenService(string withIpAddress, string withBearerToken, 
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE,
             string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
             ClaimsPrincipal withClaimsPrincipal = null)
         {
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = GenerateContextWithBearerToken(withBearerToken, withUserAgent, withClaimsPrincipal);
-            Mock<IRemoteIpAddressService> ipService = GenerateRemoteIpAddressService(withIpAddress);
+            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithBearerToken(withBearerToken, withUserAgent, withClaimsPrincipal);
+            Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService uaService = GenerateUserAgentService(withUserAgent);
             
             UserTokenService service = new(contextAccessor.Object, uaService,
@@ -87,7 +80,6 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         }
         
         public static string GenerateUserToken(string withIpAddress, 
-            DateTime? expiresTime = null,
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE,
             string userId = "SomeUserId", 
             string yapilyUserId = "SomeYapilyUserId", 
@@ -99,30 +91,17 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
                 yapilyUserId, 
                 identity);
             
-            return service.GenerateNewToken(apiTokenKey, expiresTime);
+            return service.GenerateNewToken(apiTokenKey);
         }
         
         // ApiKey Specifics
-        public static Mock<IHttpContextAccessor> GenerateContextWithApiKey(string apiKey, ClaimsPrincipal withClaimsPrincipal = null)
-        {
-            Mock<IHttpContextAccessor> mockHttpContextAccessor = new();
-            DefaultHttpContext context = new();
-            
-            context.Request.Headers[ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField] = apiKey;
-            if (withClaimsPrincipal != null) context.User = withClaimsPrincipal;
-            
-            mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
-            
-            return mockHttpContextAccessor;
-        }
-        
         public static ApiKeyTokenService GenerateApiKeyTokenService(string withIpAddress, string withApiKey, 
             string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
             ClaimsPrincipal withClaimsPrincipal = null)
         {
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = GenerateContextWithApiKey(withApiKey, withClaimsPrincipal);
-            Mock<IRemoteIpAddressService> ipService = GenerateRemoteIpAddressService(withIpAddress);
+            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithApiKey(withApiKey, withClaimsPrincipal);
+            Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             
             ApiKeyTokenService service = new(contextAccessor.Object,
                 ipService.Object, options.Object);
@@ -131,7 +110,6 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         }
 
         public static string GenerateApiKeyToken(string withIpAddress, 
-            DateTime? expiresTime = null,
             string apiKey = "SomeApiKey", 
             string entityId = "SomeEntityId", 
             ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant)
@@ -142,7 +120,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
                 entityId, 
                 apiKeyUsageType);
             
-            return service.GenerateNewToken(apiTokenKey, expiresTime);
+            return service.GenerateNewToken(apiTokenKey);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Airslip.Common.Auth.Implementations
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public string GenerateNewToken(ICollection<Claim> claims, DateTime? expiresTime = null)
+        public string GenerateNewToken(ICollection<Claim> claims)
         {
             var signingCredentials = getSigningCredentials();
 
@@ -31,7 +31,7 @@ namespace Airslip.Common.Auth.Implementations
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 claims,
-                expires: expiresTime,
+                expires: _jwtSettings.ExpiresTime > 0 ? DateTime.Now.AddSeconds(_jwtSettings.ExpiresTime) : null,
                 signingCredentials: signingCredentials);
 
             return _jwtSecurityTokenHandler.WriteToken(token);
@@ -52,7 +52,7 @@ namespace Airslip.Common.Auth.Implementations
             }
         }
 
-        public abstract string GenerateNewToken(TGenerateTokenType token, DateTime? expiresTime = null);
+        public abstract string GenerateNewToken(TGenerateTokenType token);
 
         public abstract TTokenType GetCurrentToken();
 
