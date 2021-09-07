@@ -34,7 +34,7 @@ namespace Airslip.Common.Auth.Handlers
                 .Headers
                 .First(o => o.Key == ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField);
                 
-            ClaimsPrincipal? apiKeyPrincipal = await _apiKeyValidator.IsApiKeyTokenValid(apiKeyToken.Value.First());
+            ClaimsPrincipal? apiKeyPrincipal = await _apiKeyValidator.GetClaimsPrincipalFromApiKeyToken(apiKeyToken.Value.First());
 
             if (apiKeyPrincipal == null)
             {

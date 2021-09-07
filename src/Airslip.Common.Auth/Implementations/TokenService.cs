@@ -36,12 +36,27 @@ namespace Airslip.Common.Auth.Implementations
 
             return _jwtSecurityTokenHandler.WriteToken(token);
         }
+        
+        public Tuple<TTokenType, IEnumerable<Claim>>? DecodeExistingToken(string tokenValue)
+        {
+            try
+            {
+                JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
+
+                return new Tuple<TTokenType, IEnumerable<Claim>>(GenerateTokenFromClaims(token.Claims, true),
+                    token.Claims);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException("Token is not in expected format", nameof(tokenValue));
+            }
+        }
 
         public abstract string GenerateNewToken(TGenerateTokenType token, DateTime? expiresTime = null);
 
         public abstract TTokenType GetCurrentToken();
 
-        public abstract Tuple<TTokenType, IEnumerable<Claim>> DecodeExistingToken(string tokenValue);
+        protected abstract TTokenType GenerateTokenFromClaims(IEnumerable<Claim> tokenClaims, bool? isAuthenticated);
 
         private SigningCredentials getSigningCredentials()
         {

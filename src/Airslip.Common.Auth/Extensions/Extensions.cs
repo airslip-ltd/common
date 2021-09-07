@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Airslip.Common.Auth
+namespace Airslip.Common.Auth.Extensions
 {
     public static class Extensions
     {
@@ -67,16 +67,17 @@ namespace Airslip.Common.Auth
                 services
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
                     .AddSingleton<IApiKeyValidator, ApiKeyValidator>()
-                    .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
+                    .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
+                    .AddApiKeyAuth(_ => {});
             }
 
             return services;
         }
         
-        public static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationSchemeOptions> configureOptions)
+        public static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationSchemeOptions> options)
         {
             return builder
-                .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthHandler>(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, configureOptions);
+                .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthHandler>(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, options);
         }
         
         public static bool IsNullOrWhitespace(this string? s)

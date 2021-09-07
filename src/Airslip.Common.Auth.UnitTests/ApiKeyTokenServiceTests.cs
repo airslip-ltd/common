@@ -81,7 +81,7 @@ namespace Airslip.Common.Auth.UnitTests
 
             // Prepare test data...
             ApiKeyValidator tempService = HelperFunctions.GenerateApiKeyValidator();
-            ClaimsPrincipal claimsPrincipal = await tempService.IsApiKeyTokenValid(newToken);
+            ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromApiKeyToken(newToken);
 
             ApiKeyTokenService service = HelperFunctions.
                 GenerateApiKeyTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);

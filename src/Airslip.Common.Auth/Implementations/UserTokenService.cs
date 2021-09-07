@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
@@ -48,31 +49,23 @@ namespace Airslip.Common.Auth.Implementations
             ClaimsPrincipal claimsPrincipal = _httpContext.User;
             List<Claim> claims = claimsPrincipal.Claims.ToList(); 
 
-            return generateTokenFromClaims(claims, claimsPrincipal.Identity?.IsAuthenticated);
+            return GenerateTokenFromClaims(claims, claimsPrincipal.Identity?.IsAuthenticated);
         }
 
-        public override Tuple<UserToken, IEnumerable<Claim>> DecodeExistingToken(string tokenValue)
+        protected override UserToken GenerateTokenFromClaims(IEnumerable<Claim> tokenClaims, bool? isAuthenticated)
         {
-            JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
-
-            return new Tuple<UserToken, IEnumerable<Claim>>(generateTokenFromClaims(token.Claims, true),
-                token.Claims);
-        }
-        
-        private UserToken generateTokenFromClaims(IEnumerable<Claim> claims, bool? isAuthenticated)
-        {
-            string correlationId = claims.GetValue("correlation");
+            string correlationId = tokenClaims.GetValue("correlation");
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
             return new UserToken(
                 isAuthenticated,
-                claims.GetValue("userid"),
-                claims.GetValue("yapilyuserid"),
-                claims.GetValue("identity"),
+                tokenClaims.GetValue("userid"),
+                tokenClaims.GetValue("yapilyuserid"),
+                tokenClaims.GetValue("identity"),
                 correlationId,
-                claims.GetValue("ip"),
-                claims.GetValue("ua"),
+                tokenClaims.GetValue("ip"),
+                tokenClaims.GetValue("ua"),
                 _httpContext.Request.Headers["Authorization"]
             );
         }

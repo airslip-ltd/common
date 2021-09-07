@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Enums;
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
@@ -42,36 +43,28 @@ namespace Airslip.Common.Auth.Implementations
         {
             ClaimsPrincipal claimsPrincipal = _httpContext.User;
 
-            return generateTokenFromClaims(claimsPrincipal.Claims, claimsPrincipal.Identity?.IsAuthenticated);
+            return GenerateTokenFromClaims(claimsPrincipal.Claims, claimsPrincipal.Identity?.IsAuthenticated);
         }
 
-        public override Tuple<ApiKeyToken, IEnumerable<Claim>> DecodeExistingToken(string tokenValue)
+        protected override ApiKeyToken GenerateTokenFromClaims(IEnumerable<Claim> tokenClaims, bool? isAuthenticated)
         {
-            JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
-
-            return new Tuple<ApiKeyToken, IEnumerable<Claim>>(generateTokenFromClaims(token.Claims, true),
-                token.Claims);
-        }
-
-        private ApiKeyToken generateTokenFromClaims(IEnumerable<Claim> claims, bool? isAuthenticated)
-        {
-            string correlationId = claims.GetValue("correlation");
+            string correlationId = tokenClaims.GetValue("correlation");
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
             ApiKeyUsageType apiKeyUsageType;
-            if (!Enum.TryParse(claims.GetValue("apikeyusagetype"), out apiKeyUsageType))
+            if (!Enum.TryParse(tokenClaims.GetValue("apikeyusagetype"), out apiKeyUsageType))
             {
                 apiKeyUsageType = ApiKeyUsageType.Merchant;
             }
             
             return new ApiKeyToken(
                 isAuthenticated,
-                claims.GetValue("apikey"),
-                claims.GetValue("entityid"),
+                tokenClaims.GetValue("apikey"),
+                tokenClaims.GetValue("entityid"),
                 apiKeyUsageType,
                 correlationId,
-                claims.GetValue("ip"),
+                tokenClaims.GetValue("ip"),
                 _httpContext.Request.Headers["Authorization"]
             );
         }

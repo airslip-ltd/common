@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace Airslip.Common.Auth.Implementations
+namespace Airslip.Common.Auth.Extensions
 {
     public static class ClaimsExtensions
     {
