@@ -91,7 +91,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
                 yapilyUserId, 
                 identity);
             
-            return service.GenerateNewToken(apiTokenKey);
+            return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
         
         // ApiKey Specifics
@@ -120,7 +120,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
                 entityId, 
                 apiKeyUsageType);
             
-            return service.GenerateNewToken(apiTokenKey);
+            return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
     }
 }
