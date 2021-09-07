@@ -62,7 +62,7 @@ namespace Airslip.Common.Auth.UnitTests
                 GenerateUserTokenService("", newToken, 
                     withUserAgent: Constants.UA_APPLE_IPHONE_XR_SAFARI);
             
-            Tuple<UserToken, IEnumerable<Claim>> decodedToken = service.DecodeExistingToken(newToken);
+            Tuple<UserToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
             decodedToken.Should().NotBeNull();
 

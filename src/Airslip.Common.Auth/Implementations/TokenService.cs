@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -37,14 +38,14 @@ namespace Airslip.Common.Auth.Implementations
             return _jwtSecurityTokenHandler.WriteToken(token);
         }
         
-        public Tuple<TTokenType, IEnumerable<Claim>> DecodeExistingToken(string tokenValue)
+        public Tuple<TTokenType, ICollection<Claim>> DecodeExistingToken(string tokenValue)
         {
             try
             {
                 JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
 
-                return new Tuple<TTokenType, IEnumerable<Claim>>(GenerateTokenFromClaims(token.Claims, true),
-                    token.Claims);
+                return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(token.Claims, true),
+                    token.Claims.ToList());
             }
             catch (ArgumentException)
             {
