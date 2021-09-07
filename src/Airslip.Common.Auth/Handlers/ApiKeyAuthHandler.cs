@@ -1,6 +1,5 @@
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Schemes;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
