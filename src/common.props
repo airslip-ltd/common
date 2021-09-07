@@ -22,6 +22,7 @@
         <XunitRunner>2.4.3</XunitRunner>
 		<MongoDb>2.13.1</MongoDb>
 		<SerilogAspNetCore>4.1.0</SerilogAspNetCore>
+		<UAParser>3.1.47</UAParser>
     </PropertyGroup>
 
     <PropertyGroup>
