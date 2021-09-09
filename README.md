@@ -28,3 +28,40 @@ This will configure the minimum required services to get started.
 For requests using ApiKeys, the generated value must be provided in a HttpHeader of:
 
     x-api-key: <your api key>
+
+### Using Api Key Tokens in your app
+
+The Api Key Token is available by injecting the appropriate `ITokenService` into your implementing class, this is done through constructor injection. To use the Api Keys inject the following into your class:
+
+    ITokenService<ApiKeyToken, GenerateApiKeyToken> myTokenService
+
+Once you have this service you can retrieve the current token using the following function:
+
+    ApiKeyToken token = myTokenService.GetCurrentToken();
+
+And thats it!
+
+## Example Usage
+
+    private ITokenService<ApiKeyToken, GenerateApiKeyToken> _tokenService;
+
+    public MyClass(ITokenService<ApiKeyToken, GenerateApiKeyToken> tokenService)
+    {
+        _tokenService = tokenService;
+    }
+
+    public void MyFunction() {
+        ApiKeyToken myToken = _tokenService.GetCurrentToken();
+
+        // myToken.AirslipUserType
+        // myToken.EntityId
+        // etc ...
+    }
+
+## ApiKeyToken Properties
+
+    ApiKeyToken.ApiKey: string
+    ApiKeyToken.EntityId: string
+    ApiKeyToken.AirslipUserType: enum-AirslipUserType
+    ApiKeyToken.CorrelationId: string
+    ApiKeyToken.IpAddress: string
