@@ -15,6 +15,14 @@ namespace Airslip.Common.Repository.Interfaces
         TDest Create<TDest>(TModel source);
         
         /// <summary>
+        /// Create a model from a particular source
+        /// </summary>
+        /// <param name="source">The source object</param>
+        /// <typeparam name="TSource">The source entity type</typeparam>
+        /// <returns>A new model mapped using the data contained in the source</returns>
+        TModel Create<TSource>(TSource source);
+        
+        /// <summary>
         /// Updated an already created entity with data from a particular source
         /// </summary>
         /// <param name="source">The source object</param>
@@ -22,13 +30,5 @@ namespace Airslip.Common.Repository.Interfaces
         /// <typeparam name="TDest">The destination entity type</typeparam>
         /// <returns>The updated entity mapped using the data contained in the source</returns>
         TDest Update<TDest>(TModel source, TDest destination);
-        
-        /// <summary>
-        /// Create a model from a particular source
-        /// </summary>
-        /// <param name="source">The source object</param>
-        /// <typeparam name="TSource">The source entity type</typeparam>
-        /// <returns>A new model mapped using the data contained in the source</returns>
-        TModel Create<TSource>(TSource source);
     }
 }

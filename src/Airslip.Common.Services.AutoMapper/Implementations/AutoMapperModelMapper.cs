@@ -17,14 +17,14 @@ namespace Airslip.Common.Services.AutoMapper.Implementations
             return _mapper.Map<TModel, TDest>(source);
         }
 
-        public TDest Update<TDest>(TModel source, TDest destination)
-        {
-            return _mapper.Map(source, destination);
-        }
-
         public TModel Create<TEntity>(TEntity source)
         {
             return _mapper.Map<TEntity, TModel>(source);
+        }
+
+        public TDest Update<TDest>(TModel source, TDest destination)
+        {
+            return _mapper.Map(source, destination);
         }
     }
 }

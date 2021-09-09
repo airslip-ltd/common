@@ -1,6 +1,6 @@
 namespace Airslip.Common.Repository.Enums
 {
-    public enum EntityStatusEnum
+    public enum EntityStatus
     {
         Active = 1,
         Deleted = 2

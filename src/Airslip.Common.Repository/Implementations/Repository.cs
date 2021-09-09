@@ -52,7 +52,7 @@ namespace Airslip.Common.Repository.Implementations
             {
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.FailedValidation,
+                    ResultType.FailedValidation,
                     model,
                     ValidationResult: validationResult
                 );
@@ -63,7 +63,7 @@ namespace Airslip.Common.Repository.Implementations
 
             // Assign a few defaults, guid and who created it
             newEntity.Id = CommonFunctions.GetId();
-            newEntity.EntityStatus = EntityStatusEnum.Active;
+            newEntity.EntityStatus = EntityStatus.Active;
             newEntity.AuditInformation = new BasicAuditInformation
             {
                 DateCreated = DateTime.UtcNow,
@@ -76,7 +76,7 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new RepositoryActionResultModel<TModel>
             (
-                ResultTypeEnum.Success,
+                ResultType.Success,
                 _mapper.Create(newEntity)
             );
         }
@@ -97,7 +97,7 @@ namespace Airslip.Common.Repository.Implementations
             {
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.FailedVerification,
+                    ResultType.FailedVerification,
                     PreviousVersion: model
                 );
             }
@@ -110,7 +110,7 @@ namespace Airslip.Common.Repository.Implementations
             {
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.FailedValidation,
+                    ResultType.FailedValidation,
                     PreviousVersion: model,
                     ValidationResult: validationResult
                 );
@@ -125,7 +125,7 @@ namespace Airslip.Common.Repository.Implementations
                 // If not, return a not found message
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.NotFound
+                    ResultType.NotFound
                 );
             }
             
@@ -146,7 +146,7 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new RepositoryActionResultModel<TModel>
             (
-                ResultTypeEnum.Success,
+                ResultType.Success,
                 PreviousVersion: currentModel,
                 CurrentVersion: _mapper.Create(currentEntity)
             );
@@ -171,7 +171,7 @@ namespace Airslip.Common.Repository.Implementations
                 // If not, return a not found message
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.NotFound
+                    ResultType.NotFound
                 );
             }
                         
@@ -182,7 +182,7 @@ namespace Airslip.Common.Repository.Implementations
             currentEntity.AuditInformation ??= new BasicAuditInformation();
             currentEntity.AuditInformation.DateDeleted = DateTime.UtcNow;
             currentEntity.AuditInformation.DeletedByUserId = _userToken.UserId;
-            currentEntity.EntityStatus = EntityStatusEnum.Deleted;
+            currentEntity.EntityStatus = EntityStatus.Deleted;
 
             // Update in the context
             await _context.UpdateEntity(currentEntity);
@@ -190,7 +190,7 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new RepositoryActionResultModel<TModel>
             (
-                ResultTypeEnum.Success,
+                ResultType.Success,
                 PreviousVersion: currentModel
             );
         }
@@ -214,14 +214,14 @@ namespace Airslip.Common.Repository.Implementations
                 // If not, return a not found message
                 return new RepositoryActionResultModel<TModel>
                 (
-                    ResultTypeEnum.NotFound
+                    ResultType.NotFound
                 );
             }
                         
             // Create a result containing old and new version, and return
             return new RepositoryActionResultModel<TModel>
             (
-                ResultTypeEnum.Success,
+                ResultType.Success,
                 _mapper.Create(currentEntity)
             );
         }

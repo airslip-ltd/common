@@ -8,6 +8,6 @@ namespace Airslip.Common.Repository.Interfaces
     public interface IModel
     {
         string? Id { get; set; }
-        EntityStatusEnum EntityStatus { get; set; }
+        EntityStatus EntityStatus { get; set; }
     }
 }

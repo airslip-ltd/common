@@ -10,6 +10,6 @@ namespace Airslip.Common.Repository.Interfaces
     {
         BasicAuditInformation? AuditInformation { get; set; }
         
-        EntityStatusEnum EntityStatus { get; set; }
+        EntityStatus EntityStatus { get; set; }
     }
 }

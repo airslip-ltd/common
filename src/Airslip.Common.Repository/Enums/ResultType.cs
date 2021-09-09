@@ -1,6 +1,6 @@
 namespace Airslip.Common.Repository.Enums
 {
-    public enum ResultTypeEnum
+    public enum ResultType
     {
         Success = 1,
         FailedValidation = 2,
