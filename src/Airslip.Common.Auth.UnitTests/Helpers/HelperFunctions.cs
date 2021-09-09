@@ -53,11 +53,20 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return userAgentService;
         }
 
-        public static ApiKeyValidator GenerateApiKeyValidator()
+        public static TokenValidator<ApiKeyToken, GenerateApiKeyToken> GenerateApiKeyValidator()
         {
-            ApiKeyValidator apiKeyValidator = new(GenerateApiKeyTokenService("", ""));
+            TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = 
+                new(GenerateApiKeyTokenService("", ""));
 
             return apiKeyValidator;
+        }
+
+        public static TokenValidator<QrCodeToken, GenerateQrCodeToken> GenerateQrCodeValidator()
+        {
+            TokenValidator<QrCodeToken, GenerateQrCodeToken> qrCodeValidator = 
+                new(GenerateQrCodeTokenService(""));
+
+            return qrCodeValidator;
         }
         
         // User specifics
@@ -117,6 +126,36 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             ApiKeyTokenService service = GenerateApiKeyTokenService(withIpAddress, "");
             
             GenerateApiKeyToken apiTokenKey = new(apiKey,
+                entityId, 
+                airslipUserType);
+            
+            return service.GenerateNewToken(apiTokenKey).TokenValue;
+        }
+        
+        // QrCode Specifics
+        public static QrCodeTokenService GenerateQrCodeTokenService(string withQrCode,  
+            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
+            ClaimsPrincipal withClaimsPrincipal = null)
+        {
+            Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
+            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithQrCode(withQrCode, withClaimsPrincipal);
+            
+            QrCodeTokenService service = new(contextAccessor.Object,
+                 options.Object);
+
+            return service;
+        }
+
+        public static string GenerateQrCodeToken( 
+            string storeId = "SomeStoreId",
+            string checkoutId = "SomeCheckoutId",
+            string entityId = "SomeEntityId", 
+            AirslipUserType airslipUserType = AirslipUserType.Merchant)
+        {
+            QrCodeTokenService service = GenerateQrCodeTokenService("");
+            
+            GenerateQrCodeToken apiTokenKey = new(storeId,
+                checkoutId,
                 entityId, 
                 airslipUserType);
             

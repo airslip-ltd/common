@@ -13,44 +13,42 @@ using System.Security.Claims;
 
 namespace Airslip.Common.Auth.Implementations
 {
-    public class ApiKeyTokenService : TokenService<ApiKeyToken, GenerateApiKeyToken>
+    public class QrCodeTokenService : TokenService<QrCodeToken, GenerateQrCodeToken>
     {
-        private readonly IRemoteIpAddressService _remoteIpAddressService;
         private readonly HttpContext _httpContext;
 
-        public ApiKeyTokenService(IHttpContextAccessor httpContextAccessor, 
-            IRemoteIpAddressService remoteIpAddressService, IOptions<JwtSettings> jwtSettings)
+        public QrCodeTokenService(IHttpContextAccessor httpContextAccessor, 
+            IOptions<JwtSettings> jwtSettings)
         : base(jwtSettings)
         {
-            _remoteIpAddressService = remoteIpAddressService;
             _httpContext = httpContextAccessor.HttpContext!;
         }
 
-        public override NewToken GenerateNewToken(GenerateApiKeyToken token)
+        public override NewToken GenerateNewToken(GenerateQrCodeToken token)
         {
             List<Claim> claims = new()
             {
                 new Claim("correlation", CommonFunctions.GetId()),
+                new Claim("storeid", token.StoreId),
+                new Claim("checkoutid", token.CheckoutId),
                 new Claim("airslipusertype", token.AirslipUserType.ToString()),
-                new Claim("apikey", token.ApiKey),
-                new Claim("entityid", token.EntityId),
-                new Claim("ip", _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN")
+                new Claim("entityid", token.EntityId)
             };
 
             return GenerateNewToken(claims);
         }
         
-        public override ApiKeyToken GetCurrentToken()
+        public override QrCodeToken GetCurrentToken()
         {
             ClaimsPrincipal claimsPrincipal = _httpContext.User;
 
             return GenerateTokenFromClaims(claimsPrincipal.Claims.ToList(), claimsPrincipal.Identity?.IsAuthenticated);
         }
 
-        protected override ApiKeyToken GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated)
+        protected override QrCodeToken GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated)
         {
             string correlationId = tokenClaims.GetValue("correlation");
-            correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
+            correlationId = string.IsNullOrWhiteSpace(correlationId) ? CommonFunctions.GetId() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
             if (!Enum.TryParse(tokenClaims.GetValue("airslipusertype"), out AirslipUserType airslipUserType))
@@ -58,14 +56,12 @@ namespace Airslip.Common.Auth.Implementations
                 airslipUserType = AirslipUserType.Merchant;
             }
             
-            return new ApiKeyToken(
-                isAuthenticated,
-                tokenClaims.GetValue("apikey"),
+            return new QrCodeToken(
+                tokenClaims.GetValue("storeid"),
+                tokenClaims.GetValue("checkoutid"),
                 tokenClaims.GetValue("entityid"),
                 airslipUserType,
-                correlationId,
-                tokenClaims.GetValue("ip"),
-                _httpContext.Request.Headers["Authorization"]
+                correlationId
             );
         }
     }

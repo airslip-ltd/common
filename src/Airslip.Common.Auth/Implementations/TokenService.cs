@@ -47,7 +47,7 @@ namespace Airslip.Common.Auth.Implementations
             {
                 JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
 
-                return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(token.Claims, true),
+                return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(token.Claims.ToList(), true),
                     token.Claims.ToList());
             }
             catch (ArgumentException)
@@ -60,7 +60,7 @@ namespace Airslip.Common.Auth.Implementations
 
         public abstract TTokenType GetCurrentToken();
 
-        protected abstract TTokenType GenerateTokenFromClaims(IEnumerable<Claim> tokenClaims, bool? isAuthenticated);
+        protected abstract TTokenType GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated);
 
         private SigningCredentials getSigningCredentials()
         {

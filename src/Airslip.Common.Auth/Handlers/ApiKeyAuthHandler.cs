@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Interfaces;
+using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
@@ -15,13 +16,13 @@ namespace Airslip.Common.Auth.Handlers
 {
     public class ApiKeyAuthHandler : AuthenticationHandler<ApiKeyAuthenticationSchemeOptions>
     {
-        private readonly IApiKeyValidator _apiKeyValidator;
+        private readonly ITokenValidator<ApiKeyToken, GenerateApiKeyToken> _tokenValidator;
 
         public ApiKeyAuthHandler(IOptionsMonitor<ApiKeyAuthenticationSchemeOptions> options, 
-            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IApiKeyValidator apiKeyValidator) 
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, ITokenValidator<ApiKeyToken, GenerateApiKeyToken> tokenValidator) 
             : base(options, logger, encoder, clock)
         {
-            _apiKeyValidator = apiKeyValidator;
+            _tokenValidator = tokenValidator;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -37,7 +38,8 @@ namespace Airslip.Common.Auth.Handlers
 
             try
             {
-                ClaimsPrincipal? apiKeyPrincipal = await _apiKeyValidator.GetClaimsPrincipalFromApiKeyToken(apiKeyToken.Value.First());
+                ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator
+                    .GetClaimsPrincipalFromToken(apiKeyToken.Value.First(), ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
 
                 return apiKeyPrincipal == null ? 
                     AuthenticateResult.Fail("Api key invalid") : 

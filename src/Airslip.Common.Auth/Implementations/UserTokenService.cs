@@ -2,6 +2,7 @@ using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -33,7 +34,7 @@ namespace Airslip.Common.Auth.Implementations
         {
             List<Claim> claims = new()
             {
-                new Claim("correlation", Guid.NewGuid().ToString()),
+                new Claim("correlation", CommonFunctions.GetId()),
                 new Claim("userid", token.UserId),
                 new Claim("yapilyuserid", token.YapilyUserId),
                 new Claim("entityid", token.EntityId),
@@ -53,7 +54,7 @@ namespace Airslip.Common.Auth.Implementations
             return GenerateTokenFromClaims(claims, claimsPrincipal.Identity?.IsAuthenticated);
         }
 
-        protected override UserToken GenerateTokenFromClaims(IEnumerable<Claim> tokenClaims, bool? isAuthenticated)
+        protected override UserToken GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated)
         {
             string correlationId = tokenClaims.GetValue("correlation");
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
