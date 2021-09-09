@@ -17,8 +17,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetVersion)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Airslip.Common.Repository\Airslip.Common.Repository.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Airslip.Common.Repository" Version="$(AirslipCommonRepository)" />
+	</ItemGroup>
 
 </Project>
