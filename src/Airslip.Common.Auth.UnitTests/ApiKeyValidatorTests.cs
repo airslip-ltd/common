@@ -1,5 +1,4 @@
 using Airslip.Common.Auth.Implementations;
-using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using System;

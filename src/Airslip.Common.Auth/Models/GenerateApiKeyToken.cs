@@ -5,6 +5,6 @@ namespace Airslip.Common.Auth.Models
     public record GenerateApiKeyToken(
         string ApiKey,
         string EntityId,
-        ApiKeyUsageType ApiKeyUsageType
+        AirslipUserType AirslipUserType
     ) : GenerateTokenBase(nameof(ApiKeyToken));
 }
