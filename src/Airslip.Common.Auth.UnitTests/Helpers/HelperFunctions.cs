@@ -2,11 +2,9 @@ using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Moq;
-using System;
 using System.Security.Claims;
 
 namespace Airslip.Common.Auth.UnitTests.Helpers
@@ -83,13 +81,15 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE,
             string userId = "SomeUserId", 
             string yapilyUserId = "SomeYapilyUserId", 
-            string identity = "SomeIdentity")
+            string entityId = "SomeEntityId",
+            AirslipUserType airslipUserType = AirslipUserType.Standard)
         {
             UserTokenService service = GenerateUserTokenService(withIpAddress, "", withUserAgent);
             
             GenerateUserToken apiTokenKey = new(userId,
                 yapilyUserId, 
-                identity);
+                entityId,
+                airslipUserType);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
@@ -112,13 +112,13 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         public static string GenerateApiKeyToken(string withIpAddress, 
             string apiKey = "SomeApiKey", 
             string entityId = "SomeEntityId", 
-            ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant)
+            AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
             ApiKeyTokenService service = GenerateApiKeyTokenService(withIpAddress, "");
             
             GenerateApiKeyToken apiTokenKey = new(apiKey,
                 entityId, 
-                apiKeyUsageType);
+                airslipUserType);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }

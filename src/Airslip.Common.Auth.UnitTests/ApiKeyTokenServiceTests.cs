@@ -20,7 +20,7 @@ namespace Airslip.Common.Auth.UnitTests
 
             GenerateApiKeyToken apiTokenKey = new("SomeApiKey",
                 "SomeEntityId", 
-                ApiKeyUsageType.Merchant);
+                AirslipUserType.Merchant);
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()
@@ -50,10 +50,10 @@ namespace Airslip.Common.Auth.UnitTests
             const string ipAddress = "10.0.0.0";
             const string apiKey = "MyNewApiKey";
             const string entityId = "MyEntityId";
-            const ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant;
+            const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, entityId, 
-                apiKeyUsageType);
+                airslipUserType);
 
             ApiKeyTokenService service = HelperFunctions.
                 GenerateApiKeyTokenService("", newToken);
@@ -65,7 +65,7 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.IpAddress.Should().Be(ipAddress);
             decodedToken.Item1.ApiKey.Should().Be(apiKey);
             decodedToken.Item1.EntityId.Should().Be(entityId);
-            decodedToken.Item1.ApiKeyUsageType.Should().Be(apiKeyUsageType);
+            decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
         }
         
         [Fact]
@@ -74,10 +74,10 @@ namespace Airslip.Common.Auth.UnitTests
             const string ipAddress = "10.0.0.0";
             const string apiKey = "MyNewApiKey";
             const string entityId = "MyEntityId";
-            const ApiKeyUsageType apiKeyUsageType = ApiKeyUsageType.Merchant;
+            const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, 
-                entityId, apiKeyUsageType);
+                entityId, airslipUserType);
 
             // Prepare test data...
             ApiKeyValidator tempService = HelperFunctions.GenerateApiKeyValidator();
@@ -93,7 +93,7 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.IpAddress.Should().Be(ipAddress);
             currentToken.ApiKey.Should().Be(apiKey);
             currentToken.EntityId.Should().Be(entityId);
-            currentToken.ApiKeyUsageType.Should().Be(apiKeyUsageType);
+            currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
         
                 

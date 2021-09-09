@@ -1,7 +1,8 @@
 namespace Airslip.Common.Auth.Enums
 {
-    public enum ApiKeyUsageType
+    public enum AirslipUserType
     {
-        Merchant
+        Standard = 1,
+        Merchant = 2,
     }
 }

@@ -6,7 +6,7 @@ namespace Airslip.Common.Auth.Models
         bool? IsAuthenticated,
         string ApiKey,
         string EntityId,
-        ApiKeyUsageType ApiKeyUsageType,
+        AirslipUserType AirslipUserType,
         string CorrelationId,
         string IpAddress,
         string BearerToken

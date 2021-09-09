@@ -6,7 +6,6 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Airslip.Common.Auth.UnitTests
@@ -20,7 +19,8 @@ namespace Airslip.Common.Auth.UnitTests
 
             GenerateUserToken apiTokenKey = new("SomeUserId",
                 "SomeYapilyUserId", 
-                "Some Identity");
+                "Some Entity",
+                AirslipUserType.Standard);
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()
@@ -50,12 +50,14 @@ namespace Airslip.Common.Auth.UnitTests
             const string ipAddress = "10.0.0.0";
             const string userId = "MyUserId";
             const string yapilyUserId = "MyYapilyUserId";
-            const string identity = "MyIdentity";
+            const string entityId = "MyIdentity";
+            const AirslipUserType airslipUserType = AirslipUserType.Standard;
             
             string newToken = HelperFunctions.GenerateUserToken(ipAddress,
                 userId: userId,
                 yapilyUserId: yapilyUserId,
-                identity: identity,
+                entityId: entityId,
+                airslipUserType: airslipUserType,
                 withUserAgent: Constants.UA_APPLE_IPHONE_XR_SAFARI);
 
             UserTokenService service = HelperFunctions.
@@ -69,7 +71,8 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.IpAddress.Should().Be(ipAddress);
             decodedToken.Item1.UserId.Should().Be(userId);
             decodedToken.Item1.YapilyUserId.Should().Be(yapilyUserId);
-            decodedToken.Item1.Identity.Should().Be(identity);
+            decodedToken.Item1.EntityId.Should().Be(entityId);
+            decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
             decodedToken.Item1.UserAgent.Should().Be(Constants.UA_APPLE_IPHONE_XR_SAFARI_MATCH);
         }
                 

@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
@@ -35,7 +36,8 @@ namespace Airslip.Common.Auth.Implementations
                 new Claim("correlation", Guid.NewGuid().ToString()),
                 new Claim("userid", token.UserId),
                 new Claim("yapilyuserid", token.YapilyUserId),
-                new Claim("identity", token.Identity),
+                new Claim("entityid", token.EntityId),
+                new Claim("airslipusertype", token.AirslipUserType.ToString()),
                 new Claim("ip", _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN"),
                 new Claim("ua", _userAgentService.GetRequestUserAgent() ?? "UNKNOWN")
             };
@@ -57,11 +59,18 @@ namespace Airslip.Common.Auth.Implementations
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
+            AirslipUserType airslipUserType;
+            if (!Enum.TryParse(tokenClaims.GetValue("airslipusertype"), out airslipUserType))
+            {
+                airslipUserType = AirslipUserType.Merchant;
+            }
+            
             return new UserToken(
                 isAuthenticated,
                 tokenClaims.GetValue("userid"),
                 tokenClaims.GetValue("yapilyuserid"),
-                tokenClaims.GetValue("identity"),
+                tokenClaims.GetValue("entityid"),
+                airslipUserType,
                 correlationId,
                 tokenClaims.GetValue("ip"),
                 tokenClaims.GetValue("ua"),

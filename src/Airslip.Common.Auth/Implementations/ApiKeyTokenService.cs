@@ -29,7 +29,7 @@ namespace Airslip.Common.Auth.Implementations
             List<Claim> claims = new()
             {
                 new Claim("correlation", Guid.NewGuid().ToString()),
-                new Claim("apikeyusagetype", token.ApiKeyUsageType.ToString()),
+                new Claim("apikeyusagetype", token.AirslipUserType.ToString()),
                 new Claim("apikey", token.ApiKey),
                 new Claim("entityid", token.EntityId),
                 new Claim("ip", _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN")
@@ -51,17 +51,17 @@ namespace Airslip.Common.Auth.Implementations
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
-            ApiKeyUsageType apiKeyUsageType;
-            if (!Enum.TryParse(tokenClaims.GetValue("apikeyusagetype"), out apiKeyUsageType))
+            AirslipUserType airslipUserType;
+            if (!Enum.TryParse(tokenClaims.GetValue("airslipUserType"), out airslipUserType))
             {
-                apiKeyUsageType = ApiKeyUsageType.Merchant;
+                airslipUserType = AirslipUserType.Merchant;
             }
             
             return new ApiKeyToken(
                 isAuthenticated,
                 tokenClaims.GetValue("apikey"),
                 tokenClaims.GetValue("entityid"),
-                apiKeyUsageType,
+                airslipUserType,
                 correlationId,
                 tokenClaims.GetValue("ip"),
                 _httpContext.Request.Headers["Authorization"]
