@@ -2,6 +2,16 @@
 
 	<Import Project="..\common.props" />
 
+	<PropertyGroup>
+		<PackageId>Airslip.Common.Repository</PackageId>
+		<Company>Airslip</Company>
+		<Authors>Airslip</Authors>
+		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/airslip-ltd/common</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Airslip.Common.Auth" Version="$(AirslipCommonAuth)" />
 	</ItemGroup>
