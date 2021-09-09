@@ -68,10 +68,50 @@ namespace Airslip.Common.Auth.Extensions
             {
                 result = services
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
-                    .AddScoped<IApiKeyValidator, ApiKeyValidator>()
+                    .AddScoped<ITokenValidator<ApiKeyToken, GenerateApiKeyToken>, TokenValidator<ApiKeyToken, GenerateApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(_ => {});
             }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// Add QR Code authentication. Assumes application settings are available in the format of:
+        /// 
+        /// appSettings.json:
+        /// {
+        ///     "JwtSettings": {
+        ///         "Key": "Example key",
+        ///         "Issuer": "Example issuer",
+        ///         "Audience": "Example audience",
+        ///         "ExpiresTime": "Example expiry time",
+        ///         "ValidateLifetime": "true"
+        ///      }
+        /// }
+        /// 
+        /// Environment Variables:
+        /// JwtSettings:Key = Example key
+        /// JwtSettings:Issuer = Example issuer
+        /// JwtSettings:Audience = Example audience
+        /// JwtSettings:ExpiresTime = Example expiry time
+        /// JwtSettings:ValidateLifetime = true
+        /// </summary>
+        /// <param name="services">The service collection to append services to</param>
+        /// <param name="configuration">The primary configuration where relevant elements can be found</param>
+        /// <returns>The updated service collection</returns>
+        public static AuthenticationBuilder? AddAirslipQrCodeAuth(this IServiceCollection services, IConfiguration configuration)
+        {
+            AuthenticationBuilder? result = null;
+            
+            result = services
+                .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .AddAuthorization()
+                .AddScoped<ITokenService<QrCodeToken, GenerateQrCodeToken>, QrCodeTokenService>()
+                .AddScoped<ITokenValidator<QrCodeToken, GenerateQrCodeToken>, TokenValidator<QrCodeToken, GenerateQrCodeToken>>()
+                .AddAuthentication(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme)
+                .AddQrCodeAuth(_ => { });
 
             return result;
         }
@@ -80,6 +120,12 @@ namespace Airslip.Common.Auth.Extensions
         {
             return builder
                 .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthHandler>(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, options);
+        }
+        
+        public static AuthenticationBuilder AddQrCodeAuth(this AuthenticationBuilder builder, Action<QrCodeAuthenticationSchemeOptions> options)
+        {
+            return builder
+                .AddScheme<QrCodeAuthenticationSchemeOptions, QrCodeAuthHandler>(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme, options);
         }
         
         public static bool IsNullOrWhitespace(this string? s)

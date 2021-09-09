@@ -23,6 +23,24 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return mockHttpContextAccessor;
         }
         
+        public static Mock<IHttpContextAccessor> GenerateContextWithQrCode(string qrCode, ClaimsPrincipal withClaimsPrincipal = null)
+        {
+            Mock<IHttpContextAccessor> mockHttpContextAccessor = new();
+            DefaultHttpContext context = new()
+            {
+                Request =
+                {
+                    QueryString = QueryString.FromUriComponent($"?{qrCode}")
+                }
+            };
+
+            if (withClaimsPrincipal != null) context.User = withClaimsPrincipal;
+            
+            mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
+            
+            return mockHttpContextAccessor;
+        }
+        
         public static Mock<IHttpContextAccessor> GenerateContextWithApiKey(string apiKey, ClaimsPrincipal withClaimsPrincipal = null)
         {
             Mock<IHttpContextAccessor> mockHttpContextAccessor = new();

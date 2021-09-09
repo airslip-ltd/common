@@ -1,6 +1,7 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using System;
@@ -80,8 +81,9 @@ namespace Airslip.Common.Auth.UnitTests
                 entityId, airslipUserType);
 
             // Prepare test data...
-            ApiKeyValidator tempService = HelperFunctions.GenerateApiKeyValidator();
-            ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromApiKeyToken(newToken);
+            TokenValidator<ApiKeyToken, GenerateApiKeyToken> tempService = HelperFunctions.GenerateApiKeyValidator();
+            ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
+                ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
 
             ApiKeyTokenService service = HelperFunctions.
                 GenerateApiKeyTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);

@@ -8,22 +8,24 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.Implementations
 {
-    public class ApiKeyValidator : IApiKeyValidator
+    public class TokenValidator<TExisting, TNew> : ITokenValidator<TExisting, TNew> 
+        where TExisting : TokenBase 
+        where TNew : GenerateTokenBase
     {
-        private readonly ITokenService<ApiKeyToken, GenerateApiKeyToken> _tokenService;
+        private readonly ITokenService<TExisting, TNew> _tokenService;
 
-        public ApiKeyValidator(ITokenService<ApiKeyToken, GenerateApiKeyToken> tokenService)
+        public TokenValidator(ITokenService<TExisting, TNew> tokenService)
         {
             _tokenService = tokenService;
         }
         
-        public async Task<ClaimsPrincipal?> GetClaimsPrincipalFromApiKeyToken(string value)
+        public async Task<ClaimsPrincipal?> GetClaimsPrincipalFromToken(string value, string forScheme)
         {
-            Tuple<ApiKeyToken, ICollection<Claim>> tokenDetails = _tokenService.DecodeExistingToken(value);
+            Tuple<TExisting, ICollection<Claim>> tokenDetails = _tokenService.DecodeExistingToken(value);
             
             List<ClaimsIdentity> claimsIdentities = new()
             {
-                new ClaimsIdentity(tokenDetails.Item2, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
+                new ClaimsIdentity(tokenDetails.Item2, forScheme)
             };
             
             ClaimsPrincipal principal = new(claimsIdentities);
