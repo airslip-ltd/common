@@ -68,7 +68,7 @@ namespace Airslip.Common.Auth.Extensions
             {
                 result = services
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
-                    .AddSingleton<IApiKeyValidator, ApiKeyValidator>()
+                    .AddScoped<IApiKeyValidator, ApiKeyValidator>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(_ => {});
             }
