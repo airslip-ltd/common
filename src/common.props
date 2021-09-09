@@ -29,7 +29,7 @@
     <PropertyGroup>
         <AirslipCommonContracts>1.1.7</AirslipCommonContracts>
 		<AirslipCommonTypes>3.1.8</AirslipCommonTypes>
-		<AirslipCommonAuth>1.0.5</AirslipCommonAuth>
+		<AirslipCommonAuth>1.0.6</AirslipCommonAuth>
     </PropertyGroup>
 
 </Project>
