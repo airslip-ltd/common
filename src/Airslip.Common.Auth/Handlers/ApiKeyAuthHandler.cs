@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -33,15 +34,19 @@ namespace Airslip.Common.Auth.Handlers
             KeyValuePair<string, StringValues> apiKeyToken = Request
                 .Headers
                 .First(o => o.Key == ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField);
-                
-            ClaimsPrincipal? apiKeyPrincipal = await _apiKeyValidator.GetClaimsPrincipalFromApiKeyToken(apiKeyToken.Value.First());
 
-            if (apiKeyPrincipal == null)
+            try
+            {
+                ClaimsPrincipal? apiKeyPrincipal = await _apiKeyValidator.GetClaimsPrincipalFromApiKeyToken(apiKeyToken.Value.First());
+
+                return apiKeyPrincipal == null ? 
+                    AuthenticateResult.Fail("Api key invalid") : 
+                    AuthenticateResult.Success(new AuthenticationTicket(apiKeyPrincipal, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme));
+            }
+            catch (ArgumentException)
             {
                 return AuthenticateResult.Fail("Api key invalid");
             }
-
-            return AuthenticateResult.Success(new AuthenticationTicket(apiKeyPrincipal, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme));
         }
     }
 }
