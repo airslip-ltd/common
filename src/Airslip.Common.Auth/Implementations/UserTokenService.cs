@@ -59,8 +59,7 @@ namespace Airslip.Common.Auth.Implementations
             correlationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId;
             Log.Logger.ForContext(nameof(correlationId), correlationId);
 
-            AirslipUserType airslipUserType;
-            if (!Enum.TryParse(tokenClaims.GetValue("airslipusertype"), out airslipUserType))
+            if (!Enum.TryParse(tokenClaims.GetValue("airslipusertype"), out AirslipUserType airslipUserType))
             {
                 airslipUserType = AirslipUserType.Merchant;
             }
