@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Airslip.Common.Types.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -93,6 +94,11 @@ namespace Airslip.Common.Types.Extensions
         {
             byte[] tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(accentedStr);
             return Encoding.UTF8.GetString(tempBytes);
+        }
+        
+        public static string ToApiUrl(this PublicApiSetting publicApiSetting)
+        {
+            return string.IsNullOrEmpty(publicApiSetting.UriSuffix) ? $"{publicApiSetting.BaseUri}" :  $"{publicApiSetting.BaseUri}/{publicApiSetting.UriSuffix}";
         }
     }
 }
