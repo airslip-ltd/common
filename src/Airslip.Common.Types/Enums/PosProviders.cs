@@ -2,8 +2,10 @@
 {
     public enum PosProviders
     {
-        SWAN_RETAIL_MIDAS,
-        VOLUSION,
-        STRIPE
+        SwanRetailMidas,
+        Volusion,
+        Stripe,
+        SumUp,
+        IZettle
     }
 }
