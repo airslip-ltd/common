@@ -67,6 +67,7 @@ namespace Airslip.Common.Auth.Extensions
             if (authType.InList(AuthType.ApiKey, AuthType.All))
             {
                 result = services
+                    .AddSingleton<IApiKeyRequestHandler, ApiKeyRequestHandler>()
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
                     .AddScoped<ITokenValidator<ApiKeyToken, GenerateApiKeyToken>, TokenValidator<ApiKeyToken, GenerateApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
@@ -105,6 +106,7 @@ namespace Airslip.Common.Auth.Extensions
             AuthenticationBuilder? result = null;
             
             result = services
+                .AddSingleton<IQrCodeRequestHandler, QrCodeRequestHandler>()
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .AddAuthorization()
