@@ -9,6 +9,7 @@ namespace Airslip.Common.Auth.Models
         AirslipUserType AirslipUserType,
         string CorrelationId,
         string IpAddress,
-        string BearerToken
+        string BearerToken,
+        string Environment
     ) : TokenBase(nameof(ApiKeyToken), IsAuthenticated, CorrelationId, IpAddress, BearerToken);
 }

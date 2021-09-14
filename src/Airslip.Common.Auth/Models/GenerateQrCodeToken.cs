@@ -6,6 +6,7 @@ namespace Airslip.Common.Auth.Models
         string StoreId,
         string CheckoutId,
         string EntityId,
-        AirslipUserType AirslipUserType
+        AirslipUserType AirslipUserType,
+        string QrCodeKey
     ) : GenerateTokenBase(nameof(ApiKeyToken));
 }

@@ -144,12 +144,13 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
                  options.Object);
 
             return service;
-        }
+        } 
 
         public static string GenerateQrCodeToken( 
             string storeId = "SomeStoreId",
             string checkoutId = "SomeCheckoutId",
             string entityId = "SomeEntityId", 
+            string qrCodeKey = "SomQrCodeKey", 
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
             QrCodeTokenService service = GenerateQrCodeTokenService("");
@@ -157,7 +158,8 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             GenerateQrCodeToken apiTokenKey = new(storeId,
                 checkoutId,
                 entityId, 
-                airslipUserType);
+                airslipUserType,
+                qrCodeKey);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }

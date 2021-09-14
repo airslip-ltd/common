@@ -66,6 +66,7 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.IpAddress.Should().Be(ipAddress);
             decodedToken.Item1.ApiKey.Should().Be(apiKey);
             decodedToken.Item1.EntityId.Should().Be(entityId);
+            decodedToken.Item1.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
             decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
         }
         
@@ -95,6 +96,7 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.IpAddress.Should().Be(ipAddress);
             currentToken.ApiKey.Should().Be(apiKey);
             currentToken.EntityId.Should().Be(entityId);
+            currentToken.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
         

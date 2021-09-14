@@ -7,6 +7,8 @@ namespace Airslip.Common.Auth.Models
         string CheckoutId,
         string EntityId,
         AirslipUserType AirslipUserType,
-        string CorrelationId
+        string CorrelationId,
+        string QrCodeKey, 
+        string Environment
     ) : TokenBase(nameof(QrCodeToken), false, CorrelationId, "", "");
 }

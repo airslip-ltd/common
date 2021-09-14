@@ -2,6 +2,7 @@ using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -34,6 +35,7 @@ namespace Airslip.Common.Auth.Implementations
                 new Claim("airslipusertype", token.AirslipUserType.ToString()),
                 new Claim("apikey", token.ApiKey),
                 new Claim("entityid", token.EntityId),
+                new Claim("environment", ApiKeyAuthenticationSchemeOptions.ThisEnvironment),
                 new Claim("ip", _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN")
             };
 
@@ -65,7 +67,8 @@ namespace Airslip.Common.Auth.Implementations
                 airslipUserType,
                 correlationId,
                 tokenClaims.GetValue("ip"),
-                _httpContext.Request.Headers["Authorization"]
+                _httpContext.Request.Headers["Authorization"],
+                tokenClaims.GetValue("environment")
             );
         }
     }
