@@ -10,10 +10,7 @@ namespace Airslip.Common.Auth.Schemes
 
         public string Environment
         {
-            set
-            {
-                ThisEnvironment = value;
-            }
+            set => ThisEnvironment = value;
         }
     }
 }

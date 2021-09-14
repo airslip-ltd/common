@@ -43,9 +43,10 @@ namespace Airslip.Common.Auth.Extensions
         /// <param name="services">The service collection to append services to</param>
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <param name="authType">The auth type that is supported by this Api</param>
+        /// <param name="withEnvironment">The name of the environment which will be used for validating API Keys</param>
         /// <returns>The updated service collection</returns>
         public static AuthenticationBuilder? AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration, 
-            AuthType authType = AuthType.User)
+            AuthType authType = AuthType.User, string withEnvironment = "")
         {
             AuthenticationBuilder? result = null;
             
@@ -71,12 +72,15 @@ namespace Airslip.Common.Auth.Extensions
                     .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
                     .AddScoped<ITokenValidator<ApiKeyToken, GenerateApiKeyToken>, TokenValidator<ApiKeyToken, GenerateApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
-                    .AddApiKeyAuth(_ => {});
+                    .AddApiKeyAuth(opt =>
+                    {
+                        opt.Environment = withEnvironment;
+                    });
             }
 
             return result;
         }
-        
+
         /// <summary>
         /// Add QR Code authentication. Assumes application settings are available in the format of:
         /// 
@@ -100,8 +104,10 @@ namespace Airslip.Common.Auth.Extensions
         /// </summary>
         /// <param name="services">The service collection to append services to</param>
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
+        /// <param name="withEnvironment">The name of the environment which will be used for validating QR Codes</param>
         /// <returns>The updated service collection</returns>
-        public static AuthenticationBuilder? AddAirslipQrCodeAuth(this IServiceCollection services, IConfiguration configuration)
+        public static AuthenticationBuilder? AddAirslipQrCodeAuth(this IServiceCollection services, 
+            IConfiguration configuration, string withEnvironment = "")
         {
             AuthenticationBuilder? result = null;
             
@@ -113,7 +119,10 @@ namespace Airslip.Common.Auth.Extensions
                 .AddScoped<ITokenService<QrCodeToken, GenerateQrCodeToken>, QrCodeTokenService>()
                 .AddScoped<ITokenValidator<QrCodeToken, GenerateQrCodeToken>, TokenValidator<QrCodeToken, GenerateQrCodeToken>>()
                 .AddAuthentication(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme)
-                .AddQrCodeAuth(_ => { });
+                .AddQrCodeAuth(opt =>
+                {
+                    opt.Environment = withEnvironment;
+                });
 
             return result;
         }
