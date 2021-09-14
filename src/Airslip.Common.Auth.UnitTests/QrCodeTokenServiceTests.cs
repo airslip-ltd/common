@@ -25,7 +25,8 @@ namespace Airslip.Common.Auth.UnitTests
             GenerateQrCodeToken apiTokenKey = new("StoreId",
                 "CheckoutId",
                 "EntityId",
-                AirslipUserType.Merchant);
+                AirslipUserType.Merchant,
+                "SomeKey");
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()
@@ -47,10 +48,11 @@ namespace Airslip.Common.Auth.UnitTests
             const string storeId = "001";
             const string checkoutId = "001";
             const string entityId = "MyEntityId";
+            const string qrCodeKey = "SomeKey";
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                airslipUserType);
+                qrCodeKey, airslipUserType);
 
             QrCodeTokenService service = HelperFunctions.
                 GenerateQrCodeTokenService(newToken);
@@ -63,6 +65,8 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.StoreId.Should().Be(storeId);
             decodedToken.Item1.CheckoutId.Should().Be(checkoutId);
             decodedToken.Item1.EntityId.Should().Be(entityId);
+            decodedToken.Item1.QrCodeKey.Should().Be(qrCodeKey);
+            decodedToken.Item1.Environment.Should().Be(QrCodeAuthenticationSchemeOptions.ThisEnvironment);
             decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
         }
         
@@ -72,10 +76,11 @@ namespace Airslip.Common.Auth.UnitTests
             const string storeId = "001";
             const string checkoutId = "001";
             const string entityId = "MyEntityId";
+            const string qrCodeKey = "SomeKey";
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                airslipUserType);
+                qrCodeKey, airslipUserType);
 
             // Prepare test data...
             TokenValidator<QrCodeToken, GenerateQrCodeToken> tempService = HelperFunctions.GenerateQrCodeValidator();
@@ -88,12 +93,13 @@ namespace Airslip.Common.Auth.UnitTests
             QrCodeToken currentToken = service.GetCurrentToken();
 
             currentToken.Should().NotBeNull();
-
             
             currentToken.IpAddress.Should().Be("");
             currentToken.StoreId.Should().Be(storeId);
             currentToken.CheckoutId.Should().Be(checkoutId);
             currentToken.EntityId.Should().Be(entityId);
+            currentToken.QrCodeKey.Should().Be(qrCodeKey);
+            currentToken.Environment.Should().Be(QrCodeAuthenticationSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
 
@@ -118,10 +124,11 @@ namespace Airslip.Common.Auth.UnitTests
             const string storeId = "001";
             const string checkoutId = "001";
             const string entityId = "MyEntityId";
+            const string qrCodeKey = "SomeKey";
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                airslipUserType);
+                qrCodeKey, airslipUserType);
             
             TokenValidator<QrCodeToken, GenerateQrCodeToken> tempService = HelperFunctions.GenerateQrCodeValidator();
             QrCodeRequestHandler handler = new QrCodeRequestHandler(tempService);

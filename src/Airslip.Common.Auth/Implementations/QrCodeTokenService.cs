@@ -2,6 +2,7 @@ using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Types;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -31,6 +32,8 @@ namespace Airslip.Common.Auth.Implementations
                 new Claim("correlation", CommonFunctions.GetId()),
                 new Claim("storeid", token.StoreId),
                 new Claim("checkoutid", token.CheckoutId),
+                new Claim("qrcodekey", token.QrCodeKey),
+                new Claim("environment", QrCodeAuthenticationSchemeOptions.ThisEnvironment),
                 new Claim("airslipusertype", token.AirslipUserType.ToString()),
                 new Claim("entityid", token.EntityId)
             };
@@ -61,7 +64,9 @@ namespace Airslip.Common.Auth.Implementations
                 tokenClaims.GetValue("checkoutid"),
                 tokenClaims.GetValue("entityid"),
                 airslipUserType,
-                correlationId
+                correlationId,
+                tokenClaims.GetValue("qrcodekey"),
+                tokenClaims.GetValue("environment")
             );
         }
     }
