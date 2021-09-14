@@ -28,9 +28,9 @@ namespace Airslip.Common.Auth.Implementations
 
             List<Claim> list = tokenDetails.Item2.ToList();
             
-            if (list.All(o => o.Type != "Environment") || list.GetValue("Environment") != forEnvironment)
+            if (list.All(o => o.Type != "environment") || list.GetValue("environment") != forEnvironment)
             {
-                throw new EnvironmentUnsupportedException(list.GetValue("Environment"), 
+                throw new EnvironmentUnsupportedException(list.GetValue("environment"), 
                     forEnvironment);
             }
 
