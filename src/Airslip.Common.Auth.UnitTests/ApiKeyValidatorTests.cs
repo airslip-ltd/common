@@ -21,7 +21,8 @@ namespace Airslip.Common.Auth.UnitTests
             TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = HelperFunctions.GenerateApiKeyValidator();
 
             ClaimsPrincipal claimsPrincipal = await apiKeyValidator.GetClaimsPrincipalFromToken(newToken, 
-                ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
+                ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
+                ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
 
             claimsPrincipal.Should().NotBeNull();
             claimsPrincipal?.Claims.Count().Should().BeGreaterThan(0);
@@ -33,7 +34,9 @@ namespace Airslip.Common.Auth.UnitTests
             TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = HelperFunctions.GenerateApiKeyValidator();
 
             await apiKeyValidator
-                .Invoking(y => y.GetClaimsPrincipalFromToken("I am an invalid token", ApiKeyAuthenticationSchemeOptions.ApiKeyScheme))
+                .Invoking(y => y.
+                    GetClaimsPrincipalFromToken("I am an invalid token", ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
+                        ApiKeyAuthenticationSchemeOptions.ThisEnvironment))
                 .Should()
                 .ThrowAsync<ArgumentException>()
                 .WithParameterName("tokenValue");

@@ -32,7 +32,8 @@ namespace Airslip.Common.Auth.Implementations
             try
             {
                 ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator.GetClaimsPrincipalFromToken(qs, 
-                    QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme);
+                    QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme, 
+                    QrCodeAuthenticationSchemeOptions.ThisEnvironment);
 
                 return apiKeyPrincipal == null ? 
                     AuthenticateResult.Fail("QR Code invalid") : 
@@ -42,6 +43,10 @@ namespace Airslip.Common.Auth.Implementations
             catch (ArgumentException)
             {
                 return AuthenticateResult.Fail("QR Code invalid");
+            }
+            catch (EnvironmentUnsupportedException)
+            {
+                return AuthenticateResult.Fail("Environment Unsupported");
             }
         }
     }

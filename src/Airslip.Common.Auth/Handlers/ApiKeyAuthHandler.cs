@@ -16,39 +16,18 @@ namespace Airslip.Common.Auth.Handlers
 {
     public class ApiKeyAuthHandler : AuthenticationHandler<ApiKeyAuthenticationSchemeOptions>
     {
-        private readonly ITokenValidator<ApiKeyToken, GenerateApiKeyToken> _tokenValidator;
+        private readonly IApiKeyRequestHandler _apiKeyRequestHandler;
 
         public ApiKeyAuthHandler(IOptionsMonitor<ApiKeyAuthenticationSchemeOptions> options, 
-            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, ITokenValidator<ApiKeyToken, GenerateApiKeyToken> tokenValidator) 
+            ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IApiKeyRequestHandler apiKeyRequestHandler) 
             : base(options, logger, encoder, clock)
         {
-            _tokenValidator = tokenValidator;
+            _apiKeyRequestHandler = apiKeyRequestHandler;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField))
-            {
-                return AuthenticateResult.NoResult();
-            }
-
-            KeyValuePair<string, StringValues> apiKeyToken = Request
-                .Headers
-                .First(o => o.Key == ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField);
-
-            try
-            {
-                ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator
-                    .GetClaimsPrincipalFromToken(apiKeyToken.Value.First(), ApiKeyAuthenticationSchemeOptions.ApiKeyScheme);
-
-                return apiKeyPrincipal == null ? 
-                    AuthenticateResult.Fail("Api key invalid") : 
-                    AuthenticateResult.Success(new AuthenticationTicket(apiKeyPrincipal, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme));
-            }
-            catch (ArgumentException)
-            {
-                return AuthenticateResult.Fail("Api key invalid");
-            }
+            return await _apiKeyRequestHandler.Handle(Request);
         }
     }
 }
