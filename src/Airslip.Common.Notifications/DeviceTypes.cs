@@ -1,4 +1,4 @@
-﻿namespace Airslip.Common.Types
+﻿namespace Airslip.Common.Notifications
 {
     public enum DeviceTypes
     {
