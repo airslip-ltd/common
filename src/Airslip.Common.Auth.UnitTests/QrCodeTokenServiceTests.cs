@@ -85,7 +85,8 @@ namespace Airslip.Common.Auth.UnitTests
             // Prepare test data...
             TokenValidator<QrCodeToken, GenerateQrCodeToken> tempService = HelperFunctions.GenerateQrCodeValidator();
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
-                QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme);
+                QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme,
+                QrCodeAuthenticationSchemeOptions.ThisEnvironment);
 
             QrCodeTokenService service = HelperFunctions.
                 GenerateQrCodeTokenService(newToken, withClaimsPrincipal: claimsPrincipal);

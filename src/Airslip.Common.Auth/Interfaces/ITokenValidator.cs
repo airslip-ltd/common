@@ -5,6 +5,7 @@ namespace Airslip.Common.Auth.Interfaces
 {
     public interface ITokenValidator<TExisting, TNew>
     {
-        Task<ClaimsPrincipal?> GetClaimsPrincipalFromToken(string value, string forScheme);
+        Task<ClaimsPrincipal?> GetClaimsPrincipalFromToken(string value, string forScheme, 
+            string forEnvironment);
     }
 }
