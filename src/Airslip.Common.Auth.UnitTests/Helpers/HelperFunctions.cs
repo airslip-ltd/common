@@ -31,7 +31,8 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         public static IRemoteIpAddressService GenerateRemoteIpAddressService(string withForwarder = null,
             string withRemoteAddr = null)
         {
-            Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContextWithForwarder(withForwarder, withRemoteAddr);
+            Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContext("", TokenType.ApiKey, 
+                forwarder: withForwarder, remoteAddr:withRemoteAddr);
             RemoteIpAddressService service = new(context.Object);
 
             return service;
@@ -47,41 +48,31 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
 
         public static IUserAgentService GenerateUserAgentService(string withUserAgent = Constants.UA_WINDOWS_10_EDGE)
         {
-            Mock<IHttpContextAccessor> accessor = ContextHelpers.GenerateContextWithBearerToken("", withUserAgent);
+            Mock<IHttpContextAccessor> accessor = ContextHelpers.GenerateContext("", TokenType.BearerToken, 
+                withUserAgent);
             UserAgentService userAgentService = new(accessor.Object);
 
             return userAgentService;
         }
 
-        public static TokenValidator<ApiKeyToken, GenerateApiKeyToken> GenerateApiKeyValidator()
+        public static ITokenValidator<TTokenType> GenerateValidator<TTokenType>(TokenType tokenType) where TTokenType : IDecodeToken, new()
         {
-            TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = 
-                new(GenerateApiKeyTokenService("", ""));
+            TokenValidator<TTokenType> apiKeyValidator = 
+                new(CreateTokenDecodeService<TTokenType>("", tokenType));
 
             return apiKeyValidator;
         }
-
-        public static TokenValidator<QrCodeToken, GenerateQrCodeToken> GenerateQrCodeValidator()
-        {
-            TokenValidator<QrCodeToken, GenerateQrCodeToken> qrCodeValidator = 
-                new(GenerateQrCodeTokenService(""));
-
-            return qrCodeValidator;
-        }
         
         // User specifics
-        public static UserTokenService GenerateUserTokenService(string withIpAddress, string withBearerToken, 
+        public static ITokenGenerationService<GenerateUserToken> CreateUserTokenGenerationService(string withIpAddress, 
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE,
-            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
-            ClaimsPrincipal withClaimsPrincipal = null)
+            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt")
         {
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithBearerToken(withBearerToken, withUserAgent, withClaimsPrincipal);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService uaService = GenerateUserAgentService(withUserAgent);
             
-            UserTokenService service = new(contextAccessor.Object, uaService,
-                ipService.Object, options.Object);
+            TokenGenerationService<GenerateUserToken> service = new(options.Object, ipService.Object, uaService);
 
             return service;
         }
@@ -93,27 +84,39 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             string entityId = "SomeEntityId",
             AirslipUserType airslipUserType = AirslipUserType.Standard)
         {
-            UserTokenService service = GenerateUserTokenService(withIpAddress, "", withUserAgent);
+            ITokenGenerationService<GenerateUserToken> service = CreateTokenGenerationService<GenerateUserToken>
+                (withIpAddress, "",  withUserAgent: withUserAgent);
             
-            GenerateUserToken apiTokenKey = new(userId,
-                yapilyUserId, 
-                entityId,
-                airslipUserType);
+            GenerateUserToken apiTokenKey = new(entityId, airslipUserType, userId,
+                yapilyUserId);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
         
-        // ApiKey Specifics
-        public static ApiKeyTokenService GenerateApiKeyTokenService(string withIpAddress, string withApiKey, 
-            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
-            ClaimsPrincipal withClaimsPrincipal = null)
+        public static ITokenGenerationService<TTokenType> CreateTokenGenerationService<TTokenType>(string withIpAddress, 
+            string withToken, string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
+            ClaimsPrincipal withClaimsPrincipal = null,
+            string withUserAgent = Constants.UA_WINDOWS_10_EDGE) where TTokenType : IGenerateToken
         {
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithApiKey(withApiKey, withClaimsPrincipal);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
-            
-            ApiKeyTokenService service = new(contextAccessor.Object,
-                ipService.Object, options.Object);
+            IUserAgentService userAgentService = GenerateUserAgentService(withUserAgent);
+
+            TokenGenerationService<TTokenType> service = 
+                new(options.Object, ipService.Object, userAgentService);
+
+            return service;
+        }
+        
+        public static ITokenDecodeService<TTokenType> CreateTokenDecodeService<TTokenType>(string withToken, 
+            TokenType tokenType, ClaimsPrincipal withClaimsPrincipal = null) where TTokenType : IDecodeToken, new()
+        {
+            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContext(withToken, tokenType, 
+                withClaimsPrincipal: withClaimsPrincipal);
+            IClaimsPrincipalLocator claimsPrincipalLocator = new HttpContextPrincipalLocator(contextAccessor.Object);
+            IHttpHeaderLocator httpHeaderLocator = new HttpContextHeaderLocator(contextAccessor.Object);
+
+            TokenDecodeService<TTokenType> service = new(httpHeaderLocator, claimsPrincipalLocator);
 
             return service;
         }
@@ -123,43 +126,32 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             string entityId = "SomeEntityId", 
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
-            ApiKeyTokenService service = GenerateApiKeyTokenService(withIpAddress, "");
+            ITokenGenerationService<GenerateApiKeyToken> service = CreateTokenGenerationService<GenerateApiKeyToken>(withIpAddress, "");
             
-            GenerateApiKeyToken apiTokenKey = new(apiKey,
-                entityId, 
+            GenerateApiKeyToken apiTokenKey = new(
+                entityId,
+                apiKey,
                 airslipUserType);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
         
         // QrCode Specifics
-        public static QrCodeTokenService GenerateQrCodeTokenService(string withQrCode,  
-            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
-            ClaimsPrincipal withClaimsPrincipal = null)
-        {
-            Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
-            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContextWithQrCode(withQrCode, withClaimsPrincipal);
-            
-            QrCodeTokenService service = new(contextAccessor.Object,
-                 options.Object);
-
-            return service;
-        } 
-
         public static string GenerateQrCodeToken( 
             string storeId = "SomeStoreId",
             string checkoutId = "SomeCheckoutId",
             string entityId = "SomeEntityId", 
             string qrCodeKey = "SomQrCodeKey", 
+            string ipAddress = "",
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
-            QrCodeTokenService service = GenerateQrCodeTokenService("");
+            ITokenGenerationService<GenerateQrCodeToken> service = CreateTokenGenerationService<GenerateQrCodeToken>(ipAddress, "");
             
-            GenerateQrCodeToken apiTokenKey = new(storeId,
+            GenerateQrCodeToken apiTokenKey = new(entityId,
+                storeId,
                 checkoutId,
-                entityId, 
-                airslipUserType,
-                qrCodeKey);
+                qrCodeKey,
+                airslipUserType);
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }

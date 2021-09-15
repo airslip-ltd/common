@@ -1,7 +1,6 @@
+using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +9,12 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.Implementations
 {
-    public class TokenValidator<TExisting, TNew> : ITokenValidator<TExisting, TNew> 
-        where TExisting : TokenBase 
-        where TNew : GenerateTokenBase
+    public class TokenValidator<TExisting> : ITokenValidator<TExisting> 
+        where TExisting : IDecodeToken, new()
     {
-        private readonly ITokenService<TExisting, TNew> _tokenService;
+        private readonly ITokenDecodeService<TExisting> _tokenService;
 
-        public TokenValidator(ITokenService<TExisting, TNew> tokenService)
+        public TokenValidator(ITokenDecodeService<TExisting> tokenService)
         {
             _tokenService = tokenService;
         }
@@ -42,18 +40,6 @@ namespace Airslip.Common.Auth.Implementations
             ClaimsPrincipal principal = new(claimsIdentities);
             
             return await Task.FromResult(principal);
-        }
-    }
-
-    public class EnvironmentUnsupportedException : Exception
-    {
-        public string SuppliedEnvironment { get; }
-        public string SupportedEnvironment { get; }
-
-        public EnvironmentUnsupportedException(string suppliedEnvironment, string supportedEnvironment)
-        {
-            SuppliedEnvironment = suppliedEnvironment;
-            SupportedEnvironment = supportedEnvironment;
         }
     }
 }

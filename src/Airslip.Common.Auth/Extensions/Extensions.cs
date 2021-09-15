@@ -19,8 +19,44 @@ namespace Airslip.Common.Auth.Extensions
     public static class Extensions
     {
         /// <summary>
-        /// Add standard JWT authentication used across the Airslip API estate. Assumes
-        /// application settings are available in the format of:
+        /// Add token generation for the specified token type.
+        /// Assumes application settings are available in the format of:
+        /// 
+        /// appSettings.json:
+        /// {
+        ///     "JwtSettings": {
+        ///         "Key": "Example key",
+        ///         "Issuer": "Example issuer",
+        ///         "Audience": "Example audience",
+        ///         "ExpiresTime": "Example expiry time",
+        ///         "ValidateLifetime": "true"
+        ///      }
+        /// }
+        /// 
+        /// Environment Variables:
+        /// JwtSettings:Key = Example key
+        /// JwtSettings:Issuer = Example issuer
+        /// JwtSettings:Audience = Example audience
+        /// JwtSettings:ExpiresTime = Example expiry time
+        /// JwtSettings:ValidateLifetime = true
+        /// </summary>
+        /// <param name="services">The service collection to append services to</param>
+        /// <param name="configuration">The primary configuration where relevant elements can be found</param>
+        /// <returns>The updated service collection</returns>
+        public static IServiceCollection AddTokenGeneration<TTokenType>(this IServiceCollection services, 
+            IConfiguration configuration) 
+            where TTokenType : IGenerateToken
+        {
+            services
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .AddScoped<ITokenGenerationService<TTokenType>, TokenGenerationService<TTokenType>>();
+
+            return services;
+        }
+        
+        /// <summary>
+        /// Add standard JWT authentication used across the Airslip API estate.
+        /// Assumes application settings are available in the format of:
         /// 
         /// appSettings.json:
         /// {
@@ -45,22 +81,24 @@ namespace Airslip.Common.Auth.Extensions
         /// <param name="authType">The auth type that is supported by this Api</param>
         /// <param name="withEnvironment">The name of the environment which will be used for validating API Keys</param>
         /// <returns>The updated service collection</returns>
-        public static AuthenticationBuilder? AddAirslipJwtAuth(this IServiceCollection services, IConfiguration configuration, 
-            AuthType authType = AuthType.User, string withEnvironment = "")
+        public static AuthenticationBuilder? AddAirslipJwtAuth(this IServiceCollection services,  
+            IConfiguration configuration, AuthType authType = AuthType.User, string withEnvironment = "")
         {
             AuthenticationBuilder? result = null;
             
             services
                 .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
                 .AddScoped<IUserAgentService, UserAgentService>()
-                .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
+                .AddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>()
+                .AddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
                 .AddAuthorization();
 
             if (authType.InList(AuthType.User, AuthType.All))
             {
                 result = services
-                    .AddScoped<ITokenService<UserToken, GenerateUserToken>, UserTokenService>()
+                    .AddScoped<ITokenDecodeService<UserToken>, TokenDecodeService<UserToken>>()
                     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer();
             }
@@ -69,8 +107,8 @@ namespace Airslip.Common.Auth.Extensions
             {
                 result = services
                     .AddSingleton<IApiKeyRequestHandler, ApiKeyRequestHandler>()
-                    .AddScoped<ITokenService<ApiKeyToken, GenerateApiKeyToken>, ApiKeyTokenService>()
-                    .AddScoped<ITokenValidator<ApiKeyToken, GenerateApiKeyToken>, TokenValidator<ApiKeyToken, GenerateApiKeyToken>>()
+                    .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
+                    .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(opt =>
                     {
@@ -82,42 +120,22 @@ namespace Airslip.Common.Auth.Extensions
         }
 
         /// <summary>
-        /// Add QR Code authentication. Assumes application settings are available in the format of:
-        /// 
-        /// appSettings.json:
-        /// {
-        ///     "JwtSettings": {
-        ///         "Key": "Example key",
-        ///         "Issuer": "Example issuer",
-        ///         "Audience": "Example audience",
-        ///         "ExpiresTime": "Example expiry time",
-        ///         "ValidateLifetime": "true"
-        ///      }
-        /// }
-        /// 
-        /// Environment Variables:
-        /// JwtSettings:Key = Example key
-        /// JwtSettings:Issuer = Example issuer
-        /// JwtSettings:Audience = Example audience
-        /// JwtSettings:ExpiresTime = Example expiry time
-        /// JwtSettings:ValidateLifetime = true
+        /// Add QR Code authentication.
         /// </summary>
         /// <param name="services">The service collection to append services to</param>
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <param name="withEnvironment">The name of the environment which will be used for validating QR Codes</param>
         /// <returns>The updated service collection</returns>
         public static AuthenticationBuilder? AddAirslipQrCodeAuth(this IServiceCollection services, 
-            IConfiguration configuration, string withEnvironment = "")
+            string withEnvironment = "")
         {
             AuthenticationBuilder? result = null;
             
             result = services
                 .AddSingleton<IQrCodeRequestHandler, QrCodeRequestHandler>()
-                .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
-                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .AddAuthorization()
-                .AddScoped<ITokenService<QrCodeToken, GenerateQrCodeToken>, QrCodeTokenService>()
-                .AddScoped<ITokenValidator<QrCodeToken, GenerateQrCodeToken>, TokenValidator<QrCodeToken, GenerateQrCodeToken>>()
+                .AddScoped<ITokenDecodeService<QrCodeToken>, TokenDecodeService<QrCodeToken>>()
+                .AddScoped<ITokenValidator<QrCodeToken>, TokenValidator<QrCodeToken>>()
                 .AddAuthentication(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme)
                 .AddQrCodeAuth(opt =>
                 {

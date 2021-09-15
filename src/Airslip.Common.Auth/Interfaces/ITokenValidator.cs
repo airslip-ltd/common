@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.Interfaces
 {
-    public interface ITokenValidator<TExisting, TNew>
+    public interface ITokenValidator<TExisting>
     {
         Task<ClaimsPrincipal?> GetClaimsPrincipalFromToken(string value, string forScheme, 
             string forEnvironment);

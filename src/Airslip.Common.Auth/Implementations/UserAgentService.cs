@@ -1,7 +1,6 @@
 using Airslip.Common.Auth.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using System.Linq;
 using UAParser;
 
 namespace Airslip.Common.Auth.Implementations

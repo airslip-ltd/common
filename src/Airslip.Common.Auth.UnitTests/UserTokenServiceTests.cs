@@ -1,5 +1,6 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
+using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
@@ -15,12 +16,13 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Fails_with_invalid_key()
         {
-            UserTokenService service = HelperFunctions.GenerateUserTokenService("", "", "", "Insecure Key");
+            ITokenGenerationService<GenerateUserToken> service = HelperFunctions
+                .CreateTokenGenerationService<GenerateUserToken>("", "", "Insecure Key");
 
-            GenerateUserToken apiTokenKey = new("SomeUserId",
-                "SomeYapilyUserId", 
-                "Some Entity",
-                AirslipUserType.Standard);
+            GenerateUserToken apiTokenKey = new("Some Entity",
+                AirslipUserType.Standard, 
+                "SomeUserId",
+                "SomeYapilyUserId");
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()
@@ -60,9 +62,8 @@ namespace Airslip.Common.Auth.UnitTests
                 airslipUserType: airslipUserType,
                 withUserAgent: Constants.UA_APPLE_IPHONE_XR_SAFARI);
 
-            UserTokenService service = HelperFunctions.
-                GenerateUserTokenService("", newToken, 
-                    withUserAgent: Constants.UA_APPLE_IPHONE_XR_SAFARI);
+            ITokenDecodeService<UserToken> service = HelperFunctions.
+                CreateTokenDecodeService<UserToken>("<irrelevant token>", TokenType.BearerToken);
             
             Tuple<UserToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
@@ -79,7 +80,8 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Can_generate_new_token_with_claims()
         {
-            UserTokenService service = HelperFunctions.GenerateUserTokenService("10.0.0.1", "");
+            ITokenGenerationService<GenerateUserToken> service = HelperFunctions.
+                CreateTokenGenerationService<GenerateUserToken>("10.0.0.1", "");
 
             List<Claim> claims = new()
             {

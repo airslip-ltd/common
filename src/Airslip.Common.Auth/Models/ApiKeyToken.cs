@@ -1,15 +1,18 @@
-using Airslip.Common.Auth.Enums;
+using Airslip.Common.Auth.Data;
+using Airslip.Common.Auth.Extensions;
+using Airslip.Common.Auth.Implementations;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace Airslip.Common.Auth.Models
 {
-    public record ApiKeyToken(
-        bool? IsAuthenticated,
-        string ApiKey,
-        string EntityId,
-        AirslipUserType AirslipUserType,
-        string CorrelationId,
-        string IpAddress,
-        string BearerToken,
-        string Environment
-    ) : TokenBase(nameof(ApiKeyToken), IsAuthenticated, CorrelationId, IpAddress, BearerToken);
+    public class ApiKeyToken : TokenBase
+    {
+        public string ApiKey { get; private set; } = "";
+        
+        public override void SetCustomClaims(List<Claim> tokenClaims)
+        {
+            ApiKey = tokenClaims.GetValue(AirslipClaimTypes.API_KEY);
+        }
+    }
 }

@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
@@ -12,9 +13,9 @@ namespace Airslip.Common.Auth.Implementations
 {
     public class QrCodeRequestHandler : IQrCodeRequestHandler
     {
-        private readonly ITokenValidator<QrCodeToken, GenerateQrCodeToken> _tokenValidator;
+        private readonly ITokenValidator<QrCodeToken> _tokenValidator;
 
-        public QrCodeRequestHandler(ITokenValidator<QrCodeToken, GenerateQrCodeToken> tokenValidator)
+        public QrCodeRequestHandler(ITokenValidator<QrCodeToken> tokenValidator)
         {
             _tokenValidator = tokenValidator;
         }

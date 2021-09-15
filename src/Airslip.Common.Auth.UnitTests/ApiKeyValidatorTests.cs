@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Implementations;
+using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
@@ -18,7 +19,7 @@ namespace Airslip.Common.Auth.UnitTests
         {
             string newToken = HelperFunctions.GenerateApiKeyToken("10.0.0.0");
 
-            TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = HelperFunctions.GenerateApiKeyValidator();
+            ITokenValidator<ApiKeyToken> apiKeyValidator = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
 
             ClaimsPrincipal claimsPrincipal = await apiKeyValidator.GetClaimsPrincipalFromToken(newToken, 
                 ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
@@ -31,7 +32,7 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public async Task Fails_with_invalid_api_key_token()
         {
-            TokenValidator<ApiKeyToken, GenerateApiKeyToken> apiKeyValidator = HelperFunctions.GenerateApiKeyValidator();
+            ITokenValidator<ApiKeyToken> apiKeyValidator = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
 
             await apiKeyValidator
                 .Invoking(y => y.

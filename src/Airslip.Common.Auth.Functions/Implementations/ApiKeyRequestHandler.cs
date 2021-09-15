@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
@@ -14,9 +15,9 @@ namespace Airslip.Common.Auth.Functions.Implementations
 {
     public class ApiKeyRequestHandler : IApiKeyRequestDataHandler
     {
-        private readonly ITokenValidator<ApiKeyToken, GenerateApiKeyToken> _tokenValidator;
+        private readonly ITokenValidator<ApiKeyToken> _tokenValidator;
 
-        public ApiKeyRequestHandler(ITokenValidator<ApiKeyToken, GenerateApiKeyToken> tokenValidator)
+        public ApiKeyRequestHandler(ITokenValidator<ApiKeyToken> tokenValidator)
         {
             _tokenValidator = tokenValidator;
         }

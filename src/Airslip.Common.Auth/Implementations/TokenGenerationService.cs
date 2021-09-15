@@ -1,25 +1,32 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
+using Airslip.Common.Auth.Schemes;
+using Airslip.Common.Types;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
 namespace Airslip.Common.Auth.Implementations
 {
-    public abstract class TokenService<TTokenType, TGenerateTokenType> : ITokenService<TTokenType, TGenerateTokenType> 
-        where TTokenType : TokenBase
-        where TGenerateTokenType : GenerateTokenBase
+    public class TokenGenerationService<TGenerateTokenType> : ITokenGenerationService<TGenerateTokenType> 
+        where TGenerateTokenType : IGenerateToken
     {
+        private readonly IRemoteIpAddressService _remoteIpAddressService;
+        private readonly IUserAgentService _userAgentService;
         private readonly JwtSettings _jwtSettings;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
-        protected TokenService(IOptions<JwtSettings> jwtSettings)
+        public TokenGenerationService(IOptions<JwtSettings> jwtSettings, 
+            IRemoteIpAddressService remoteIpAddressService,
+            IUserAgentService userAgentService)
         {
+            _remoteIpAddressService = remoteIpAddressService;
+            _userAgentService = userAgentService;
             _jwtSettings = jwtSettings.Value;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
@@ -40,28 +47,24 @@ namespace Airslip.Common.Auth.Implementations
 
             return new NewToken(_jwtSecurityTokenHandler.WriteToken(token), expiryDate);
         }
-        
-        public Tuple<TTokenType, ICollection<Claim>> DecodeExistingToken(string tokenValue)
+
+        public NewToken GenerateNewToken(TGenerateTokenType token)
         {
-            try
+            List<Claim> claims = new()
             {
-                JwtSecurityToken token = _jwtSecurityTokenHandler.ReadJwtToken(tokenValue);
+                new Claim(AirslipClaimTypes.CORRELATION, CommonFunctions.GetId()),
+                new Claim(AirslipClaimTypes.AIRSLIP_USER_TYPE, token.AirslipUserType.ToString()),
+                new Claim(AirslipClaimTypes.ENTITY_ID, token.EntityId),
+                new Claim(AirslipClaimTypes.ENVIRONMENT, ApiKeyAuthenticationSchemeOptions.ThisEnvironment),
+                new Claim(AirslipClaimTypes.IP_ADDRESS, _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN"),
+                new Claim(AirslipClaimTypes.USER_AGENT, _userAgentService.GetRequestUserAgent() ?? "UNKNOWN")
+            };
 
-                return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(token.Claims.ToList(), true),
-                    token.Claims.ToList());
-            }
-            catch (ArgumentException)
-            {
-                throw new ArgumentException("Token is not in expected format", nameof(tokenValue));
-            }
+            claims.AddRange(token.GetCustomClaims());
+
+            return GenerateNewToken(claims);
         }
-
-        public abstract NewToken GenerateNewToken(TGenerateTokenType token);
-
-        public abstract TTokenType GetCurrentToken();
-
-        protected abstract TTokenType GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated);
-
+        
         private SigningCredentials getSigningCredentials()
         {
             if (string.IsNullOrWhiteSpace(_jwtSettings.Key))

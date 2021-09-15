@@ -1,5 +1,6 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
+using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
@@ -17,7 +18,8 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Fails_with_invalid_key()
         {
-            ApiKeyTokenService service = HelperFunctions.GenerateApiKeyTokenService("", "", "Insecure Key");
+            ITokenGenerationService<GenerateApiKeyToken> service = HelperFunctions
+                .CreateTokenGenerationService<GenerateApiKeyToken>("", "", "Insecure Key");
 
             GenerateApiKeyToken apiTokenKey = new("SomeApiKey",
                 "SomeEntityId", 
@@ -56,8 +58,8 @@ namespace Airslip.Common.Auth.UnitTests
             string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, entityId, 
                 airslipUserType);
 
-            ApiKeyTokenService service = HelperFunctions.
-                GenerateApiKeyTokenService("", newToken);
+            ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
+                CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey);
             
             Tuple<ApiKeyToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
@@ -82,13 +84,13 @@ namespace Airslip.Common.Auth.UnitTests
                 entityId, airslipUserType);
 
             // Prepare test data...
-            TokenValidator<ApiKeyToken, GenerateApiKeyToken> tempService = HelperFunctions.GenerateApiKeyValidator();
+            ITokenValidator<ApiKeyToken> tempService = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
                 ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
                 ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
 
-            ApiKeyTokenService service = HelperFunctions.
-                GenerateApiKeyTokenService("", newToken, withClaimsPrincipal: claimsPrincipal);
+            ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
+                CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey, claimsPrincipal);
             
             ApiKeyToken currentToken = service.GetCurrentToken();
 
@@ -100,12 +102,12 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
-        
                 
         [Fact]
         public void Can_generate_new_token_with_claims()
         {
-            ApiKeyTokenService service = HelperFunctions.GenerateApiKeyTokenService("10.0.0.1", "");
+            ITokenGenerationService<GenerateApiKeyToken> service = HelperFunctions
+                .CreateTokenGenerationService<GenerateApiKeyToken>("10.0.0.1", "");
 
             List<Claim> claims = new()
             {

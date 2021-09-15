@@ -1,5 +1,6 @@
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
+using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
@@ -20,13 +21,14 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Fails_with_invalid_key()
         {
-            QrCodeTokenService service = HelperFunctions.GenerateQrCodeTokenService("", "Insecure Key");
+            ITokenGenerationService<GenerateQrCodeToken> service = HelperFunctions
+                .CreateTokenGenerationService<GenerateQrCodeToken>("", "", "Insecure Key");
 
-            GenerateQrCodeToken apiTokenKey = new("StoreId",
+            GenerateQrCodeToken apiTokenKey = new("EntityId",
+                "StoreId",
                 "CheckoutId",
-                "EntityId",
-                AirslipUserType.Merchant,
-                "SomeKey");
+                "SomeKey",
+                AirslipUserType.Merchant);
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()
@@ -52,10 +54,10 @@ namespace Airslip.Common.Auth.UnitTests
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                qrCodeKey, airslipUserType);
+                qrCodeKey, airslipUserType: airslipUserType);
 
-            QrCodeTokenService service = HelperFunctions.
-                GenerateQrCodeTokenService(newToken);
+            ITokenDecodeService<QrCodeToken> service = HelperFunctions.
+                CreateTokenDecodeService<QrCodeToken>(newToken, TokenType.QrCode);
             
             Tuple<QrCodeToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
 
@@ -80,16 +82,16 @@ namespace Airslip.Common.Auth.UnitTests
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                qrCodeKey, airslipUserType);
+                qrCodeKey, airslipUserType: airslipUserType);
 
             // Prepare test data...
-            TokenValidator<QrCodeToken, GenerateQrCodeToken> tempService = HelperFunctions.GenerateQrCodeValidator();
+            ITokenValidator<QrCodeToken> tempService = HelperFunctions.GenerateValidator<QrCodeToken>(TokenType.QrCode);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
                 QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme,
                 QrCodeAuthenticationSchemeOptions.ThisEnvironment);
 
-            QrCodeTokenService service = HelperFunctions.
-                GenerateQrCodeTokenService(newToken, withClaimsPrincipal: claimsPrincipal);
+            ITokenDecodeService<QrCodeToken> service = HelperFunctions.
+                CreateTokenDecodeService<QrCodeToken>(newToken, TokenType.QrCode, withClaimsPrincipal: claimsPrincipal);
             
             QrCodeToken currentToken = service.GetCurrentToken();
 
@@ -107,7 +109,8 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Can_generate_new_token_with_claims()
         {
-            QrCodeTokenService service = HelperFunctions.GenerateQrCodeTokenService("");
+            ITokenGenerationService<GenerateQrCodeToken> service = HelperFunctions
+                .CreateTokenGenerationService<GenerateQrCodeToken>("", "");
 
             List<Claim> claims = new()
             {
@@ -129,12 +132,12 @@ namespace Airslip.Common.Auth.UnitTests
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
             string newToken = HelperFunctions.GenerateQrCodeToken(storeId, checkoutId, entityId, 
-                qrCodeKey, airslipUserType);
+                qrCodeKey, airslipUserType: airslipUserType);
             
-            TokenValidator<QrCodeToken, GenerateQrCodeToken> tempService = HelperFunctions.GenerateQrCodeValidator();
-            QrCodeRequestHandler handler = new QrCodeRequestHandler(tempService);
+            ITokenValidator<QrCodeToken> tempService = HelperFunctions.GenerateValidator<QrCodeToken>(TokenType.QrCode);
+            QrCodeRequestHandler handler = new(tempService);
 
-            Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContextWithQrCode(newToken);
+            Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContext(newToken, TokenType.QrCode);
             AuthenticateResult result = await handler.Handle(context.Object.HttpContext!.Request);
 
             result.Succeeded.Should().BeTrue();
