@@ -43,10 +43,9 @@ Then within the service configuration add the following:
 
     .ConfigureServices(services => {
         ...
-        services.AddAirslipFunctionAuth()
+        services.AddAirslipFunctionAuth(Configuration)
         ...
     }
-
 
 
 This will configure the minimum required services to get started.
@@ -59,7 +58,7 @@ For requests using ApiKeys, the generated value must be provided in a HttpHeader
 
 The Api Key Token is available by injecting the appropriate `ITokenService` into your implementing class, this is done through constructor injection. To use the Api Keys inject the following into your class:
 
-    ITokenService<ApiKeyToken, GenerateApiKeyToken> myTokenService
+    ITokenDecodeService<ApiKeyToken> myTokenService
 
 Once you have this service you can retrieve the current token using the following function:
 
