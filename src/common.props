@@ -24,12 +24,14 @@
 		<SerilogAspNetCore>4.1.0</SerilogAspNetCore>
 		<UAParser>3.1.47</UAParser>
 		<AutoMapper>10.1.1</AutoMapper>
+        <AzureFunctionsWorker>1.5.1</AzureFunctionsWorker>
+        <AzureFunctionsExtensions>3.0.13</AzureFunctionsExtensions>
     </PropertyGroup>
 
     <PropertyGroup>
         <AirslipCommonContracts>1.1.7</AirslipCommonContracts>
 		<AirslipCommonTypes>3.2.1</AirslipCommonTypes>
-		<AirslipCommonAuth>1.0.6</AirslipCommonAuth>
+		<AirslipCommonAuth>1.0.11</AirslipCommonAuth>
 		<AirslipCommonRepository>1.0.0</AirslipCommonRepository>
     </PropertyGroup>
 
