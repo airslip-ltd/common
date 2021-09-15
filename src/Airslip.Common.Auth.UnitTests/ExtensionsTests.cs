@@ -19,7 +19,7 @@ namespace Airslip.Common.Auth.UnitTests
             serviceCollection.AddAirslipJwtAuth(configurationBuilder.Build(), AuthType.All);
 
             var count = serviceCollection.Count(o => o.ServiceType.FullName.Contains("Airslip"));
-            count.Should().Be(13);
+            count.Should().Be(15);
 
         }
     }
