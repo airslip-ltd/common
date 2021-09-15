@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.Functions.Implementations
 {
-    public class ApiKeyRequestHandler : IApiKeyRequestDataHandler
+    public class ApiKeyRequestDataHandler : IApiKeyRequestDataHandler
     {
         private readonly ITokenValidator<ApiKeyToken> _tokenValidator;
 
-        public ApiKeyRequestHandler(ITokenValidator<ApiKeyToken> tokenValidator)
+        public ApiKeyRequestDataHandler(ITokenValidator<ApiKeyToken> tokenValidator)
         {
             _tokenValidator = tokenValidator;
         }

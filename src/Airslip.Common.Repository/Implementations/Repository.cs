@@ -26,7 +26,7 @@ namespace Airslip.Common.Repository.Implementations
         private readonly UserToken _userToken;
 
         public Repository(IContext context, IModelValidator<TModel> validator, IModelMapper<TModel> mapper, 
-            ITokenService<UserToken, GenerateUserToken> tokenService)
+            ITokenDecodeService<UserToken> tokenService)
         {
             _context = context;
             _validator = validator;

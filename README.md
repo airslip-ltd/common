@@ -8,13 +8,24 @@ Api Key authentication has been added to easily allow lightweight authentication
 
 For ease of use this has been placed in a common package and is now available for use in any API based project that is designed to be interacted with by a machine.
 
+### Pre Requisites
+
+You must have configurstion sections for JwtSettings and EnvironmentSettings in your appSettings.json file, these will be used to create and validate tokens in your environment. The following will be added automatically on your behalf:
+
+    .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+    .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
+
+
 ### Getting Started
+
+
+
 
 To get started, install the Common Auth package into your API project:
 
     Install-Package Airslip.Common.Auth
 
-The add the following line in ConfigureServices:
+The add the following line in ConfigureServices in your ASP.Net Core Web App:
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -22,6 +33,21 @@ The add the following line in ConfigureServices:
         services.AddAirslipJwtAuth(Configuration, AuthType.ApiKey);
         ...
     }
+
+
+To use in an ASP.Net Core Function App you need the additional package:
+
+    Install-Package Airslip.Common.Auth.Functions
+
+Then within the service configuration add the following:
+
+    .ConfigureServices(services => {
+        ...
+        services.AddAirslipFunctionAuth()
+        ...
+    }
+
+
 
 This will configure the minimum required services to get started.
 
