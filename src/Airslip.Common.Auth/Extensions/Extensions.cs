@@ -4,6 +4,7 @@ using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
+using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +19,15 @@ namespace Airslip.Common.Auth.Extensions
 {
     public static class Extensions
     {
+        public static string GetEnvironment(this IServiceCollection services)
+        {
+            return services
+                .BuildServiceProvider()
+                .GetService<IOptions<EnvironmentSettings>>()!
+                .Value
+                .EnvironmentName;
+        }
+        
         /// <summary>
         /// Add token generation for the specified token type.
         /// Assumes application settings are available in the format of:
@@ -82,9 +92,10 @@ namespace Airslip.Common.Auth.Extensions
         /// <param name="withEnvironment">The name of the environment which will be used for validating API Keys</param>
         /// <returns>The updated service collection</returns>
         public static AuthenticationBuilder? AddAirslipJwtAuth(this IServiceCollection services,  
-            IConfiguration configuration, AuthType authType = AuthType.User, string withEnvironment = "")
+            IConfiguration configuration, AuthType authType = AuthType.User, string? withEnvironment = null)
         {
             AuthenticationBuilder? result = null;
+
             
             services
                 .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
@@ -92,6 +103,7 @@ namespace Airslip.Common.Auth.Extensions
                 .AddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>()
                 .AddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
                 .AddAuthorization();
 
@@ -112,7 +124,7 @@ namespace Airslip.Common.Auth.Extensions
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(opt =>
                     {
-                        opt.Environment = withEnvironment;
+                        opt.Environment = withEnvironment ?? services.GetEnvironment();
                     });
             }
 
@@ -126,20 +138,22 @@ namespace Airslip.Common.Auth.Extensions
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <param name="withEnvironment">The name of the environment which will be used for validating QR Codes</param>
         /// <returns>The updated service collection</returns>
-        public static AuthenticationBuilder? AddAirslipQrCodeAuth(this IServiceCollection services, 
-            string withEnvironment = "")
+        public static AuthenticationBuilder AddAirslipQrCodeAuth(this IServiceCollection services, 
+            IConfiguration configuration, string? withEnvironment)
         {
-            AuthenticationBuilder? result = null;
-            
-            result = services
+            services
                 .AddSingleton<IQrCodeRequestHandler, QrCodeRequestHandler>()
                 .AddAuthorization()
+                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
+                .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<ITokenDecodeService<QrCodeToken>, TokenDecodeService<QrCodeToken>>()
-                .AddScoped<ITokenValidator<QrCodeToken>, TokenValidator<QrCodeToken>>()
+                .AddScoped<ITokenValidator<QrCodeToken>, TokenValidator<QrCodeToken>>();
+            
+            AuthenticationBuilder result = services
                 .AddAuthentication(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme)
                 .AddQrCodeAuth(opt =>
                 {
-                    opt.Environment = withEnvironment;
+                    opt.Environment = withEnvironment ?? services.GetEnvironment();
                 });
 
             return result;
