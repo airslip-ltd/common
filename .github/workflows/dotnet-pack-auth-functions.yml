@@ -1,4 +1,4 @@
-name: Auth - Pack and Publish
+name: Auth-Functions - Pack and Publish
 
 on: 
   workflow_dispatch:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOTNET_CORE_VERSION: 5.0.x
-      BUILD_PATH: ./src/Airslip.Common.Auth/Airslip.Common.Auth.csproj
+      BUILD_PATH: ./src/Airslip.Common.Auth.Functions/Airslip.Common.Auth.Functions.csproj
     steps:
     - uses: actions/checkout@v2
       with:
