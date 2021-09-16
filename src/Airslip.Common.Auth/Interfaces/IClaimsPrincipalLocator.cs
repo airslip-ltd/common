@@ -4,6 +4,6 @@ namespace Airslip.Common.Auth.Interfaces
 {
     public interface IClaimsPrincipalLocator
     {
-        ClaimsPrincipal GetCurrentPrincipal();
+        ClaimsPrincipal? GetCurrentPrincipal();
     }
 }
