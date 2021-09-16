@@ -42,9 +42,11 @@ namespace Airslip.Common.Auth.Implementations
 
         public TTokenType GetCurrentToken()
         {
-            ClaimsPrincipal claimsPrincipal = _claimsPrincipalLocator.GetCurrentPrincipal();
+            ClaimsPrincipal? claimsPrincipal = _claimsPrincipalLocator.GetCurrentPrincipal();
 
-            return GenerateTokenFromClaims(claimsPrincipal.Claims.ToList(), claimsPrincipal.Identity?.IsAuthenticated);
+            List<Claim> claims = claimsPrincipal?.Claims.ToList() ?? new List<Claim>();
+            
+            return GenerateTokenFromClaims(claims, claimsPrincipal?.Identity?.IsAuthenticated ?? false);
         }
 
         public TTokenType GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated)

@@ -24,8 +24,9 @@ namespace Airslip.Common.Auth.Functions.Extensions
         {
             services
                 .AddScoped<IApiKeyRequestDataHandler, ApiKeyRequestDataHandler>()
-                .AddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>()
-                .AddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>()
+                .AddScoped<IFunctionContextAccessor, FunctionContextAccessor>()
+                .AddScoped<IClaimsPrincipalLocator, FunctionContextPrincipalLocator>()
+                .AddScoped<IHttpHeaderLocator, FunctionContextHeaderLocator>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()

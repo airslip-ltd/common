@@ -1,6 +1,5 @@
 using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Functions.Interfaces;
-using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.Schemes;
@@ -16,14 +15,19 @@ namespace Airslip.Common.Auth.Functions.Implementations
     public class ApiKeyRequestDataHandler : IApiKeyRequestDataHandler
     {
         private readonly ITokenValidator<ApiKeyToken> _tokenValidator;
+        private readonly IFunctionContextAccessor _functionContextService;
 
-        public ApiKeyRequestDataHandler(ITokenValidator<ApiKeyToken> tokenValidator)
+        public ApiKeyRequestDataHandler(ITokenValidator<ApiKeyToken> tokenValidator, 
+            IFunctionContextAccessor functionContextService)
         {
             _tokenValidator = tokenValidator;
+            _functionContextService = functionContextService;
         }
         
         public async Task<KeyAuthenticationResult> Handle(HttpRequestData request)
         {
+            _functionContextService.Headers = request.Headers;
+            
             if (!request.Headers.Contains(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField))
             {
                 return KeyAuthenticationResult.Fail($"{ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField} header not found");
@@ -39,7 +43,9 @@ namespace Airslip.Common.Auth.Functions.Implementations
                     .GetClaimsPrincipalFromToken(headerValue.First(), 
                         ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, 
                         ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
-
+                
+                _functionContextService.User = apiKeyPrincipal;
+                
                 return apiKeyPrincipal == null ? 
                     KeyAuthenticationResult.Fail("Api key invalid") : 
                     KeyAuthenticationResult.Valid();
