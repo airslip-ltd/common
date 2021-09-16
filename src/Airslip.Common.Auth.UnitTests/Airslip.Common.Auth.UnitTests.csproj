@@ -11,8 +11,8 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.5.1" />
-		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
+		<PackageReference Include="Microsoft.Azure.Functions.Worker" Version="$(AzureFunctionsWorker)" />
+		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="$(AzureFunctionsExtensions)" />
 		<PackageReference Include="Moq" Version="$(Moq)" />
 		<PackageReference Include="FluentAssertions" Version="$(FluentAssertions)" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(NetTestSdk)" />
