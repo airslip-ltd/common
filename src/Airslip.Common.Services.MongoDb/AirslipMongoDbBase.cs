@@ -15,7 +15,7 @@ namespace Airslip.Common.Services.MongoDb
     {
         protected readonly IMongoDatabase Database;
 
-        public AirslipMongoDbBase(IOptions<MongoDbSettings> options)
+        protected AirslipMongoDbBase(IOptions<MongoDbSettings> options)
         {
             var mongoClient = new MongoClient(options.Value.ConnectionString);
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
@@ -32,7 +32,7 @@ namespace Airslip.Common.Services.MongoDb
             BsonSerializer.RegisterSerializer(new EnumSerializer<AirslipUserType>(BsonType.String));
         }
         
-        protected void MapEntityWithId<TType>() where TType : IEntityWithId
+        protected static void MapEntityWithId<TType>() where TType : IEntityWithId
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(TType)))
             {
@@ -63,7 +63,7 @@ namespace Airslip.Common.Services.MongoDb
         private bool _checkCollection(string collectionName)
         {
             BsonDocument filter = new("name", collectionName);
-            IAsyncCursor<BsonDocument>? collectionCursor =
+            IAsyncCursor<BsonDocument> collectionCursor =
                 Database.ListCollections(new ListCollectionsOptions {Filter = filter});
             return collectionCursor.Any();
         }
