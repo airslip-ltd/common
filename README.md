@@ -68,9 +68,9 @@ And thats it!
 
 ## Example Usage
 
-    private ITokenService<ApiKeyToken, GenerateApiKeyToken> _tokenService;
+    private ITokenDecodeService<ApiKeyToken> _tokenService;
 
-    public MyClass(ITokenService<ApiKeyToken, GenerateApiKeyToken> tokenService)
+    public MyClass(ITokenService<ApiKeyToken> tokenService)
     {
         _tokenService = tokenService;
     }
