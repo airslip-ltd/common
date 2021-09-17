@@ -2,6 +2,7 @@ using Airslip.Common.Auth.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Airslip.Common.Auth.Extensions;
+using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using FluentAssertions;
@@ -37,6 +38,9 @@ namespace Airslip.Common.Auth.UnitTests
 
             var obj1 = provider.GetService<ITokenDecodeService<ApiKeyToken>>();
             var obj2 = provider.GetService<IApiKeyRequestHandler>();
+
+            obj1.Should().BeAssignableTo<TokenDecodeService<ApiKeyToken>>();
+            obj2.Should().BeAssignableTo<ApiKeyRequestHandler>();
         }
     }
 }
