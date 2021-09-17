@@ -118,7 +118,7 @@ namespace Airslip.Common.Auth.Extensions
             if (authType.InList(AuthType.ApiKey, AuthType.All))
             {
                 result = services
-                    .AddSingleton<IApiKeyRequestHandler, ApiKeyRequestHandler>()
+                    .AddScoped<IApiKeyRequestHandler, ApiKeyRequestHandler>()
                     .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
                     .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
