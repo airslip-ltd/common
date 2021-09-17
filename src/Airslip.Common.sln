@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Notification
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Auth.Functions", "Airslip.Common.Auth.Functions\Airslip.Common.Auth.Functions.csproj", "{1EBE7D33-BC00-4C23-A3EA-A07FADFF9EDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.MongoDb", "Airslip.Common.Services.MongoDb\Airslip.Common.Services.MongoDb.csproj", "{F5098882-0366-481D-845D-AA13CBD5B4E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{1EBE7D33-BC00-4C23-A3EA-A07FADFF9EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EBE7D33-BC00-4C23-A3EA-A07FADFF9EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EBE7D33-BC00-4C23-A3EA-A07FADFF9EDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5098882-0366-481D-845D-AA13CBD5B4E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5098882-0366-481D-845D-AA13CBD5B4E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5098882-0366-481D-845D-AA13CBD5B4E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5098882-0366-481D-845D-AA13CBD5B4E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
