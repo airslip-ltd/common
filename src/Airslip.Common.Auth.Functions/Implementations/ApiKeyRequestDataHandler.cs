@@ -1,8 +1,8 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Microsoft.Azure.Functions.Worker.Http;
 using System;
 using System.Collections.Generic;
@@ -28,27 +28,27 @@ namespace Airslip.Common.Auth.Functions.Implementations
         {
             _functionContextService.Headers = request.Headers;
             
-            if (!request.Headers.Contains(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField))
+            if (!request.Headers.Contains(AirslipSchemeOptions.ApiKeyHeaderField))
             {
-                return KeyAuthenticationResult.Fail($"{ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField} header not found");
+                return KeyAuthenticationResult.Fail($"{AirslipSchemeOptions.ApiKeyHeaderField} header not found");
             }
 
             List<string> headerValue = request
-                .Headers.GetValues(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField)
+                .Headers.GetValues(AirslipSchemeOptions.ApiKeyHeaderField)
                 .ToList();
 
             try
             {
                 ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator
                     .GetClaimsPrincipalFromToken(headerValue.First(), 
-                        ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, 
-                        ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+                        AirslipSchemeOptions.ApiKeyScheme, 
+                        AirslipSchemeOptions.ThisEnvironment);
                 
                 _functionContextService.User = apiKeyPrincipal;
                 
                 return apiKeyPrincipal == null ? 
                     KeyAuthenticationResult.Fail("Api key invalid") : 
-                    KeyAuthenticationResult.Valid();
+                    KeyAuthenticationResult.Valid(apiKeyPrincipal);
             }
             catch (ArgumentException)
             {

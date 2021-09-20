@@ -1,10 +1,10 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Functions.Implementations;
 using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Microsoft.Extensions.DependencyInjection;
 using Airslip.Common.Types.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -31,13 +31,8 @@ namespace Airslip.Common.Auth.Functions.Extensions
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
                 .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>();
-                
-            services
-                .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
-                .AddApiKeyAuth(opt =>
-                {
-                    opt.Environment = withEnvironment ?? services.GetEnvironment();
-                });
+
+            AirslipSchemeOptions.ThisEnvironment = services.GetEnvironment();
 
             return services;
         }

@@ -1,12 +1,13 @@
+using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Auth.Schemes;
+using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Auth.Handlers
+namespace Airslip.Common.Auth.AspNetCore.Handlers
 {
     public class ApiKeyAuthHandler : AuthenticationHandler<ApiKeyAuthenticationSchemeOptions>
     {
@@ -21,7 +22,18 @@ namespace Airslip.Common.Auth.Handlers
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            return await _apiKeyRequestHandler.Handle(Request);
+            var authenticationResult = await _apiKeyRequestHandler.Handle(Request);
+
+            switch (authenticationResult.AuthResult)
+            {
+                case AuthResult.Success:
+                    return AuthenticateResult.Success(new AuthenticationTicket(authenticationResult.Principal!,
+                        ApiKeyAuthenticationSchemeOptions.ApiKeyScheme));
+                case AuthResult.Fail:
+                    return AuthenticateResult.Fail(authenticationResult.Message ?? "Unable to authenticate");
+                default:
+                    return AuthenticateResult.NoResult();
+            }
         }
     }
 }

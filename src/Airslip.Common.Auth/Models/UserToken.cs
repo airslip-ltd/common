@@ -1,6 +1,5 @@
 ﻿using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Extensions;
-using Airslip.Common.Auth.Implementations;
 using System.Collections.Generic;
 using System.Security.Claims;
 

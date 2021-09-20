@@ -1,16 +1,8 @@
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
-using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Airslip.Common.Auth.UnitTests

@@ -1,7 +1,6 @@
-using Airslip.Common.Auth.Schemes;
+using Airslip.Common.Auth.AspNetCore.Schemes;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace Airslip.Common.Auth.UnitTests.Helpers
