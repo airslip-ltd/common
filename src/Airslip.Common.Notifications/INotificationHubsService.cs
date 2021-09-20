@@ -26,7 +26,7 @@ namespace Airslip.Common.Notifications
             Dictionary<string, string>? headers = null,
             CancellationToken cancellationToken = default);
         Task Cancel(string scheduledNotificationId);
-        Task DeleteRegistration(string id);
+        Task DeleteRegistration(string userId, string deviceId);
         Task<IEnumerable<NotificationRegistration>> GetAllRegistrations(int top);
         Task<IEnumerable<NotificationRegistration>> GetRegistrationsByChannel(string deviceToken, int top);
         Task<IEnumerable<NotificationRegistration>> GetRegistrationsByTag(string tag, int top);
