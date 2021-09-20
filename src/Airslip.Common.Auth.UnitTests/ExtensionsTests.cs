@@ -1,7 +1,7 @@
+using Airslip.Common.Auth.AspNetCore.Extensions;
 using Airslip.Common.Auth.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;

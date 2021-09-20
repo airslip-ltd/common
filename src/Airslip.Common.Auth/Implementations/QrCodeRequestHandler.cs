@@ -1,9 +1,8 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
@@ -20,34 +19,31 @@ namespace Airslip.Common.Auth.Implementations
             _tokenValidator = tokenValidator;
         }
         
-        public async Task<AuthenticateResult> Handle(HttpRequest request)
+        public async Task<KeyAuthenticationResult> Handle(HttpRequest request)
         {
             // Get the raw querystring
             string qs = request.QueryString.ToString()[1..];
 
             if (qs.IsNullOrWhitespace())
-            {
-                return AuthenticateResult.Fail("QR Code invalid");
-            }
+                return KeyAuthenticationResult.NoResult();
             
             try
             {
                 ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator.GetClaimsPrincipalFromToken(qs, 
-                    QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme, 
-                    QrCodeAuthenticationSchemeOptions.ThisEnvironment);
+                    AirslipSchemeOptions.QrCodeAuthScheme, 
+                    AirslipSchemeOptions.ThisEnvironment);
 
-                return apiKeyPrincipal == null ? 
-                    AuthenticateResult.Fail("QR Code invalid") : 
-                    AuthenticateResult.Success(new AuthenticationTicket(apiKeyPrincipal, 
-                        QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme));
+                return apiKeyPrincipal == null
+                    ? KeyAuthenticationResult.Fail("QR Code invalid")
+                    : KeyAuthenticationResult.Valid(apiKeyPrincipal);
             }
             catch (ArgumentException)
             {
-                return AuthenticateResult.Fail("QR Code invalid");
+                return KeyAuthenticationResult.Fail("QR Code invalid");
             }
             catch (EnvironmentUnsupportedException)
             {
-                return AuthenticateResult.Fail("Environment Unsupported");
+                return KeyAuthenticationResult.Fail("Environment Unsupported");
             }
         }
     }

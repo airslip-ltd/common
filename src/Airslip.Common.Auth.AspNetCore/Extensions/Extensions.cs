@@ -1,9 +1,11 @@
+using Airslip.Common.Auth.AspNetCore.Handlers;
+using Airslip.Common.Auth.AspNetCore.Implementations;
+using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Enums;
-using Airslip.Common.Auth.Handlers;
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Extensions;
 using Microsoft.AspNetCore.Authentication;
@@ -12,22 +14,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Airslip.Common.Auth.Extensions
+namespace Airslip.Common.Auth.AspNetCore.Extensions
 {
     public static class Extensions
     {
-        public static string GetEnvironment(this IServiceCollection services)
-        {
-            return services
-                .BuildServiceProvider()
-                .GetService<IOptions<EnvironmentSettings>>()!
-                .Value
-                .EnvironmentName;
-        }
-        
         /// <summary>
         /// Add token generation for the specified token type.
         /// Assumes application settings are available in the format of:
@@ -169,24 +160,6 @@ namespace Airslip.Common.Auth.Extensions
         {
             return builder
                 .AddScheme<QrCodeAuthenticationSchemeOptions, QrCodeAuthHandler>(QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme, options);
-        }
-        
-        public static bool IsNullOrWhitespace(this string? s)
-        {
-            return s == null || string.IsNullOrWhiteSpace(s);
-        }
-
-        public static List<string> SplitCsv(this string csvList)
-        {
-            if (string.IsNullOrWhiteSpace(csvList))
-                return new List<string>();
-
-            return csvList
-                .TrimEnd(',')
-                .Split(',')
-                .AsEnumerable<string>()
-                .Select(s => s.Trim())
-                .ToList();
         }
     }
 }

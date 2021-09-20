@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
@@ -6,6 +6,6 @@ namespace Airslip.Common.Auth.Interfaces
 {
     public interface IApiKeyRequestHandler
     {
-        Task<AuthenticateResult> Handle(HttpRequest request);
+        Task<KeyAuthenticationResult> Handle(HttpRequest request);
     }
 }

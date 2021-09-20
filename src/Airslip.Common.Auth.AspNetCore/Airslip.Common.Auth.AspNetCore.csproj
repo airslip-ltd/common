@@ -3,7 +3,7 @@
 	<Import Project="..\common.props" />
 
 	<PropertyGroup>
-		<PackageId>Airslip.Common.Auth</PackageId>
+		<PackageId>Airslip.Common.Auth.AspNetCore</PackageId>
 		<Company>Airslip</Company>
 		<Authors>Airslip</Authors>
 		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
@@ -11,15 +11,20 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
+		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
 		<PackageReference Include="Airslip.Common.Types" Version="$(AirslipCommonTypes)" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.7.1" />
+		<PackageReference Include="Airslip.Common.Auth" Version="$(AirslipCommonAuth)" />
 		<PackageReference Include="UAParser" Version="$(UAParser)" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Airslip.Common.Auth\Airslip.Common.Auth.csproj" />
+	</ItemGroup>
+
 
 </Project>

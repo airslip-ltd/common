@@ -1,10 +1,11 @@
+using Airslip.Common.Auth.AspNetCore.Schemes;
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Functions.Implementations;
 using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
@@ -58,7 +59,7 @@ namespace Airslip.Common.Auth.UnitTests
             // Now we can validate...
             Task<KeyAuthenticationResult> valid = handler.Handle(mockRequestData.Object);
 
-            valid.Result.Success.Should().BeTrue();
+            valid.Result.AuthResult.Should().Be(AuthResult.Success);
 
             // Finally test we can get the current token...
             ApiKeyToken currentToken = tokenDecodeService.GetCurrentToken();
@@ -68,7 +69,7 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.IpAddress.Should().Be(ipAddress);
             currentToken.ApiKey.Should().Be(apiKey);
             currentToken.EntityId.Should().Be(entityId);
-            currentToken.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+            currentToken.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
     }

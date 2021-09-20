@@ -1,8 +1,9 @@
+using Airslip.Common.Auth.AspNetCore.Schemes;
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
@@ -68,7 +69,7 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.CheckoutId.Should().Be(checkoutId);
             decodedToken.Item1.EntityId.Should().Be(entityId);
             decodedToken.Item1.QrCodeKey.Should().Be(qrCodeKey);
-            decodedToken.Item1.Environment.Should().Be(QrCodeAuthenticationSchemeOptions.ThisEnvironment);
+            decodedToken.Item1.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
             decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
         }
         
@@ -88,7 +89,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenValidator<QrCodeToken> tempService = HelperFunctions.GenerateValidator<QrCodeToken>(TokenType.QrCode);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
                 QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme,
-                QrCodeAuthenticationSchemeOptions.ThisEnvironment);
+                AirslipSchemeOptions.ThisEnvironment);
 
             ITokenDecodeService<QrCodeToken> service = HelperFunctions.
                 CreateTokenDecodeService<QrCodeToken>(newToken, TokenType.QrCode, withClaimsPrincipal: claimsPrincipal);
@@ -102,7 +103,7 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.CheckoutId.Should().Be(checkoutId);
             currentToken.EntityId.Should().Be(entityId);
             currentToken.QrCodeKey.Should().Be(qrCodeKey);
-            currentToken.Environment.Should().Be(QrCodeAuthenticationSchemeOptions.ThisEnvironment);
+            currentToken.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
 
@@ -138,9 +139,9 @@ namespace Airslip.Common.Auth.UnitTests
             QrCodeRequestHandler handler = new(tempService);
 
             Mock<IHttpContextAccessor> context = ContextHelpers.GenerateContext(newToken, TokenType.QrCode);
-            AuthenticateResult result = await handler.Handle(context.Object.HttpContext!.Request);
+            KeyAuthenticationResult result = await handler.Handle(context.Object.HttpContext!.Request);
 
-            result.Succeeded.Should().BeTrue();
+            result.AuthResult.Should().Be(AuthResult.Success);
         }
     }
 }

@@ -1,8 +1,8 @@
+using Airslip.Common.Auth.AspNetCore.Schemes;
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
-using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using FluentAssertions;
 using System;
@@ -68,7 +68,7 @@ namespace Airslip.Common.Auth.UnitTests
             decodedToken.Item1.IpAddress.Should().Be(ipAddress);
             decodedToken.Item1.ApiKey.Should().Be(apiKey);
             decodedToken.Item1.EntityId.Should().Be(entityId);
-            decodedToken.Item1.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+            decodedToken.Item1.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
             decodedToken.Item1.AirslipUserType.Should().Be(airslipUserType);
         }
         
@@ -87,7 +87,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenValidator<ApiKeyToken> tempService = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
                 ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
-                ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+                AirslipSchemeOptions.ThisEnvironment);
 
             ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
                 CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey, claimsPrincipal);
@@ -99,7 +99,7 @@ namespace Airslip.Common.Auth.UnitTests
             currentToken.IpAddress.Should().Be(ipAddress);
             currentToken.ApiKey.Should().Be(apiKey);
             currentToken.EntityId.Should().Be(entityId);
-            currentToken.Environment.Should().Be(ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+            currentToken.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
             currentToken.AirslipUserType.Should().Be(airslipUserType);
         }
                 

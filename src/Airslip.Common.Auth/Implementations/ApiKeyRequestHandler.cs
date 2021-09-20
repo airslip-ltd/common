@@ -1,8 +1,7 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -22,35 +21,37 @@ namespace Airslip.Common.Auth.Implementations
             _tokenValidator = tokenValidator;
         }
         
-        public async Task<AuthenticateResult> Handle(HttpRequest request)
+        public async Task<KeyAuthenticationResult> Handle(HttpRequest request)
         {
-            if (!request.Headers.ContainsKey(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField))
+            if (!request.Headers.ContainsKey(AirslipSchemeOptions.ApiKeyHeaderField))
             {
-                return AuthenticateResult.NoResult();
+                return KeyAuthenticationResult
+                    .NoResult();
             }
 
             KeyValuePair<string, StringValues> apiKeyToken = request
                 .Headers
-                .First(o => o.Key == ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField);
+                .First(o => o.Key == AirslipSchemeOptions.ApiKeyHeaderField);
 
             try
             {
                 ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator
                     .GetClaimsPrincipalFromToken(apiKeyToken.Value.First(), 
-                        ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, 
-                        ApiKeyAuthenticationSchemeOptions.ThisEnvironment);
+                        AirslipSchemeOptions.ApiKeyScheme, 
+                        AirslipSchemeOptions.ThisEnvironment);
 
-                return apiKeyPrincipal == null ? 
-                    AuthenticateResult.Fail("Api key invalid") : 
-                    AuthenticateResult.Success(new AuthenticationTicket(apiKeyPrincipal, ApiKeyAuthenticationSchemeOptions.ApiKeyScheme));
+                return apiKeyPrincipal == null
+                    ? KeyAuthenticationResult.Fail("Api key invalid")
+                    : KeyAuthenticationResult.Valid(apiKeyPrincipal);
+                
             }
             catch (ArgumentException)
             {
-                return AuthenticateResult.Fail("Api key invalid");
+                return KeyAuthenticationResult.Fail("Api key invalid");
             }
             catch (EnvironmentUnsupportedException)
             {
-                return AuthenticateResult.Fail("Environment Unsupported");
+                return KeyAuthenticationResult.Fail("Environment Unsupported");
             }
         }
     }

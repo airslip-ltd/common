@@ -7,7 +7,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Auth.Implementations
+namespace Airslip.Common.Auth.AspNetCore.Implementations
 {
     public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions>
     {

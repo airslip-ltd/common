@@ -1,7 +1,6 @@
 using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.Schemes;
 using Airslip.Common.Types;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -55,7 +54,7 @@ namespace Airslip.Common.Auth.Implementations
                 new Claim(AirslipClaimTypes.CORRELATION, CommonFunctions.GetId()),
                 new Claim(AirslipClaimTypes.AIRSLIP_USER_TYPE, token.AirslipUserType.ToString()),
                 new Claim(AirslipClaimTypes.ENTITY_ID, token.EntityId),
-                new Claim(AirslipClaimTypes.ENVIRONMENT, ApiKeyAuthenticationSchemeOptions.ThisEnvironment),
+                new Claim(AirslipClaimTypes.ENVIRONMENT, AirslipSchemeOptions.ThisEnvironment),
                 new Claim(AirslipClaimTypes.IP_ADDRESS, _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN"),
                 new Claim(AirslipClaimTypes.USER_AGENT, _userAgentService.GetRequestUserAgent() ?? "UNKNOWN")
             };

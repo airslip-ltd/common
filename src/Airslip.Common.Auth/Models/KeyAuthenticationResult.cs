@@ -1,25 +1,44 @@
+using System.Security.Claims;
+
 namespace Airslip.Common.Auth.Models
 {
     public record KeyAuthenticationResult
     {
-        public bool Success { get; init; }
+        public AuthResult AuthResult { get; init; }
         public string? Message { get; init; }
+        public ClaimsPrincipal? Principal { get; set; }
 
         public static KeyAuthenticationResult Fail(string message)
         {
             return new KeyAuthenticationResult
             {
-                Success = false,
+                AuthResult = AuthResult.Fail,
                 Message = message
             };
         }
         
-        public static KeyAuthenticationResult Valid()
+        public static KeyAuthenticationResult NoResult()
         {
             return new KeyAuthenticationResult
             {
-                Success = true
+                AuthResult = AuthResult.NoResult
             };
         }
+
+        public static KeyAuthenticationResult Valid(ClaimsPrincipal keyPrincipal)
+        {
+            return new KeyAuthenticationResult
+            {
+                AuthResult = AuthResult.Success,
+                Principal = keyPrincipal
+            };
+        }
+    }
+
+    public enum AuthResult
+    {
+        Success,
+        Fail,
+        NoResult
     }
 }
