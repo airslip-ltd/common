@@ -10,6 +10,7 @@ namespace Airslip.Common.Notifications
         Task<string> CreateRegistration(
             DeviceTypes deviceType,
             string deviceToken,
+            string deviceId,
             string userId,
             ICollection<string> tags);
         Task Send(
