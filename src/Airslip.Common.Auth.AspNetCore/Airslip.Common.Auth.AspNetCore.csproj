@@ -22,9 +22,4 @@
 		<PackageReference Include="UAParser" Version="$(UAParser)" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Airslip.Common.Auth\Airslip.Common.Auth.csproj" />
-	</ItemGroup>
-
-
 </Project>

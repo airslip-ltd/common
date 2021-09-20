@@ -19,8 +19,4 @@
       <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="$(AzureFunctionsExtensions)" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Airslip.Common.Auth\Airslip.Common.Auth.csproj" />
-    </ItemGroup>
-
 </Project>
