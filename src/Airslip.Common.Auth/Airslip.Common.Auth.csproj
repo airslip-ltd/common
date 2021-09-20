@@ -14,11 +14,11 @@
 	
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(NetVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
 		<PackageReference Include="Airslip.Common.Types" Version="$(AirslipCommonTypes)" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.7.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelTokens)" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="$(IdentityModelTokens)" />
 		<PackageReference Include="UAParser" Version="$(UAParser)" />
 	</ItemGroup>
 
