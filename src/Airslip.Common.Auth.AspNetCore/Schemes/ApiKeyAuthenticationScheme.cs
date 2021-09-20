@@ -10,6 +10,7 @@ namespace Airslip.Common.Auth.AspNetCore.Schemes
         
         public string Environment
         {
+            get => AirslipSchemeOptions.ThisEnvironment;
             set => AirslipSchemeOptions.ThisEnvironment = value;
         }
     }

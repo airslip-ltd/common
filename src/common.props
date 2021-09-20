@@ -26,6 +26,7 @@
 		<AutoMapper>10.1.1</AutoMapper>
         <AzureFunctionsWorker>1.5.1</AzureFunctionsWorker>
         <AzureFunctionsExtensions>3.0.13</AzureFunctionsExtensions>
+		<IdentityModelTokens>6.7.1</IdentityModelTokens>
     </PropertyGroup>
 
     <PropertyGroup>
