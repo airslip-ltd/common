@@ -14,7 +14,7 @@
 	
     <ItemGroup>
       <PackageReference Include="Airslip.Common.Auth" Version="$(AirslipCommonAuth)" />
-	  <PackageReference Include="Airslip.Common.Types" Version="$(AirslipCommonTypes)" />
+	  <PackageReference Include="Airslip.Common.Types" Version="3.2.9" />
   	  <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="$(AzureFunctionsWorker)" />
       <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="$(AzureFunctionsExtensions)" />
       <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
