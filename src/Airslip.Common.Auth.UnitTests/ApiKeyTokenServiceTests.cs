@@ -4,6 +4,7 @@ using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
+using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;

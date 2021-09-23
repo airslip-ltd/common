@@ -7,6 +7,7 @@ using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
+using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
 using Moq;

@@ -6,6 +6,7 @@ using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
+using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using Moq;
 using System;

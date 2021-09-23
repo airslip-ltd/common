@@ -1,6 +1,7 @@
 ﻿using Airslip.Common.Auth.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
