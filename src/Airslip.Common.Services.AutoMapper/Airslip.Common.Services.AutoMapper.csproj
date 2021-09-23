@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="$(AutoMapper)" />
 	  <PackageReference Include="Airslip.Common.Types" Version="3.2.9" />
-	  <PackageReference Include="Airslip.Common.Auth" Version="$(AirslipCommonAuth)" />
+	  <PackageReference Include="Airslip.Common.Auth" Version="1.2.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetVersion)" />
   </ItemGroup>
 
