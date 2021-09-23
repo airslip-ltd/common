@@ -1,6 +1,6 @@
 namespace Airslip.Common.Types.Transaction
 {
-    public class CardDetailRequest
+    public record CardDetailRequest
     {
         /// <summary>
         /// The authorization code that confirms the debit or credit card transaction is approved.
