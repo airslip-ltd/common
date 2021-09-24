@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Airslip.Common.Repository.Interfaces
 {
     /// <summary>
@@ -15,12 +17,28 @@ namespace Airslip.Common.Repository.Interfaces
         TDest Create<TDest>(TModel source);
         
         /// <summary>
+        /// Create a collection entity from a particular source
+        /// </summary>
+        /// <param name="source">The source object</param>
+        /// <typeparam name="TDest">The destination entity type</typeparam>
+        /// <returns>A new entity mapped using the data contained in the source</returns>
+        IEnumerable<TDest> Create<TDest>(IEnumerable<TModel> source);
+        
+        /// <summary>
         /// Create a model from a particular source
         /// </summary>
         /// <param name="source">The source object</param>
         /// <typeparam name="TSource">The source entity type</typeparam>
         /// <returns>A new model mapped using the data contained in the source</returns>
         TModel Create<TSource>(TSource source);
+        
+        /// <summary>
+        /// Create a collection model from a particular source
+        /// </summary>
+        /// <param name="source">The source object</param>
+        /// <typeparam name="TSource">The source entity type</typeparam>
+        /// <returns>A new entity mapped using the data contained in the source</returns>
+        IEnumerable<TModel> Create<TSource>(IEnumerable<TSource> source);
         
         /// <summary>
         /// Updated an already created entity with data from a particular source
