@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Contracts
+namespace Airslip.Common.Types.Interfaces
 {
     public interface IStorage<in T> where T : class
     {

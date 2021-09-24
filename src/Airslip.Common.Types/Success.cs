@@ -1,4 +1,6 @@
-﻿namespace Airslip.Common.Contracts
+﻿using Airslip.Common.Types.Interfaces;
+
+namespace Airslip.Common.Types
 {
     public class Success : ISuccess
     {
