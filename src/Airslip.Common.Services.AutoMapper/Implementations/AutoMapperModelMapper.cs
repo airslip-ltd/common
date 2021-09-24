@@ -1,6 +1,5 @@
 using Airslip.Common.Repository.Interfaces;
 using AutoMapper;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Services.AutoMapper.Implementations
@@ -24,6 +23,11 @@ namespace Airslip.Common.Services.AutoMapper.Implementations
             return _mapper.Map<TEntity, TModel>(source);
         }
         
+        public IEnumerable<TDest> Create<TDest>(IEnumerable<TModel> source)
+        {
+            return _mapper.Map<IEnumerable<TModel>, IEnumerable<TDest>>(source);
+        }
+
         public IEnumerable<TModel> Create<TEntity>(IEnumerable<TEntity> source)
         {
             return _mapper.Map<IEnumerable<TEntity>, IEnumerable<TModel>>(source);
