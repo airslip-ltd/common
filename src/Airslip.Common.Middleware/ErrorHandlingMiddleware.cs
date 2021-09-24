@@ -1,6 +1,6 @@
-﻿using Airslip.Common.Contracts;
-using Airslip.Common.Types;
+﻿using Airslip.Common.Types;
 using Airslip.Common.Types.Failures;
+using Airslip.Common.Types.Interfaces;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
