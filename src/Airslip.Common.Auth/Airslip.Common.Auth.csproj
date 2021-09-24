@@ -16,7 +16,7 @@
 		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(NetVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
-		<PackageReference Include="Airslip.Common.Types" Version="3.2.9" />
+		<PackageReference Include="Airslip.Common.Types" Version="3.2.10" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityModelTokens)" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="$(IdentityModelTokens)" />
 		<PackageReference Include="UAParser" Version="$(UAParser)" />

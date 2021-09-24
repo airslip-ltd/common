@@ -16,7 +16,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Http" Version="$(MicrosoftAspNetCoreHttp)" />
 		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
 		<PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJson)" />
-		<PackageReference Include="Airslip.Common.Contracts" Version="$(AirslipCommonContracts)" />
 	</ItemGroup>
 
 </Project>

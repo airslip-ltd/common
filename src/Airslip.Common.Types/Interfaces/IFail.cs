@@ -1,4 +1,4 @@
-﻿namespace Airslip.Common.Contracts
+﻿namespace Airslip.Common.Types.Interfaces
 {
     public interface IFail : IResponse
     {

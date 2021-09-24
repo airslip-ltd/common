@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airslip.Common.Contracts", "Airslip.Common.Contracts\Airslip.Common.Contracts.csproj", "{FB515537-B526-42C8-829C-5D0F1E4AC56D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Airslip.Common.Types", "Airslip.Common.Types\Airslip.Common.Types.csproj", "{36E24D26-895B-40D4-83C9-14ADE029B6D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Types.Tests", "Airslip.Common.Types.Tests\Airslip.Common.Types.Tests.csproj", "{5138C4B6-3575-4963-BBD3-F33C69B0B439}"
@@ -45,10 +43,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB515537-B526-42C8-829C-5D0F1E4AC56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB515537-B526-42C8-829C-5D0F1E4AC56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB515537-B526-42C8-829C-5D0F1E4AC56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB515537-B526-42C8-829C-5D0F1E4AC56D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{36E24D26-895B-40D4-83C9-14ADE029B6D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{36E24D26-895B-40D4-83C9-14ADE029B6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36E24D26-895B-40D4-83C9-14ADE029B6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Airslip.Common.Types.Enums;
+﻿using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Transaction;
+using System.Collections.Generic;
 
-namespace Airslip.Matching.QrCodes.Core.Models
+namespace Airslip.Common.Types.QrCodes
 {
     public class QrCodeRequest
     {
