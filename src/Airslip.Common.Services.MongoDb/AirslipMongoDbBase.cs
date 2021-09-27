@@ -1,5 +1,5 @@
-﻿using Airslip.Common.Auth.Enums;
-using Airslip.Common.Repository.Interfaces;
+﻿using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Models;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Extensions;
@@ -9,6 +9,9 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.MongoDb
 {
@@ -48,6 +51,51 @@ namespace Airslip.Common.Services.MongoDb
         public IMongoCollection<TType> CollectionByType<TType>()
         {
             return Database.GetCollection<TType>(DeriveCollectionName<TType>());
+        }
+        
+        public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity)
+            where TEntity : class, IEntityWithId
+        {
+            // Find appropriate collection
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            // Add entity to collection
+            await collection.InsertOneAsync(newEntity);
+
+            // Return the added entity - likely to be the same object
+            return newEntity;
+        }
+
+        public async Task<TEntity?> GetEntity<TEntity>(string id)
+            where TEntity : class, IEntityWithId
+        {
+            // Find appropriate collection
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
+        {
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            await collection.ReplaceOneAsync(user => user.Id == updatedEntity.Id, updatedEntity);
+
+            return updatedEntity;
+        }
+
+        public Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters)
+            where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IQueryable<TEntity> QueryableOf<TEntity>()
+            where TEntity : class
+        {
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            return collection.AsQueryable();
         }
 
         protected void CreateCollection<TType>() where TType : IEntityWithId
