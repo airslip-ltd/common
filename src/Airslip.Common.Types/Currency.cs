@@ -22,5 +22,15 @@ namespace Airslip.Common.Types
 
             return regionInfo.CurrencySymbol;
         }
+        
+        public static long? ConvertToUnit(string? source)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                return null;
+
+            return source.Contains('.')
+                ? (long)(Convert.ToDecimal(source) * 100)
+                : Convert.ToInt64(source);
+        }
     }
 }
