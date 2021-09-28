@@ -62,7 +62,8 @@ namespace Airslip.Common.Repository.Implementations
             TEntity newEntity = _mapper.Create<TEntity>(model);
 
             // Assign a few defaults, guid and who created it
-            newEntity.Id = CommonFunctions.GetId();
+            newEntity.Id = string.IsNullOrWhiteSpace(newEntity.Id) ? 
+                CommonFunctions.GetId() : newEntity.Id;
             newEntity.EntityStatus = EntityStatus.Active;
             newEntity.AuditInformation = new BasicAuditInformation
             {
