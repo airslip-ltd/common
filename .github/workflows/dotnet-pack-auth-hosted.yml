@@ -1,4 +1,4 @@
-name: Auth-Hosted - Pack and Publish
+name: Auth Hosted - Pack and Publish
 
 on: 
   workflow_dispatch:
