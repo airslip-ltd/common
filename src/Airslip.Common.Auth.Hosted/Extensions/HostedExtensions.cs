@@ -19,16 +19,17 @@ namespace Airslip.Common.Auth.Hosted.Extensions
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <param name="hostedClaimsPrincipal">The claims principal settings to load into the claims</param>
         /// <returns>The updated service collection</returns>
-        public static IServiceCollection AddAirslipHostedAuth(this IServiceCollection services, 
-            IConfiguration configuration, HostedClaimsPrincipal hostedClaimsPrincipal)
+        public static IServiceCollection AddAirslipHostedAuth(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            HostedClaimsPrincipal hostedClaimsPrincipal)
         {
-            services
-                .AddOptions()
+            services.AddOptions()
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<IClaimsPrincipalLocator>(_ => new HostedContextPrincipalLocator(hostedClaimsPrincipal))
                 .AddScoped<IHttpHeaderLocator, HostedContextHeaderLocator>()
                 .AddScoped<ITokenDecodeService<UserToken>, TokenDecodeService<UserToken>>();
-
+            
             AirslipSchemeOptions.ThisEnvironment = services.GetEnvironment();
 
             return services;
