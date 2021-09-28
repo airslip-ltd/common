@@ -45,8 +45,15 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
                 }
                 catch (WebException we)
                 {
-                    var response = (HttpWebResponse) we.Response!;
-                    results.Add(checkStatusCode(response, uri, we));
+                    if (we.Response is HttpWebResponse response)
+                    {
+                        results.Add(checkStatusCode(response, uri, we));
+                    }
+                    else
+                    {
+                        results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
+                            we.Message));
+                    }
                 }
                 catch (Exception? ee) {
                     results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
