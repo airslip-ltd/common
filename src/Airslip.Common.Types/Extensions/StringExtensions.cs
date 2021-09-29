@@ -1,7 +1,7 @@
 ﻿using Airslip.Common.Types.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,45 +13,6 @@ namespace Airslip.Common.Types.Extensions
         public static bool HasValue(this string value)
         {
             return !string.IsNullOrWhiteSpace(value);
-        }
-
-        public static string ToPascalCase(this string original)
-        {
-            IEnumerable<string> pascalCase = original.GetEnumerablePascalCase();
-
-            return string.Concat(pascalCase);
-        }
-
-        public static string ToSpacedPascalCase(this string original)
-        {
-            string[] pascalCaseWords = original.GetEnumerablePascalCase().ToArray();
-            string result =
-                pascalCaseWords.Aggregate(string.Empty, (current, pascalCase) => current + $"{pascalCase} ");
-
-            return result.Substring(0, result.Length - 1);
-        }
-
-        private static IEnumerable<string> GetEnumerablePascalCase(this string original)
-        {
-            Regex invalidCharsRgx = new("[^_a-zA-Z0-9]");
-            Regex whiteSpace = new(@"(?<=\s)");
-            Regex startsWithLowerCaseChar = new("^[a-z]");
-            Regex firstCharFollowedByUpperCasesOnly = new("(?<=[A-Z])[A-Z0-9]+$");
-            Regex lowerCaseNextToNumber = new("(?<=[0-9])[a-z]");
-            Regex upperCaseInside = new("(?<=[A-Z])[A-Z]+?((?=[A-Z][a-z])|(?=[0-9]))");
-
-            return invalidCharsRgx.Replace(whiteSpace.Replace(original, "_"), string.Empty)
-                .Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(w => startsWithLowerCaseChar.Replace(w, m => m.Value.ToUpper()))
-                .Select(w => firstCharFollowedByUpperCasesOnly.Replace(w, m => m.Value.ToLower()))
-                .Select(w => lowerCaseNextToNumber.Replace(w, m => m.Value.ToUpper()))
-                .Select(w => upperCaseInside.Replace(w, m => m.Value.ToLower()));
-        }
-
-        public static string ToCamelCase(this string str)
-        {
-            if (!string.IsNullOrEmpty(str) && str.Length > 1) return char.ToLowerInvariant(str[0]) + str[1..];
-            return str;
         }
 
         public static long ToUnixTimeMilliseconds(this string value)
@@ -87,9 +48,6 @@ namespace Airslip.Common.Types.Extensions
                 RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
         }
 
-        public static string ToSnakeCase(this string str)
-            => string.Concat(str.Replace(" ", "").Select((x, i) => i > 0 && char.IsUpper(x) && !char.IsUpper(str[i-1]) ? $"_{x}" : x.ToString())).ToLower();
-
         public static string RemoveAccents(this string accentedStr)
         {
             byte[] tempBytes = Encoding.GetEncoding("ISO-8859-8").GetBytes(accentedStr);
@@ -99,6 +57,16 @@ namespace Airslip.Common.Types.Extensions
         public static string ToApiUrl(this PublicApiSetting publicApiSetting)
         {
             return string.IsNullOrEmpty(publicApiSetting.UriSuffix) ? $"{publicApiSetting.BaseUri}" :  $"{publicApiSetting.BaseUri}/{publicApiSetting.UriSuffix}";
+        }
+        
+        public static Stream ToStream(this string s)
+        {
+            return s.ToStream(Encoding.UTF8);
+        }
+
+        public static Stream ToStream(this string s, Encoding encoding)
+        {
+            return new MemoryStream(encoding.GetBytes(s));
         }
     }
 }
