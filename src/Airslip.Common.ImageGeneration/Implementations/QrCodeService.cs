@@ -1,9 +1,10 @@
-﻿using QRCoder;
+﻿using Airslip.Common.ImageGeneration.Interfaces;
+using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace Airslip.Common.ImageGeneration
+namespace Airslip.Common.ImageGeneration.Implementations
 {
     public class QrCodeService : IQrCodeService
     {
