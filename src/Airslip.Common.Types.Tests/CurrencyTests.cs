@@ -17,7 +17,7 @@ namespace Airslip.Common.Types.Tests
         public void Can_convert_unit_to_unit_value()
         {
             long? pennies = Currency.ConvertToUnit("12");
-            pennies.Should().Be(12);
+            pennies.Should().Be(1200);
         }
         
         [Fact]
