@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace Airslip.Common.ImageGeneration
+namespace Airslip.Common.ImageGeneration.Interfaces
 {
     public interface IQrCodeService
     {
