@@ -18,9 +18,6 @@ You must have configurstion sections for JwtSettings and EnvironmentSettings in 
 
 ### Getting Started
 
-
-
-
 To get started, install the Common Auth package into your API project:
 
     Install-Package Airslip.Common.Auth
@@ -90,3 +87,56 @@ And thats it!
     ApiKeyToken.AirslipUserType: enum-AirslipUserType
     ApiKeyToken.CorrelationId: string
     ApiKeyToken.IpAddress: string
+
+
+## Api Access Authentication
+
+Api Access Authentication is a lightweight inter-service auth mechanism used to allow requests from different internal APIs. This uses a token based principal centered on API Key authentication so is dependent on having a valid generated API Key and your app using Api Key validation.
+
+## Getting started
+
+Import the latest package for:
+
+    Install-Package Airslip.Common.Auth.AspNetCore
+
+Then in your project srvices add:
+
+    .ConfigureServices(services => {
+        ...
+        services.AddApiAccessValidation(Configuration)
+        ...
+    }
+
+And finally configure the access in your settings:
+
+    {
+        "ApiAccessSettings": {
+            "AllowedTypes": [
+                "InternalApi",
+                "List of AirslipUserTypes"
+            ],
+            "AllowedEntities": [
+                "bank-transactions-api",
+                "Any EntityId"
+            ]
+        }
+    }
+
+## Example Usage
+
+    private IApiRequestAuthService _authService;
+    private IHttpContext _context;
+
+    public MyClass(IApiRequestAuthService authService, IHttpContextAccessor contextAccessor)
+    {
+        _authService = authService;
+        _context = contextAccessor.Context;
+    }
+
+    public void MyFunction() {
+        KeyAuthenticationResult authResult = _authService.Handle(_context.Request);
+
+        // authResult.AuthResult [Success, Fail, NoResult]
+        // authResult.Message
+        // etc ...
+    }
