@@ -88,7 +88,6 @@ And thats it!
     ApiKeyToken.CorrelationId: string
     ApiKeyToken.IpAddress: string
 
-
 ## Api Access Authentication
 
 Api Access Authentication is a lightweight inter-service auth mechanism used to allow requests from different internal APIs. This uses a token based principal centered on API Key authentication so is dependent on having a valid generated API Key and your app using Api Key validation.
