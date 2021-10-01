@@ -1,4 +1,6 @@
 using Airslip.Common.Auth.AspNetCore.Extensions;
+using Airslip.Common.Auth.AspNetCore.Implementations;
+using Airslip.Common.Auth.AspNetCore.Interfaces;
 using Airslip.Common.Auth.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -41,6 +43,21 @@ namespace Airslip.Common.Auth.UnitTests
 
             obj1.Should().BeAssignableTo<TokenDecodeService<ApiKeyToken>>();
             obj2.Should().BeAssignableTo<ApiKeyRequestHandler>();
+        }
+        
+        [Fact]
+        public void Can_construct_required_services_api_access()
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            serviceCollection.AddHttpContextAccessor();
+            serviceCollection.AddApiAccessValidation(configurationBuilder.Build());
+
+            var provider = serviceCollection.BuildServiceProvider();
+
+            var obj1 = provider.GetService<IApiRequestAuthService>();
+
+            obj1.Should().BeAssignableTo<ApiRequestAuthService>();
         }
     }
 }

@@ -166,6 +166,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services
                 .TryAddScoped<IApiKeyRequestHandler, ApiKeyRequestHandler>();
             
+            services.TryAddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>();
             services.TryAddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>();
             services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
             services.TryAddScoped<IUserAgentService, UserAgentService>();
@@ -173,7 +174,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services.TryAddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>();
                 
             services
-                .AddSingleton<IApiRequestAuthService, ApiRequestAuthService>()
+                .AddScoped<IApiRequestAuthService, ApiRequestAuthService>()
                 .Configure<ApiAccessSettings>(configuration.GetSection(nameof(ApiAccessSettings)));
             
             return services;
