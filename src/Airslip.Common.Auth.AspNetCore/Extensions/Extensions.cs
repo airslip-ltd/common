@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 
@@ -162,6 +163,15 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
         public static IServiceCollection AddApiAccessValidation(this IServiceCollection services, 
             IConfiguration configuration)
         {
+            services
+                .TryAddScoped<IApiKeyRequestHandler, ApiKeyRequestHandler>();
+            
+            services.TryAddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>();
+            services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
+            services.TryAddScoped<IUserAgentService, UserAgentService>();
+            services.TryAddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>();
+            services.TryAddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>();
+                
             services
                 .AddSingleton<IApiRequestAuthService, ApiRequestAuthService>()
                 .Configure<ApiAccessSettings>(configuration.GetSection(nameof(ApiAccessSettings)));
