@@ -18,9 +18,6 @@ You must have configurstion sections for JwtSettings and EnvironmentSettings in 
 
 ### Getting Started
 
-
-
-
 To get started, install the Common Auth package into your API project:
 
     Install-Package Airslip.Common.Auth
@@ -90,3 +87,22 @@ And thats it!
     ApiKeyToken.AirslipUserType: enum-AirslipUserType
     ApiKeyToken.CorrelationId: string
     ApiKeyToken.IpAddress: string
+
+
+## Api Access Authentication
+
+Api Access Authentication is a lightweight inter-service auth mechanism used to allow requests from different internal APIs. This uses a token based principal centered on API Key authentication.
+
+## Getting started
+
+Import the latest package for:
+
+    Install-Package Airslip.Common.Auth.AspNetCore
+
+Then in your project srvices add:
+
+    .ConfigureServices(services => {
+        ...
+        services.AddApiAccessValidation(Configuration)
+        ...
+    }
