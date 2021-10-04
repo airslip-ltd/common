@@ -2,11 +2,13 @@
 using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Types.QrCodes
+namespace Airslip.Common.Types.Matching
 {
-    public class QrCodeRequest
+    public class MatchRequest
     {
         public string? TrackingId { get; set; }
+
+        public string MatchType { get; set; } = string.Empty;
         
         public string EntityId { get; set; } = string.Empty;
         
