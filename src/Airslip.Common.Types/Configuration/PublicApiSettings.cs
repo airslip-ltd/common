@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Airslip.Common.Types.Configuration
 {
     public class PublicApiSettings
@@ -9,5 +11,6 @@ namespace Airslip.Common.Types.Configuration
         public PublicApiSetting? BankTransactions { get; set; }
         public PublicApiSetting? Notifications { get; set; }
         public PublicApiSetting? QrCodeMatching { get; set; }
+        public Dictionary<string, PublicApiSetting>? Settings { get; set; }
     }
 }
