@@ -54,11 +54,6 @@ namespace Airslip.Common.Types.Extensions
             return Encoding.UTF8.GetString(tempBytes);
         }
         
-        public static string ToApiUrl(this PublicApiSetting publicApiSetting)
-        {
-            return string.IsNullOrEmpty(publicApiSetting.UriSuffix) ? $"{publicApiSetting.BaseUri}" :  $"{publicApiSetting.BaseUri}/{publicApiSetting.UriSuffix}";
-        }
-        
         public static Stream ToStream(this string s)
         {
             return s.ToStream(Encoding.UTF8);
