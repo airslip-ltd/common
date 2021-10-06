@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Auth.Hosted"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.ImageGeneration", "Airslip.Common.ImageGeneration\Airslip.Common.ImageGeneration.csproj", "{EE920601-B037-4239-96FC-A6A2F56E29AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.MerchantTransactions", "Airslip.Common.MerchantTransactions\Airslip.Common.MerchantTransactions.csproj", "{4F834387-2743-4B01-9668-4A3AD4CD8282}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{EE920601-B037-4239-96FC-A6A2F56E29AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE920601-B037-4239-96FC-A6A2F56E29AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE920601-B037-4239-96FC-A6A2F56E29AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F834387-2743-4B01-9668-4A3AD4CD8282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F834387-2743-4B01-9668-4A3AD4CD8282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F834387-2743-4B01-9668-4A3AD4CD8282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F834387-2743-4B01-9668-4A3AD4CD8282}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
