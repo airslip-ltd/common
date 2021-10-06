@@ -1,12 +1,11 @@
-using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Interfaces;
 
 namespace Airslip.Common.Repository.Models
 {
-    public record SuccessfulActionResultModel<TModel>(TModel? CurrentVersion = null,
+    public record FailedVerificationResultModel<TModel>(string ErrorCode, 
             TModel? PreviousVersion = null,
             ValidationResultModel? ValidationResult = null)
-        : RepositoryActionResultModel<TModel>(ResultType.Success, CurrentVersion, PreviousVersion, ValidationResult), ISuccess
+        : RepositoryActionResultModel<TModel>(null, PreviousVersion, ValidationResult), IFail
         where TModel : class, IModel;
 }

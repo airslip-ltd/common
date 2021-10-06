@@ -35,8 +35,7 @@ namespace Airslip.Common.Repository.UnitTests
 
           RepositoryActionResultModel<TModel> delete = await repo.Delete("unknown-id");
 
-          delete.Should().BeOfType<FailedActionResultModel<TModel>>();
-          delete.ResultType.Should().Be(ResultType.NotFound);
+          delete.Should().BeOfType<NotFoundResultModel<TModel>>();
         }
     }
 
