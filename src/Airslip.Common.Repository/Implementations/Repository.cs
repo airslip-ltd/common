@@ -51,11 +51,9 @@ namespace Airslip.Common.Repository.Implementations
             // Return a new result model if validation has failed
             if (!validationResult.IsValid)
             {
-                return new FailedActionResultModel<TModel>
+                return new FailedValidationResultModel<TModel>
                 (
                     ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
-                    model,
                     ValidationResult: validationResult
                 );
             }
@@ -77,7 +75,7 @@ namespace Airslip.Common.Repository.Implementations
             await _context.AddEntity(newEntity);
             
             // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
+            return new SuccessfulResultModel<TModel>
             (
                 _mapper.Create(newEntity)
             );
@@ -97,10 +95,9 @@ namespace Airslip.Common.Repository.Implementations
             // Validate the Id supplied against that of the model, bit of a crude check but could prevent some simple tampering
             if (!id.Equals(model.Id))
             {
-                return new FailedActionResultModel<TModel>
+                return new FailedVerificationResultModel<TModel>
                 (
                     ErrorCodes.ValidationFailed,
-                    ResultType.FailedVerification,
                     PreviousVersion: model
                 );
             }
@@ -111,10 +108,9 @@ namespace Airslip.Common.Repository.Implementations
             // Return a new result model if validation has failed
             if (!validationResult.IsValid)
             {
-                return new FailedActionResultModel<TModel>
+                return new FailedValidationResultModel<TModel>
                 (
                     ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
                     PreviousVersion: model,
                     ValidationResult: validationResult
                 );
@@ -127,10 +123,9 @@ namespace Airslip.Common.Repository.Implementations
             if (currentEntity == null)
             {
                 // If not, return a not found message
-                return new FailedActionResultModel<TModel>
+                return new NotFoundResultModel<TModel>
                 (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
+                    ErrorCodes.NotFound
                 );
             }
             
@@ -149,7 +144,7 @@ namespace Airslip.Common.Repository.Implementations
             await _context.UpdateEntity(currentEntity);
             
             // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
+            return new SuccessfulResultModel<TModel>
             (
                 PreviousVersion: currentModel,
                 CurrentVersion: _mapper.Create(currentEntity)
@@ -173,10 +168,9 @@ namespace Airslip.Common.Repository.Implementations
             if (currentEntity == null)
             {
                 // If not, return a not found message
-                return new FailedActionResultModel<TModel>
+                return new NotFoundResultModel<TModel>
                 (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
+                    ErrorCodes.NotFound
                 );
             }
                         
@@ -193,7 +187,7 @@ namespace Airslip.Common.Repository.Implementations
             await _context.UpdateEntity(currentEntity);
             
             // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
+            return new SuccessfulResultModel<TModel>
             (
                 PreviousVersion: currentModel
             );
@@ -216,15 +210,14 @@ namespace Airslip.Common.Repository.Implementations
             if (currentEntity == null)
             {
                 // If not, return a not found message
-                return new FailedActionResultModel<TModel>
+                return new NotFoundResultModel<TModel>
                 (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
+                    ErrorCodes.NotFound
                 );
             }
                         
             // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
+            return new SuccessfulResultModel<TModel>
             (
                 _mapper.Create(currentEntity)
             );
