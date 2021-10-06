@@ -79,7 +79,6 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                ResultType.Success,
                 _mapper.Create(newEntity)
             );
         }
@@ -152,7 +151,6 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                ResultType.Success,
                 PreviousVersion: currentModel,
                 CurrentVersion: _mapper.Create(currentEntity)
             );
@@ -197,7 +195,6 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                ResultType.Success,
                 PreviousVersion: currentModel
             );
         }
@@ -229,7 +226,6 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                ResultType.Success,
                 _mapper.Create(currentEntity)
             );
         }
