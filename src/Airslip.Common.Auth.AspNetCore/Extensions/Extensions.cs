@@ -180,10 +180,42 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             return services;
         }
         
+        public static IServiceCollection AddCookieAuthentication(this IServiceCollection services, 
+            IConfiguration configuration, string? withEnvironment)
+        {
+            services.TryAddScoped<ICookieRequestHandler, CookieRequestHandler>();
+            services.TryAddScoped<ICookieService, CookieService>();
+            services.TryAddScoped<ITokenValidator<UserToken>, TokenValidator<UserToken>>();
+            services.TryAddScoped<ITokenDecodeService<UserToken>, TokenDecodeService<UserToken>>();
+            services.TryAddScoped<ITokenGenerationService<GenerateUserToken>, TokenGenerationService<GenerateUserToken>>();
+            services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
+            services.TryAddScoped<IUserAgentService, UserAgentService>();
+            services.TryAddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>();
+            services.TryAddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>();
+                
+            services
+                .Configure<CookieSettings>(configuration.GetSection(nameof(CookieSettings)));
+            
+            AuthenticationBuilder result = services
+                .AddAuthentication(CookieAuthenticationSchemeOptions.CookieAuthScheme)
+                .AddCookieAuth(opt =>
+                {
+                    opt.Environment = withEnvironment ?? services.GetEnvironment();
+                });
+            
+            return services;
+        }
+        
         public static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationSchemeOptions> options)
         {
             return builder
                 .AddScheme<ApiKeyAuthenticationSchemeOptions, ApiKeyAuthHandler>(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme, options);
+        }
+        
+        public static AuthenticationBuilder AddCookieAuth(this AuthenticationBuilder builder, Action<CookieAuthenticationSchemeOptions> options)
+        {
+            return builder
+                .AddScheme<CookieAuthenticationSchemeOptions, CookieAuthHandler>(CookieAuthenticationSchemeOptions.CookieAuthScheme, options);
         }
         
         public static AuthenticationBuilder AddQrCodeAuth(this AuthenticationBuilder builder, Action<QrCodeAuthenticationSchemeOptions> options)

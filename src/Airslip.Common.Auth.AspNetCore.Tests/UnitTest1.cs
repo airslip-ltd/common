@@ -12,15 +12,24 @@ namespace Airslip.Common.Auth.AspNetCore.Tests
         {
             var myString = "Hello I'm a string";
             var myPassphrase = CommonFunctions.GetId();
-            var iterations = 1000;
 
-            var encryptedString = StringCipher.Encrypt(myString, iterations, myPassphrase);
-
-            var decryptedString = StringCipher.Decrypt(encryptedString, iterations, myPassphrase);
+            var encryptedString = StringCipher.Encrypt(myString, myPassphrase);
+            var decryptedString = StringCipher.Decrypt(encryptedString, myPassphrase);
 
             decryptedString.Should().Be(myString);
-
-
         }
+        
+        // [Fact]
+        // public void Decrypt_fails_with_wrong_passphrase()
+        // {
+        //     var myString = "Hello I'm a string";
+        //     var myPassphrase = CommonFunctions.GetId();
+        //
+        //     var encryptedString = StringCipher.Encrypt(myString, myPassphrase);
+        //
+        //     StringCipher.Invoking(y => y.Decrypt(myString, "I'm Wroing"))
+        //         .Should()
+        //         .Throw<ArgumentException>();
+        // }
     }
 }
