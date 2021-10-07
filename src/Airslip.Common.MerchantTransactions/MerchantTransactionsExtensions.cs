@@ -1,6 +1,5 @@
 ﻿using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Extensions;
-using Airslip.MerchantTransactions.Common.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
