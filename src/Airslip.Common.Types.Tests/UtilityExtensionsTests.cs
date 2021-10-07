@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Types.Extensions;
+﻿using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Extensions;
 using FluentAssertions;
 using Xunit;
 
@@ -44,6 +45,21 @@ namespace Airslip.Common.Types.Tests
             var result = 1000.InList(2000, 2001);
 
             result.Should().BeFalse();
+        }
+        
+        [Fact]
+        public void Can_create_base_uri()
+        {
+            PublicApiSetting setting = new()
+            {
+                BaseUri = "https://dev-integrations.airslip.com",
+                UriSuffix = "airslip",
+                Version = "v1"
+            };
+
+            string baseUri = setting.ToBaseUri();
+            
+            baseUri.Should().Be("https://dev-integrations.airslip.com/airslip");
         }
 
         private enum MyEnum
