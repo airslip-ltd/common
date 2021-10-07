@@ -30,7 +30,23 @@ namespace Airslip.Common.Types
 
             bool canParse = double.TryParse(source, out double value);
 
-            return canParse ? Convert.ToInt64(value * 100) : (long)value;
+            return canParse ? ConvertToUnit(value) : (long)value;
+        }
+        
+        public static long? ConvertToUnit(decimal? value)
+        {
+            if (value is null)
+                return null;
+
+            return Convert.ToInt64(value * 100);
+        }
+        
+        public static long? ConvertToUnit(double? value)
+        {
+            if (value is null)
+                return null;
+
+            return Convert.ToInt64(value * 100);
         }
     }
 }
