@@ -32,9 +32,9 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
                        throw new ArgumentException("HttpContext cannot be null");
         }
         
-        public void UpdateCookie(UserToken userToken)
+        public void UpdateCookie(GenerateUserToken generateUserToken)
         {
-            NewToken newToken = _generateNewToken(userToken);
+            NewToken newToken = _tokenGenerationService.GenerateNewToken(generateUserToken);
             
             // Add to the response as a new cookie
             string random = CommonFunctions.GetId();
@@ -74,14 +74,6 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             }
 
             return decryptedToken;
-        }
-        
-        private NewToken _generateNewToken(UserToken userToken)
-        {
-            GenerateUserToken generate = new(userToken.EntityId, 
-                userToken.AirslipUserType, userToken.UserId, userToken.YapilyUserId);
-            
-            return _tokenGenerationService.GenerateNewToken(generate);
         }
     }
 }

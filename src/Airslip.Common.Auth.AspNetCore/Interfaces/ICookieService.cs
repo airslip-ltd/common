@@ -5,7 +5,7 @@ namespace Airslip.Common.Auth.AspNetCore.Interfaces
 {
     public interface ICookieService
     {
-        void UpdateCookie(UserToken userToken);
+        void UpdateCookie(GenerateUserToken userToken);
         string GetCookieValue(HttpRequest request);
     }
 }
