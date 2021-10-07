@@ -2,7 +2,7 @@
 
 namespace Airslip.Common.Types.Transaction
 {
-    public record Transaction
+    public record TransactionDetails
     {
         /// <summary>
         /// The internally generated ID.

@@ -1,8 +1,9 @@
-﻿using Airslip.Common.Types.Validator;
+﻿using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Types.Validator;
 
-namespace Airslip.Common.Types.Matching
+namespace Airslip.Common.Types.Matching.Response
 {
-    public record MatchResponse
+    public record MatchResponse : ISuccess
     {
         public string? TrackingId { get; init; }
         public string MatchType { get; set; } = string.Empty;
