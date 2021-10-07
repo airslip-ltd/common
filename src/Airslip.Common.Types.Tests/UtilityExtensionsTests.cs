@@ -52,14 +52,14 @@ namespace Airslip.Common.Types.Tests
         {
             PublicApiSetting setting = new()
             {
-                BaseUri = "https://dev-integrations.airslip.com",
+                BaseUri = "https://test.airslip.com",
                 UriSuffix = "airslip",
                 Version = "v1"
             };
 
             string baseUri = setting.ToBaseUri();
             
-            baseUri.Should().Be("https://dev-integrations.airslip.com/airslip");
+            baseUri.Should().Be("https://test.airslip.com/airslip/v1");
         }
 
         private enum MyEnum

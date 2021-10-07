@@ -28,7 +28,8 @@ namespace Airslip.Common.Types.Extensions
             List<string> parts = new()
             {
                 setting.BaseUri.RemoveLeadingAndTrailing("/"),
-                setting.UriSuffix.RemoveLeadingAndTrailing("/")
+                setting.UriSuffix.RemoveLeadingAndTrailing("/"),
+                setting.Version.RemoveLeadingAndTrailing("/")
             };
             parts.RemoveAll(string.IsNullOrWhiteSpace);
             return string.Join("/", parts);
