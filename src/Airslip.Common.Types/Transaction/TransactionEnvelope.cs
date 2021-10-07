@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Airslip.Common.Types.Transaction
 {
     public record TransactionEnvelope(
-        Transaction Transaction,
+        TransactionDetails TransactionDetails,
         AirslipUserType AirslipUserType,
         string TrackingId,
         string ApiKey,
