@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.AspNetCore.Configuration;
 using Airslip.Common.Auth.AspNetCore.Interfaces;
 using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
@@ -5,7 +6,9 @@ using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +20,15 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
     public class CookieRequestHandler : ICookieRequestHandler
     {
         private readonly ITokenValidator<UserToken> _tokenValidator;
+        private readonly ICookieService _cookieService;
+        private readonly ILogger _logger;
 
-        public CookieRequestHandler(ITokenValidator<UserToken> tokenValidator)
+        public CookieRequestHandler(ITokenValidator<UserToken> tokenValidator, ICookieService cookieService,
+            ILogger logger)
         {
             _tokenValidator = tokenValidator;
+            _cookieService = cookieService;
+            _logger = logger;
         }
         
         public async Task<KeyAuthenticationResult> Handle(HttpRequest request)
@@ -33,22 +41,27 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             }
 
             // Read and decode the Cookie
-            
-            
-            KeyValuePair<string, StringValues> apiKeyToken = request
-                .Headers
-                .First(o => o.Key == AirslipSchemeOptions.ApiKeyHeaderField);
+            string tokenValue;
 
             try
             {
-                ClaimsPrincipal? apiKeyPrincipal = await _tokenValidator
-                    .GetClaimsPrincipalFromToken(apiKeyToken.Value.First(), 
-                        AirslipSchemeOptions.ApiKeyScheme, 
+                tokenValue = _cookieService.GetCookieValue(request);
+            }
+            catch (Exception)
+            {
+                return KeyAuthenticationResult.Fail("Cookie invalid");
+            }
+
+            try
+            {
+                ClaimsPrincipal? cookiePrincipal = await _tokenValidator
+                    .GetClaimsPrincipalFromToken(tokenValue, 
+                        CookieSchemeOptions.CookieAuthScheme, 
                         AirslipSchemeOptions.ThisEnvironment);
 
-                return apiKeyPrincipal == null
-                    ? KeyAuthenticationResult.Fail("Api key invalid")
-                    : KeyAuthenticationResult.Valid(apiKeyPrincipal);
+                return cookiePrincipal == null
+                    ? KeyAuthenticationResult.Fail("Cookie invalid")
+                    : KeyAuthenticationResult.Valid(cookiePrincipal);
                 
             }
             catch (ArgumentException)
