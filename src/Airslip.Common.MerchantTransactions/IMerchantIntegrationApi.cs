@@ -1,4 +1,4 @@
-namespace Airslip.MerchantTransactions.Common.Data
+namespace Airslip.Common.MerchantTransactions
 {
     public interface IMerchantIntegrationApi
     {
