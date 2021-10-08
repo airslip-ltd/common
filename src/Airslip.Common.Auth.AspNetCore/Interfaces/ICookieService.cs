@@ -1,11 +1,12 @@
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.AspNetCore.Interfaces
 {
     public interface ICookieService
     {
-        void UpdateCookie(GenerateUserToken userToken);
+        Task UpdateCookie(GenerateUserToken userToken);
         string GetCookieValue(HttpRequest request);
     }
 }
