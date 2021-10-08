@@ -1,6 +1,7 @@
 using Airslip.Common.Auth.AspNetCore.Configuration;
 using Airslip.Common.Auth.AspNetCore.Interfaces;
 using Airslip.Common.Auth.AspNetCore.Schemes;
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Types;
@@ -9,30 +10,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.AspNetCore.Implementations
 {
     public class CookieService : ICookieService
     {
         private readonly ITokenGenerationService<GenerateUserToken> _tokenGenerationService;
+        private readonly ITokenValidator<UserToken> _tokenValidator;
         private readonly ILogger _logger;
         private readonly CookieSettings _cookieSettings;
         private readonly HttpContext _context;
 
         public CookieService(ITokenGenerationService<GenerateUserToken> tokenGenerationService,
+            ITokenValidator<UserToken> tokenValidator,
             IHttpContextAccessor httpContextAccessor,
             ILogger logger,
             IOptions<CookieSettings> cookieSettings)
         {
             _tokenGenerationService = tokenGenerationService;
+            _tokenValidator = tokenValidator;
             _logger = logger;
             _cookieSettings = cookieSettings.Value;
             _context = httpContextAccessor.HttpContext ?? 
                        throw new ArgumentException("HttpContext cannot be null");
         }
         
-        public void UpdateCookie(GenerateUserToken generateUserToken)
+        public async Task UpdateCookie(GenerateUserToken generateUserToken)
         {
             NewToken newToken = _tokenGenerationService.GenerateNewToken(generateUserToken);
             
@@ -50,6 +56,14 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             _context.Response.Cookies.Append(CookieSchemeOptions.CookieEncryptField, base64encoded, options);
             _context.Response.Cookies.Append(CookieSchemeOptions.CookieTokenField, 
                 StringCipher.Encrypt(newToken.TokenValue, passphrase), options);
+            
+            // Update the claims principal with this cookie
+            ClaimsPrincipal? claimsPrincipal = await _tokenValidator.GetClaimsPrincipalFromToken(newToken.TokenValue, 
+                CookieAuthenticationSchemeOptions.CookieAuthScheme, 
+                AirslipSchemeOptions.ThisEnvironment);
+        
+            // Use the generated claims principal in this request
+            _context.User = claimsPrincipal ?? new ClaimsPrincipal();
         }
 
         public string GetCookieValue(HttpRequest request)
