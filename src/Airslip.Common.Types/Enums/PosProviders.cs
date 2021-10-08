@@ -3,9 +3,13 @@
     public enum PosProviders
     {
         SwanRetailMidas,
-        Volusion,
+        Api2CartVolusion,
+        Api2CartShopify,
         Stripe,
         SumUp,
-        IZettle
+        IZettle,
+        EposNow,
+        Square,
+        Vend
     }
 }
