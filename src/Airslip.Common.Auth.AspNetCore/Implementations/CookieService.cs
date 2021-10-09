@@ -46,11 +46,10 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             string random = CommonFunctions.GetId();
             string passphrase = $"{_cookieSettings.Passphrase}{random}";
             string base64encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(random));
-            CookieOptions options = new CookieOptions
+            CookieOptions options = new()
             {
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                HttpOnly = true
+                SameSite = SameSiteMode.None
             };
             
             _context.Response.Cookies.Append(CookieSchemeOptions.CookieEncryptField, base64encoded, options);
