@@ -55,5 +55,12 @@ namespace Airslip.Common.Repository.Interfaces
         /// <returns>A list of entities matching the search criteria</returns>
         IQueryable<TEntity> QueryableOf<TEntity>()
             where TEntity : class;
+        
+        /// <summary>
+        /// Allows for updating or creation of an entity in a single call
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type</typeparam>
+        /// <returns>The created entity</returns>
+        Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId;
     }
 }
