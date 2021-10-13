@@ -13,6 +13,14 @@ namespace Airslip.Common.MerchantTransactions
 {
     public static class MerchantTransactionsExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services">The service collection to append services to</param>
+        /// <param name="configuration">The primary configuration where relevant elements can be found</param>
+        /// <param name="mapperExpression">The mapping configuration expression which maps from the source to destinated transaction</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static IServiceCollection AddMerchantTransactions(
             this IServiceCollection services,
             IConfiguration configuration,
