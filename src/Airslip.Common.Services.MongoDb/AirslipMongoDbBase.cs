@@ -97,6 +97,23 @@ namespace Airslip.Common.Services.MongoDb
 
             return collection.AsQueryable();
         }
+        
+        public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
+        {
+            
+            // Find appropriate collection
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            // Add entity to collection
+            await collection.ReplaceOneAsync(
+                entity => entity.Id == newEntity.Id, newEntity, new ReplaceOptions
+                {
+                    IsUpsert = true
+                });
+
+            // Return the added entity - likely to be the same object
+            return newEntity;
+        }
 
         protected void CreateCollection<TType>() where TType : IEntityWithId
         {
