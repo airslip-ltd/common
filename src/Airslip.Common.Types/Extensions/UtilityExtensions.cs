@@ -1,4 +1,5 @@
 using Airslip.Common.Types.Configuration;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,16 @@ namespace Airslip.Common.Types.Extensions
             return ((IList) values).Contains(value);
         }
 
-        public static PublicApiSetting? GetSettingByName(this PublicApiSettings settings, string name)
+        public static PublicApiSetting GetSettingByName(this PublicApiSettings settings, string name)
         {
-            if (settings.Settings?.FirstOrDefault(o => o.Key.Equals(name)) == null) 
-                return null;
+            KeyValuePair<string, PublicApiSetting>? result = settings.Settings?
+                .FirstOrDefault(o => o.Key.Equals(name));
+            
+            if (result == null)
+                throw new ArgumentException($"PublicApiSettings:Settings:{name} " +
+                                            $"section missing from appSettings", name);
 
-            return settings
-                .Settings
-                .First(o => o.Key.Equals(name))
-                .Value;
+            return result.Value.Value;
         }
         
         public static string ToBaseUri(this PublicApiSetting setting)
