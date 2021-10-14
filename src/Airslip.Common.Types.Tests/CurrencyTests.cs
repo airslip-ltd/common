@@ -57,5 +57,13 @@ namespace Airslip.Common.Types.Tests
             long? pennies = Currency.ConvertToUnit(value);
             pennies.Should().Be(1200);
         }
+        
+        [Fact]
+        public void Can_convert_unit_value_to_decimal()
+        {
+            long value = 1299;
+            decimal? currency = Currency.ConvertToTwoPlacedDecimal(value);
+            currency.Should().Be((decimal)12.99);
+        }
     }
 }

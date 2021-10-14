@@ -48,5 +48,10 @@ namespace Airslip.Common.Types
 
             return Convert.ToInt64(value * 100);
         }
+        
+        public static decimal? ConvertToTwoPlacedDecimal(long? value)
+        {
+            return Convert.ToDecimal(value) / 100;
+        }
     }
 }
