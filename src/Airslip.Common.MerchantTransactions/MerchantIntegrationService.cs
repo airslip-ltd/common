@@ -13,33 +13,33 @@ namespace Airslip.Common.MerchantTransactions
         public MerchantIntegrationService(IGeneratedRetailerApiV1Client generatedRetailerApiV1Client, IMapper mapper)
         {
             _generatedRetailerApiV1Client = generatedRetailerApiV1Client;
-            
+
             _mapper = mapper;
         }
 
-        public async Task<int> SendBulk<T>(IEnumerable<T> transactions, string airslipApiKey, string adapterSource) where T : class
+        public async Task<ICollection<TrackingDetails>> SendBulk<T>(
+            IEnumerable<T> transactions,
+            string airslipApiKey,
+            string adapterSource) where T : class
         {
             _generatedRetailerApiV1Client.SetApiKeyToken(airslipApiKey);
-            
-            int count = 0;
+
+            List<TrackingDetails> trackingDetails = new();
 
             foreach (T transaction in transactions)
-            {
-                await _send(transaction, adapterSource);
-                count++;
-            }
+                trackingDetails.Add(await _send(transaction, adapterSource));
 
-            return count;
+            return trackingDetails;
         }
-        
-        public async Task Send<T>(T transaction, string airslipApiKey, string adapterSource) where T : class
+
+        public Task<TrackingDetails> Send<T>(T transaction, string airslipApiKey, string adapterSource) where T : class
         {
             _generatedRetailerApiV1Client.SetApiKeyToken(airslipApiKey);
 
-            await _send(transaction, adapterSource);
+            return _send(transaction, adapterSource);
         }
-        
-        private async Task _send<T>(T transaction, string adapterSource) where T : class
+
+        private Task<TrackingDetails> _send<T>(T transaction, string adapterSource) where T : class
         {
             Transaction transactionOut = _mapper.Map<Transaction>(
                 transaction,
@@ -49,7 +49,7 @@ namespace Airslip.Common.MerchantTransactions
                     destinationRequest.Source = adapterSource;
                 }));
 
-            await _generatedRetailerApiV1Client.CreateTransactionAsync(transactionOut);
+            return _generatedRetailerApiV1Client.CreateTransactionAsync(transactionOut);
         }
     }
 }
