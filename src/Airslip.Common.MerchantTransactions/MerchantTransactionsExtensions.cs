@@ -47,7 +47,7 @@ namespace Airslip.Common.MerchantTransactions
                         BaseUrl = merchantTransactionsSettings.ToBaseUri()
                     };
                 })
-                .AddSingleton<IMerchantIntegrationService, MerchantIntegrationService>()
+                .AddScoped<IMerchantIntegrationService, MerchantIntegrationService>()
                 .AddAutoMapper(mapperExpression)
                 .AddHttpClient<GeneratedRetailerApiV1Client>(nameof(GeneratedRetailerApiV1Client))
                 .AddTransientHttpErrorPolicy(p =>
