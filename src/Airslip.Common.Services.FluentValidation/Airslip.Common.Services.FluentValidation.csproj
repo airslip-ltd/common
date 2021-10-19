@@ -3,7 +3,7 @@
 	<Import Project="..\common.props" />
 
 	<PropertyGroup>
-		<PackageId>Airslip.Common.Services.FluntValidation</PackageId>
+		<PackageId>Airslip.Common.Services.FluentValidation</PackageId>
 		<Company>Airslip</Company>
 		<Authors>Airslip</Authors>
 		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
