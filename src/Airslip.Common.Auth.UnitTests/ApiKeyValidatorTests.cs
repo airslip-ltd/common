@@ -1,4 +1,3 @@
-using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
@@ -22,7 +21,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenValidator<ApiKeyToken> apiKeyValidator = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
 
             ClaimsPrincipal claimsPrincipal = await apiKeyValidator.GetClaimsPrincipalFromToken(newToken, 
-                ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
+                AirslipSchemeOptions.ApiKeyScheme,
                 AirslipSchemeOptions.ThisEnvironment);
 
             claimsPrincipal.Should().NotBeNull();
@@ -36,7 +35,7 @@ namespace Airslip.Common.Auth.UnitTests
 
             await apiKeyValidator
                 .Invoking(y => y.
-                    GetClaimsPrincipalFromToken("I am an invalid token", ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
+                    GetClaimsPrincipalFromToken("I am an invalid token", AirslipSchemeOptions.ApiKeyScheme,
                         AirslipSchemeOptions.ThisEnvironment))
                 .Should()
                 .ThrowAsync<ArgumentException>()

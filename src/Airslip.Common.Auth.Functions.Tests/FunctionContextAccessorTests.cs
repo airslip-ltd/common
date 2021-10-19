@@ -1,23 +1,21 @@
-using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Functions.Implementations;
 using Airslip.Common.Auth.Functions.Interfaces;
+using Airslip.Common.Auth.Functions.Tests.Helpers;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Auth.UnitTests.Helpers;
 using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using Microsoft.Azure.Functions.Worker;
-using Moq;
-using Xunit;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Moq;
 using System.Threading.Tasks;
+using Xunit;
 
-namespace Airslip.Common.Auth.UnitTests
+namespace Airslip.Common.Auth.Functions.Tests
 {
     public class FunctionContextAccessorTests
     {
@@ -42,7 +40,7 @@ namespace Airslip.Common.Auth.UnitTests
             // Mock the request data...
             Mock<HttpRequestData> mockRequestData = new(context.Object);
             HttpHeadersCollection headerCollection = new();
-            headerCollection.Add(ApiKeyAuthenticationSchemeOptions.ApiKeyHeaderField, newToken);
+            headerCollection.Add(AirslipSchemeOptions.ApiKeyHeaderField, newToken);
             mockRequestData.Setup(data => data.Headers).Returns(headerCollection);
 
             // Create the validator

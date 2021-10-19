@@ -21,8 +21,6 @@
 	</ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Airslip.Common.Auth.AspNetCore\Airslip.Common.Auth.AspNetCore.csproj" />
-      <ProjectReference Include="..\Airslip.Common.Auth.Functions\Airslip.Common.Auth.Functions.csproj" />
       <ProjectReference Include="..\Airslip.Common.Auth\Airslip.Common.Auth.csproj" />
     </ItemGroup>
 
