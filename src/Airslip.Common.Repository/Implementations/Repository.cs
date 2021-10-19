@@ -155,6 +155,94 @@ namespace Airslip.Common.Repository.Implementations
                 CurrentVersion: _mapper.Create(currentEntity)
             );
         }
+        
+        /// <summary>
+        /// Creates or updates entry in the context
+        /// </summary>
+        /// <param name="id">The id of the entry to be update, must match the id on the model</param>
+        /// <param name="model">The model with updated data</param>
+        /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
+        public async Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model)
+        {
+            // Could add some validation to see if the user is allowed to create this type of entity
+            //  as part of a rule based system...?
+            
+            // Validate the Id supplied against that of the model, bit of a crude check but could prevent some simple tampering
+            if (!id.Equals(model.Id))
+            {
+                return new FailedActionResultModel<TModel>
+                (
+                    ErrorCodes.ValidationFailed,
+                    ResultType.FailedVerification,
+                    PreviousVersion: model
+                );
+            }
+            
+            // Validate the incoming model against the registered validator
+            ValidationResultModel validationResult = await _validator.ValidateUpdate(model);
+
+            // Return a new result model if validation has failed
+            if (!validationResult.IsValid)
+            {
+                return new FailedActionResultModel<TModel>
+                (
+                    ErrorCodes.ValidationFailed,
+                    ResultType.FailedValidation,
+                    PreviousVersion: model,
+                    ValidationResult: validationResult
+                );
+            }
+            
+            // Now we load the current entity version
+            TEntity? upsertEntity = await _context.GetEntity<TEntity>(id);
+            TModel? currentModel = null, previousModel = null;
+
+            // Check to see if the entity was found within the context
+            if (upsertEntity == null)
+            {
+                // If passed, assume all ok and create a new entity
+                upsertEntity = _mapper.Create<TEntity>(model);
+
+                // Assign a few defaults, guid and who created it
+                upsertEntity.Id = string.IsNullOrWhiteSpace(upsertEntity.Id) ? 
+                    CommonFunctions.GetId() : upsertEntity.Id;
+                upsertEntity.EntityStatus = EntityStatus.Active;
+                upsertEntity.AuditInformation = new BasicAuditInformation
+                {
+                    DateCreated = DateTime.UtcNow,
+                    CreatedByUserId = _userToken.UserId
+                };
+                
+                // Create a representation as it is today
+                currentModel = _mapper.Create(upsertEntity);
+            }
+            else
+            {
+                // Create a representation as it is today
+                previousModel = _mapper.Create(upsertEntity);
+                
+                // Update the current entity with the new values passed in
+                _mapper.Update(model, upsertEntity);
+            
+                // Assign the defaults for updated flags
+                upsertEntity.AuditInformation ??= new BasicAuditInformation();
+                upsertEntity.AuditInformation.DateUpdated = DateTime.UtcNow;
+                upsertEntity.AuditInformation.UpdatedByUserId = _userToken.UserId;     
+                
+                // Create a representation as it is today
+                currentModel = _mapper.Create(upsertEntity);
+            }
+            
+            // Update in the context
+            await _context.UpsertEntity(upsertEntity);
+            
+            // Create a result containing old and new version, and return
+            return new SuccessfulActionResultModel<TModel>
+            (
+                PreviousVersion: previousModel,
+                CurrentVersion: currentModel
+            );
+        }
 
         /// <summary>
         /// Marks an existing entry as deleted
