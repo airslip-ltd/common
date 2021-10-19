@@ -24,23 +24,24 @@ namespace Airslip.Common.Repository.Implementations
         private readonly IContext _context;
         private readonly IModelValidator<TModel> _validator;
         private readonly IModelMapper<TModel> _mapper;
-        private readonly UserToken _userToken;
+        private readonly IRepositoryUserService _userService;
 
         public Repository(IContext context, IModelValidator<TModel> validator, IModelMapper<TModel> mapper, 
-            ITokenDecodeService<UserToken> tokenService)
+            IRepositoryUserService userService)
         {
             _context = context;
             _validator = validator;
             _mapper = mapper;
-            _userToken = tokenService.GetCurrentToken();
+            _userService = userService;
         }
         
         /// <summary>
         /// Add an entry to the context
         /// </summary>
         /// <param name="model">The model to add</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results, and the new model if successfully created</returns>
-        public async Task<RepositoryActionResultModel<TModel>> Add(TModel model)
+        public async Task<RepositoryActionResultModel<TModel>> Add(TModel model, string? userId = null)
         {
             // Could add some validation to see if the user is allowed to create this type of entity
             //  as part of a rule based system...?
@@ -70,7 +71,7 @@ namespace Airslip.Common.Repository.Implementations
             newEntity.AuditInformation = new BasicAuditInformation
             {
                 DateCreated = DateTime.UtcNow,
-                CreatedByUserId = _userToken.UserId
+                CreatedByUserId = userId ?? _userService.UserId
             };
             
             // Add the entity
@@ -88,8 +89,9 @@ namespace Airslip.Common.Repository.Implementations
         /// </summary>
         /// <param name="id">The id of the entry to be update, must match the id on the model</param>
         /// <param name="model">The model with updated data</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
-        public async Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model)
+        public async Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model, string? userId = null)
         {
             // Could add some validation to see if the user is allowed to create this type of entity
             //  as part of a rule based system...?
@@ -143,7 +145,7 @@ namespace Airslip.Common.Repository.Implementations
             // Assign the defaults for updated flags
             currentEntity.AuditInformation ??= new BasicAuditInformation();
             currentEntity.AuditInformation.DateUpdated = DateTime.UtcNow;
-            currentEntity.AuditInformation.UpdatedByUserId = _userToken.UserId;
+            currentEntity.AuditInformation.UpdatedByUserId = userId ?? _userService.UserId;
             
             // Update in the context
             await _context.UpdateEntity(currentEntity);
@@ -161,8 +163,9 @@ namespace Airslip.Common.Repository.Implementations
         /// </summary>
         /// <param name="id">The id of the entry to be update, must match the id on the model</param>
         /// <param name="model">The model with updated data</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
-        public async Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model)
+        public async Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model, string? userId = null)
         {
             // Could add some validation to see if the user is allowed to create this type of entity
             //  as part of a rule based system...?
@@ -210,7 +213,7 @@ namespace Airslip.Common.Repository.Implementations
                 upsertEntity.AuditInformation = new BasicAuditInformation
                 {
                     DateCreated = DateTime.UtcNow,
-                    CreatedByUserId = _userToken.UserId
+                    CreatedByUserId = userId ?? _userService.UserId
                 };
                 
                 // Create a representation as it is today
@@ -227,7 +230,7 @@ namespace Airslip.Common.Repository.Implementations
                 // Assign the defaults for updated flags
                 upsertEntity.AuditInformation ??= new BasicAuditInformation();
                 upsertEntity.AuditInformation.DateUpdated = DateTime.UtcNow;
-                upsertEntity.AuditInformation.UpdatedByUserId = _userToken.UserId;     
+                upsertEntity.AuditInformation.UpdatedByUserId = userId ?? _userService.UserId;     
                 
                 // Create a representation as it is today
                 currentModel = _mapper.Create(upsertEntity);
@@ -248,8 +251,9 @@ namespace Airslip.Common.Repository.Implementations
         /// Marks an existing entry as deleted
         /// </summary>
         /// <param name="id">The id to mark as deleted</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous version of the model if successfully deleted</returns>
-        public async Task<RepositoryActionResultModel<TModel>> Delete(string id)
+        public async Task<RepositoryActionResultModel<TModel>> Delete(string id, string? userId = null)
         {
             // Could add some validation to see if the user is allowed to delete this type of entity
             //  as part of a rule based system...?
@@ -274,7 +278,7 @@ namespace Airslip.Common.Repository.Implementations
             // Assign the defaults for updated flags
             currentEntity.AuditInformation ??= new BasicAuditInformation();
             currentEntity.AuditInformation.DateDeleted = DateTime.UtcNow;
-            currentEntity.AuditInformation.DeletedByUserId = _userToken.UserId;
+            currentEntity.AuditInformation.DeletedByUserId = userId ?? _userService.UserId;
             currentEntity.EntityStatus = EntityStatus.Deleted;
 
             // Update in the context

@@ -25,7 +25,7 @@ namespace Airslip.Common.Repository.UnitTests
             Mock<IContext> mockContext = new();
             Mock<IModelValidator<TModel>> mockModelValidator = new();
             Mock<IModelMapper<TModel>> mockModelMapper = new();
-            Mock< ITokenDecodeService<UserToken>> mockTokenDecodeService = new();
+            Mock<IRepositoryUserService> mockTokenDecodeService = new();
 
            Repository<TEntity, TModel> repo = new(
                 mockContext.Object,
