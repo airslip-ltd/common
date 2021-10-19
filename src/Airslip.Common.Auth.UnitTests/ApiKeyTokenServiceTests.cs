@@ -1,6 +1,4 @@
-using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
@@ -87,7 +85,7 @@ namespace Airslip.Common.Auth.UnitTests
             // Prepare test data...
             ITokenValidator<ApiKeyToken> tempService = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
-                ApiKeyAuthenticationSchemeOptions.ApiKeyScheme,
+                AirslipSchemeOptions.ApiKeyScheme,
                 AirslipSchemeOptions.ThisEnvironment);
 
             ITokenDecodeService<ApiKeyToken> service = HelperFunctions.

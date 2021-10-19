@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Security.Claims;
 
-namespace Airslip.Common.Auth.UnitTests.Helpers
+namespace Airslip.Common.Auth.Functions.Tests.Helpers
 {
     public static class ContextHelpers
     {

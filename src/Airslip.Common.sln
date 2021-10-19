@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.MerchantTran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Auth.AspNetCore.Tests", "Airslip.Common.Auth.AspNetCore.Tests\Airslip.Common.Auth.AspNetCore.Tests.csproj", "{2FD623B9-429E-40B4-A576-2914C08E06A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Auth.Functions.Tests", "Airslip.Common.Auth.Functions.Tests\Airslip.Common.Auth.Functions.Tests.csproj", "{7ABFAC9D-4DD0-4511-B2B1-3D0FC35AB467}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{2FD623B9-429E-40B4-A576-2914C08E06A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FD623B9-429E-40B4-A576-2914C08E06A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FD623B9-429E-40B4-A576-2914C08E06A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ABFAC9D-4DD0-4511-B2B1-3D0FC35AB467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ABFAC9D-4DD0-4511-B2B1-3D0FC35AB467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ABFAC9D-4DD0-4511-B2B1-3D0FC35AB467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ABFAC9D-4DD0-4511-B2B1-3D0FC35AB467}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

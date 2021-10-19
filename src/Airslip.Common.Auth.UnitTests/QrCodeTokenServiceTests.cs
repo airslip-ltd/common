@@ -1,13 +1,10 @@
-using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
 using Airslip.Common.Types.Enums;
 using FluentAssertions;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
@@ -89,7 +86,7 @@ namespace Airslip.Common.Auth.UnitTests
             // Prepare test data...
             ITokenValidator<QrCodeToken> tempService = HelperFunctions.GenerateValidator<QrCodeToken>(TokenType.QrCode);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
-                QrCodeAuthenticationSchemeOptions.QrCodeAuthScheme,
+                AirslipSchemeOptions.QrCodeAuthScheme,
                 AirslipSchemeOptions.ThisEnvironment);
 
             ITokenDecodeService<QrCodeToken> service = HelperFunctions.
