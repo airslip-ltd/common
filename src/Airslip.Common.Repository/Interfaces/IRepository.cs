@@ -18,31 +18,35 @@ namespace Airslip.Common.Repository.Interfaces
         /// Add an entry to the context
         /// </summary>
         /// <param name="model">The model to add</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results, and the new model if successfully created</returns>
-        Task<RepositoryActionResultModel<TModel>> Add(TModel model);
+        Task<RepositoryActionResultModel<TModel>> Add(TModel model, string? userId = null);
 
         /// <summary>
         /// Updates an existing entry in the context
         /// </summary>
         /// <param name="id">The id of the entry to be update, must match the id on the model</param>
         /// <param name="model">The model with updated data</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
-        Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model);
+        Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model, string? userId = null);
 
         /// <summary>
         /// Creates or updates entry in the context
         /// </summary>
         /// <param name="id">The id of the entry to be update, must match the id on the model</param>
         /// <param name="model">The model with updated data</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
-        Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model);
+        Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model, string? userId = null);
 
         /// <summary>
         /// Marks an existing entry as deleted
         /// </summary>
         /// <param name="id">The id to mark as deleted</param>
+        /// <param name="userId">Optional User Id overrides value held internally</param>
         /// <returns>A response model containing any validation results with previous version of the model if successfully deleted</returns>
-        Task<RepositoryActionResultModel<TModel>> Delete(string id);
+        Task<RepositoryActionResultModel<TModel>> Delete(string id, string? userId = null);
 
         /// <summary>
         /// Lookup a particular entity by Id 
