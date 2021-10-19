@@ -30,6 +30,14 @@ namespace Airslip.Common.Repository.Interfaces
         Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model);
 
         /// <summary>
+        /// Creates or updates entry in the context
+        /// </summary>
+        /// <param name="id">The id of the entry to be update, must match the id on the model</param>
+        /// <param name="model">The model with updated data</param>
+        /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
+        Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model);
+
+        /// <summary>
         /// Marks an existing entry as deleted
         /// </summary>
         /// <param name="id">The id to mark as deleted</param>
