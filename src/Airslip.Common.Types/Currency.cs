@@ -23,6 +23,11 @@ namespace Airslip.Common.Types
             return regionInfo.CurrencySymbol;
         }
 
+        private static long MakePositive(long negativeNumber) => Math.Abs(negativeNumber);
+        private static decimal MakePositive(decimal negativeNumber) => Math.Abs(negativeNumber);
+        private static long ConvertToLong(decimal value) => Convert.ToInt64(value * 100);
+        private static long ConvertToLong(double value) => Convert.ToInt64(value * 100);
+
         public static long? ConvertToUnit(string? source)
         {
             if (string.IsNullOrWhiteSpace(source))
@@ -30,28 +35,31 @@ namespace Airslip.Common.Types
 
             bool canParse = double.TryParse(source, out double value);
 
-            return canParse ? ConvertToUnit(value) : (long)value;
+            return canParse ? MakePositive(ConvertToUnit(value)!.Value) : MakePositive((long)value);
         }
-        
+
         public static long? ConvertToUnit(decimal? value)
         {
             if (value is null)
                 return null;
 
-            return Convert.ToInt64(value * 100);
+            return MakePositive(ConvertToLong(value.Value));
         }
-        
+
         public static long? ConvertToUnit(double? value)
         {
             if (value is null)
                 return null;
 
-            return Convert.ToInt64(value * 100);
+            return MakePositive(ConvertToLong(value.Value));
         }
-        
+
         public static decimal? ConvertToTwoPlacedDecimal(long? value)
         {
-            return Convert.ToDecimal(value) / 100;
+            if (value is null)
+                return null;
+
+            return MakePositive(Convert.ToDecimal(value) / 100);
         }
     }
 }
