@@ -20,7 +20,7 @@ namespace Airslip.Common.Types.Tests
         public void Can_fail_if_invalid_composite_id(string value)
         {
             bool isCompositeId = CompositeId.CheckIsComposite(value);
-            isCompositeId.Should().BeTrue();
+            isCompositeId.Should().BeFalse();
         }
     }
 }

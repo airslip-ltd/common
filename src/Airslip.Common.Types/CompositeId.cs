@@ -21,9 +21,21 @@ namespace Airslip.Common.Types
         {
             try
             {
+                if (!value.Contains("|"))
+                    return false;
+                
                 string[] splitIds = value.Split("|");
 
-                return splitIds.Select(splitId => splitId.Length > 0).FirstOrDefault();
+                if (splitIds.Length != 2)
+                    return false;
+
+                foreach (string splitId in splitIds)
+                {
+                    if (splitId.Length == 0)
+                        return false;
+                }
+
+                return true;
             }
             catch (Exception)
             {
