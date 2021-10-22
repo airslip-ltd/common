@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Airslip.Common.Types
 {
@@ -14,6 +15,20 @@ namespace Airslip.Common.Types
                 (current, key) => current + $"|{key}");
 
             return result[1..];
+        }
+        
+        public static bool CheckIsComposite(string value)
+        {
+            try
+            {
+                string[] splitIds = value.Split("|");
+
+                return splitIds.Select(splitId => splitId.Length > 0).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
