@@ -15,6 +15,13 @@ namespace Airslip.Common.Types.Transaction
         /// </summary>
         /// <example>SWAN_RETAIL</example>
         public string? Source { get; init; }
+        
+        /// <summary>
+        /// The internal id of the merchant.
+        /// </summary>
+        /// <example>2021-08-26T14:26:29+01:00</example>
+        //[Required]
+        public string? EntityId { get; init; }
 
         /// <summary>
         /// The unique ID of the transaction such as order number. Like all Airslip identifiers, the transactionNumber is case sensitive.
