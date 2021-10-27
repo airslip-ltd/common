@@ -26,6 +26,11 @@ namespace Airslip.Common.Types.Extensions
             return DateTime.SpecifyKind(date.DateTime, DateTimeKind.Utc).ToString("O");
         }
 
+        public static string ToIso8601(this DateTimeOffset datetime)
+        {
+            return datetime.ToString("O");
+        }
+
         public static DateTimeOffset GetEarliestDate(params DateTimeOffset[] dates)
         {
             return dates.Min();
@@ -39,7 +44,7 @@ namespace Airslip.Common.Types.Extensions
         public static int GetMonthsBetweenDates(DateTimeOffset startDate, DateTimeOffset endDate)
         {
             double oneMonthExact = 365.25 / 12;
-            return (int) Math.Round(endDate.Subtract(startDate).Days / oneMonthExact);
+            return (int)Math.Round(endDate.Subtract(startDate).Days / oneMonthExact);
         }
 
         public static long GetTimestamp() => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
