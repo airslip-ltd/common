@@ -7,6 +7,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="DateTimeExtensions" Version="5.5.0" />
         <PackageReference Include="Moq" Version="$(Moq)" />
         <PackageReference Include="FluentAssertions" Version="$(FluentAssertions)" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(NetTestSdk)" />
