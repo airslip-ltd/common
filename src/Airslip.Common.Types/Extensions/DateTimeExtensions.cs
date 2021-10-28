@@ -33,6 +33,9 @@ namespace Airslip.Common.Types.Extensions
         
         public static DateTime ToUtcDate(this long timestamp) =>
                     DateTimeOffset.FromUnixTimeMilliseconds(timestamp).UtcDateTime.Date;
+        
+        public static string GetTime(this long timestamp) =>
+            DateTimeOffset.FromUnixTimeMilliseconds(timestamp).UtcDateTime.TimeOfDay.ToString();
 
         public static DateTimeOffset GetEarliestDate(params DateTimeOffset[] dates)
         {

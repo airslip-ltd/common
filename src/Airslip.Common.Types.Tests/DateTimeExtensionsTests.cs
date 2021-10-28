@@ -1,6 +1,7 @@
 ﻿using System;
 using Airslip.Common.Types.Extensions;
 using DateTimeExtensions;
+using DateTimeExtensions.TimeOfDay;
 using FluentAssertions;
 using Xunit;
 
@@ -88,6 +89,17 @@ namespace Airslip.Common.Types.Tests
             DateTime utcDate = timestamp.ToUtcDate();
             DateTime expectedDate = new(2021,10,26);
             utcDate.Should().Be(expectedDate);
+        }
+        
+        [Fact]
+        public void Can_get_utc_time_only_from_timestamp()
+        {
+            // Tuesday, 26 October 2021 23:59:30
+            long timestamp = 1635292770000;
+            
+            string time = timestamp.GetTime();
+            
+            time.Should().Be("23:59:30");
         }
     }
 }
