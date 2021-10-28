@@ -78,5 +78,16 @@ namespace Airslip.Common.Types.Tests
             string expectedDate = "2021-10-25T00:00:00.0000000Z";
             iso8601Date.Should().Be(expectedDate);
         }
+        
+        [Fact]
+        public void Can_get_utc_date_only_from_timestamp()
+        {
+            // Tuesday, 26 October 2021 23:59:30
+            long timestamp = 1635292770000;
+            
+            DateTime utcDate = timestamp.ToUtcDate();
+            DateTime expectedDate = new(2021,10,26);
+            utcDate.Should().Be(expectedDate);
+        }
     }
 }
