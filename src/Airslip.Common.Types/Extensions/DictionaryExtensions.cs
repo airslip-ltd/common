@@ -17,5 +17,12 @@ namespace Airslip.Common.Types.Extensions
 
             return s;
         }
+        
+        public static Dictionary<string, TValue> ToDictionary<TValue>(this object obj)
+        {       
+            string json = Json.Serialize(obj);
+            Dictionary<string, TValue> dictionary = Json.Deserialize<Dictionary<string, TValue>>(json);   
+            return dictionary;
+        }
     }
 }
