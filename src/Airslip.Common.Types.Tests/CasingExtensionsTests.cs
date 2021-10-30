@@ -32,7 +32,9 @@ namespace Airslip.Common.Types.Tests
         
         [Theory]
         [InlineData("ICanGetAString")]
+        [InlineData("ICan_GetAString")]
         [InlineData("i-can-get-a-string")]
+        [InlineData("i_can_get_a_string")]
         [InlineData("I Can Get A String")]
         public void Can_get_kebab_case_from_string(string value)
         {
