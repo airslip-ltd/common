@@ -31,9 +31,13 @@ namespace Airslip.Common.Types.Extensions
         public static string ReadStream(this Stream stream, bool resetStream)
         {
             StreamReader sr = new(stream);
+            
+            string contents = sr.ReadToEnd();
+            
             if (resetStream)
                 stream.Position = 0;
-            return sr.ReadToEnd();
+
+            return contents;
         }
     }
 }
