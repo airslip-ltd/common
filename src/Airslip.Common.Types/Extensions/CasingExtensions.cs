@@ -13,7 +13,7 @@ namespace Airslip.Common.Types.Extensions
             if (!string.IsNullOrEmpty(str) && str.Length > 1) return char.ToLowerInvariant(str[0]) + str[1..];
             return str;
         }
-        
+
         public static string ToPascalCase(this string original)
         {
             IEnumerable<string> pascalCase = original.GetEnumerablePascalCase();
@@ -46,22 +46,24 @@ namespace Airslip.Common.Types.Extensions
                 .Select(w => lowerCaseNextToNumber.Replace(w, m => m.Value.ToUpper()))
                 .Select(w => upperCaseInside.Replace(w, m => m.Value.ToLower()));
         }
-        
-        public static string ToSnakeCase(this string str)
-            => string.Concat(str.Replace(" ", "").Select((x, i) => i > 0 && char.IsUpper(x) && !char.IsUpper(str[i-1]) ? $"_{x}" : x.ToString())).ToLower();
-        
+
+        public static string ToSnakeCase(this string str) =>
+            string.Concat(str.Replace(" ", "").Select((x, i) =>
+                i > 0 && char.IsUpper(x) && !char.IsUpper(str[i - 1]) ? $"_{x}" : x.ToString())).ToLower();
+
+        // Needs improving
         public static string ToKebabCasing(this string input)
         {
             if (string.IsNullOrEmpty(input))
                 return input;
 
             return Regex.Replace(
-                    input.Replace(" ", ""),
-                    "(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])",
-                    "-$1",
-                    RegexOptions.Compiled)
-                .Trim()
-                .ToLower();
+                input.Replace("_", "-"),
+                @"(?<!^)(?<!-)((?<=\p{Ll})\p{Lu}|\p{Lu}(?=\p{Ll}))", 
+                "-$1")
+                .ToLower()
+                .Replace(" ", "-")
+                .Replace("--", "-");
         }
     }
 }

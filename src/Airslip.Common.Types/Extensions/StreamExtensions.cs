@@ -11,5 +11,11 @@ namespace Airslip.Common.Types.Extensions
             string payload = await sr.ReadToEndAsync();
             return Json.Deserialize<T>(payload);
         }
+        
+        public static string ReadStream(this Stream requestBody)
+        {
+            StreamReader sr = new(requestBody);
+            return sr.ReadToEnd();
+        }
     }
 }
