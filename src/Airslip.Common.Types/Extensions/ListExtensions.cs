@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Airslip.Common.Types
+namespace Airslip.Common.Types.Extensions
 {
     public static class ListExtensions
     {
@@ -10,6 +10,11 @@ namespace Airslip.Common.Types
                 source.RemoveAt(0);
             
             return source;
+        }
+        
+        public static string ToCsv<T>(this string[] values)
+        {
+            return string.Join(",", values);
         }
     }
 }
