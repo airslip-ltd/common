@@ -9,6 +9,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -155,6 +156,27 @@ namespace Airslip.Common.Services.MongoDb
             await collection.UpdateOneAsync(filter, update);
 
             return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
+        }
+        
+        public void SetupIndex<TEntity>(IndexTypes indexType, string field) where TEntity : class, IEntityWithId 
+        {
+            CreateIndexOptions indexOptions = new();
+
+            IndexKeysDefinitionBuilder<TEntity> indexBuilder = Builders<TEntity>.IndexKeys;
+
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            IndexKeysDefinition<TEntity>? indexKeysDefinition = indexType switch
+            {
+                IndexTypes.Ascending => indexBuilder.Ascending(field),
+                IndexTypes.Descending => indexBuilder.Descending(field),
+                _ => throw new ArgumentOutOfRangeException(nameof(indexType), indexType, null)
+            };
+
+            collection.Indexes.CreateOneAsync(
+                new CreateIndexModel<TEntity>(
+                    indexKeysDefinition,
+                    indexOptions));
         }
     }
 }
