@@ -10,7 +10,7 @@
         public const string DecimalValidation = "must be a valid decimal";
         public const string MustBeGreaterThanZero = "must be a value higher than 0";
         public const string MustBeValidEmail = "must be a valid email";
-        public const string PropertyMustBeOneOf = "{PropertyName} must be one of {Validation}";
+        public const string PropertyMustBeOneOf = "{PropertyName} must be one of ";
         
         public const string PreviouslyAuthorisedConsent =
             "The user must have a previously authorised consent for this institution. Use CreateAccountAuthorisation endpoint and complete the process to retrieve";
