@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.MongoDb
 {
-        public abstract class AirslipMongoDbBase
+    public abstract class AirslipMongoDbBase
     {
         protected readonly IMongoDatabase Database;
 
@@ -25,17 +25,17 @@ namespace Airslip.Common.Services.MongoDb
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
 
             ConventionRegistry.Register(
-                name: "CustomConventionPack", 
+                name: "CustomConventionPack",
                 conventions: new ConventionPack
                 {
                     new CamelCaseElementNameConvention()
                 },
                 filter: t => true);
-            
+
             // Enum as string
             BsonSerializer.RegisterSerializer(new EnumSerializer<AirslipUserType>(BsonType.String));
         }
-        
+
         protected static void MapEntityWithId<TType>() where TType : IEntityWithId
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(TType)))
@@ -47,12 +47,12 @@ namespace Airslip.Common.Services.MongoDb
                 });
             }
         }
-        
+
         public IMongoCollection<TType> CollectionByType<TType>()
         {
             return Database.GetCollection<TType>(DeriveCollectionName<TType>());
         }
-        
+
         public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity)
             where TEntity : class, IEntityWithId
         {
@@ -97,10 +97,9 @@ namespace Airslip.Common.Services.MongoDb
 
             return collection.AsQueryable();
         }
-        
+
         public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
         {
-            
             // Find appropriate collection
             IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
 
@@ -119,9 +118,9 @@ namespace Airslip.Common.Services.MongoDb
         {
             // Map classes
             MapEntityWithId<TType>();
-            
+
             string collectionName = DeriveCollectionName<TType>();
-            
+
             if (!_checkCollection(collectionName))
                 Database.CreateCollection(collectionName);
         }
@@ -130,13 +129,32 @@ namespace Airslip.Common.Services.MongoDb
         {
             BsonDocument filter = new("name", collectionName);
             IAsyncCursor<BsonDocument> collectionCursor =
-                Database.ListCollections(new ListCollectionsOptions {Filter = filter});
+                Database.ListCollections(new ListCollectionsOptions { Filter = filter });
             return collectionCursor.Any();
         }
 
         private static string DeriveCollectionName<TType>()
         {
             return $"{typeof(TType).Name}s".ToCamelCase();
+        }
+
+        public async Task<TEntity> Update<TEntity>(
+            string id, 
+            string field, 
+            string value)
+            where TEntity : class, IEntityWithId
+        {
+            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+
+            FilterDefinition<TEntity> filter = Builders<TEntity>.Filter
+                .Eq(bankTransaction => bankTransaction.Id, id);
+
+            UpdateDefinition<TEntity> update = Builders<TEntity>.Update
+                .Set(field, value);
+
+            await collection.UpdateOneAsync(filter, update);
+
+            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
     }
 }

@@ -62,5 +62,19 @@ namespace Airslip.Common.Repository.Interfaces
         /// <typeparam name="TEntity">The entity type</typeparam>
         /// <returns>The created entity</returns>
         Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId;
+
+        /// <summary>
+        /// Updates an entity within the context, assumes all validation has already passed
+        /// </summary>
+        /// <param name="id">The Id of the entity we wish to update</param>
+        /// <param name="field">The target field we want to update</param>
+        /// <param name="value">The new value of the field we want to update</param>
+        /// <typeparam name="TEntity">The entity type</typeparam>
+        /// <returns>The entity after being added to the context</returns>
+        Task<TEntity> Update<TEntity>(
+            string id,
+            string field,
+            string value)
+            where TEntity : class, IEntityWithId;
     }
 }
