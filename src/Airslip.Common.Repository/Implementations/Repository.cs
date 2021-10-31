@@ -80,6 +80,7 @@ namespace Airslip.Common.Repository.Implementations
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
+                ResultType.Success,
                 _mapper.Create(newEntity)
             );
         }
@@ -314,10 +315,15 @@ namespace Airslip.Common.Repository.Implementations
                     ResultType.NotFound
                 );
             }
-                        
+            
+            ResultType resultType = currentEntity.EntityStatus == EntityStatus.Active
+                             ? ResultType.Success
+                             : ResultType.NotActive;
+            
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
+                resultType,
                 _mapper.Create(currentEntity)
             );
         }
