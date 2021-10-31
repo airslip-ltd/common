@@ -12,7 +12,7 @@ namespace Airslip.Common.Types.Extensions
             return source;
         }
         
-        public static string ToCsv<T>(this string[] values)
+        public static string ToCsv(this string[] values)
         {
             return string.Join(",", values);
         }

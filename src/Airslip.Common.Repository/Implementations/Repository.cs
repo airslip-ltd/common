@@ -157,7 +157,7 @@ namespace Airslip.Common.Repository.Implementations
                 CurrentVersion: _mapper.Create(currentEntity)
             );
         }
-        
+
         /// <summary>
         /// Creates or updates entry in the context
         /// </summary>
