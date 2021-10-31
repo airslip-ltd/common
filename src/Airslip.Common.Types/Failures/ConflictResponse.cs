@@ -16,5 +16,17 @@ namespace Airslip.Common.Types.Failures
                 })
         {
         }
+        
+        public ConflictResponse(string attribute, string value)
+            : base(
+                "RESOURCE_EXISTS",
+                $"{value} already exists",
+                new Dictionary<string, object>
+                {
+                    { "Attribute", attribute },
+                    { "Value", value }
+                })
+        {
+        }
     }
 }
