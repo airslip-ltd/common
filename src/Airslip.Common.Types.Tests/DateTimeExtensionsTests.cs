@@ -1,7 +1,5 @@
 ﻿using System;
 using Airslip.Common.Types.Extensions;
-using DateTimeExtensions;
-using DateTimeExtensions.TimeOfDay;
 using FluentAssertions;
 using Xunit;
 
@@ -21,7 +19,7 @@ namespace Airslip.Common.Types.Tests
             dates[1] = minDate;
             dates[2] = maxDate;
 
-            long dateInEpoch = Common.Types.Extensions.DateTimeExtensions.GetEarliestDateInEpoch(dates);
+            long dateInEpoch = DateTimeExtensions.GetEarliestDateInEpoch(dates);
             dateInEpoch.Should().Be(1514764800000);
         }
         
@@ -37,7 +35,7 @@ namespace Airslip.Common.Types.Tests
             dates[1] = maxDate;
             dates[2] = minDate;
 
-            DateTimeOffset date = Common.Types.Extensions.DateTimeExtensions.GetEarliestDate(dates);
+            DateTimeOffset date = DateTimeExtensions.GetEarliestDate(dates);
             date.Should().Be(new DateTimeOffset(new DateTime(2018, 01,01)));
         }
         
@@ -47,7 +45,7 @@ namespace Airslip.Common.Types.Tests
             DateTimeOffset startDate = DateTimeOffset.Parse("2018-02-28");
             DateTimeOffset endDate = DateTimeOffset.Parse("2020-02-13");
 
-            int monthCount = Common.Types.Extensions.DateTimeExtensions.GetMonthsBetweenDates(startDate, endDate);
+            int monthCount = DateTimeExtensions.GetMonthsBetweenDates(startDate, endDate);
             monthCount.Should().Be(23);
         }
         
@@ -68,18 +66,7 @@ namespace Airslip.Common.Types.Tests
             string expectedDate = "2021-10-27T09:10:54.7760000Z";
             iso8601Date.Should().Be(expectedDate);
         }
-        
-        [Fact]
-        public void Can_convert_datetime_from_epoch_to_iso8601()
-        {
-            DateTime previousRequestDate = DateTimeOffset.FromUnixTimeMilliseconds(1635292770000).DateTime;
-            DateTime date = previousRequestDate.AddWorkingDays(-1);
-            
-            string iso8601Date = date.Date.ToIso8601();
-            string expectedDate = "2021-10-25T00:00:00.0000000Z";
-            iso8601Date.Should().Be(expectedDate);
-        }
-        
+
         [Fact]
         public void Can_get_utc_date_only_from_timestamp()
         {
