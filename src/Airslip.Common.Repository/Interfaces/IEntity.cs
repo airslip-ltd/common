@@ -9,5 +9,7 @@ namespace Airslip.Common.Repository.Interfaces
     public interface IEntity : IEntityWithId
     {
         BasicAuditInformation? AuditInformation { get; set; }
+        
+        EntityStatus EntityStatus { get; set; }
     }
 }
