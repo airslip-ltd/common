@@ -3,16 +3,18 @@ using Airslip.Common.Repository.Extensions;
 using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Airslip.Common.Repository
 {
     public static class Services
     {
-        public static void ConfigureServices(IServiceCollection serviceCollection,
+        public static void ConfigureServices(IServiceCollection serviceCollection, Type modelDeliveryServiceType,
             RepositoryUserType repositoryUserType)
         {
             serviceCollection
-                .AddScoped(typeof(IRepository<,>), typeof(Implementations.Repository<,>));
+                .AddSingleton(typeof(IModelDeliveryService<>), modelDeliveryServiceType)
+                .AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             switch (repositoryUserType)
             {

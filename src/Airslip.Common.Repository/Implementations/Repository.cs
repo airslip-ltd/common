@@ -1,5 +1,3 @@
-using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Auth.Models;
 using Airslip.Common.Repository.Data;
 using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
@@ -24,14 +22,17 @@ namespace Airslip.Common.Repository.Implementations
         private readonly IContext _context;
         private readonly IModelValidator<TModel> _validator;
         private readonly IModelMapper<TModel> _mapper;
+        private readonly IModelDeliveryService<TModel> _deliveryService;
         private readonly IRepositoryUserService _userService;
 
-        public Repository(IContext context, IModelValidator<TModel> validator, IModelMapper<TModel> mapper, 
+        public Repository(IContext context, IModelValidator<TModel> validator, 
+            IModelMapper<TModel> mapper, IModelDeliveryService<TModel> deliveryService, 
             IRepositoryUserService userService)
         {
             _context = context;
             _validator = validator;
             _mapper = mapper;
+            _deliveryService = deliveryService;
             _userService = userService;
         }
         
@@ -77,10 +78,16 @@ namespace Airslip.Common.Repository.Implementations
             // Add the entity
             await _context.AddEntity(newEntity);
             
+            // Build model based on created entity
+            TModel newModel = _mapper.Create(newEntity);
+            
+            // Deliver model using delivery service
+            await _deliveryService.Deliver(newModel);
+            
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                _mapper.Create(newEntity)
+                newModel
             );
         }
 
@@ -150,11 +157,17 @@ namespace Airslip.Common.Repository.Implementations
             // Update in the context
             await _context.UpdateEntity(currentEntity);
             
+            // Build model based on created entity
+            TModel newModel = _mapper.Create(currentEntity);
+            
+            // Deliver model using delivery service
+            await _deliveryService.Deliver(newModel);
+            
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
                 PreviousVersion: currentModel,
-                CurrentVersion: _mapper.Create(currentEntity)
+                CurrentVersion: newModel
             );
         }
 
@@ -239,6 +252,9 @@ namespace Airslip.Common.Repository.Implementations
             // Update in the context
             await _context.UpsertEntity(upsertEntity);
             
+            // Deliver model using delivery service
+            await _deliveryService.Deliver(currentModel);
+            
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
@@ -283,6 +299,12 @@ namespace Airslip.Common.Repository.Implementations
 
             // Update in the context
             await _context.UpdateEntity(currentEntity);
+            
+            // Build model based on created entity
+            TModel newModel = _mapper.Create(currentEntity);
+            
+            // Deliver model using delivery service
+            await _deliveryService.Deliver(newModel);
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>

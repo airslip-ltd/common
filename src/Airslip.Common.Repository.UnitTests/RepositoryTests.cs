@@ -26,11 +26,13 @@ namespace Airslip.Common.Repository.UnitTests
             Mock<IModelValidator<TModel>> mockModelValidator = new();
             Mock<IModelMapper<TModel>> mockModelMapper = new();
             Mock<IRepositoryUserService> mockTokenDecodeService = new();
+            Mock<IModelDeliveryService<TModel>> mockModelDeliveryService = new();
 
            Repository<TEntity, TModel> repo = new(
                 mockContext.Object,
                 mockModelValidator.Object,
                 mockModelMapper.Object,
+                mockModelDeliveryService.Object,
                 mockTokenDecodeService.Object);
 
           RepositoryActionResultModel<TModel> delete = await repo.Delete("unknown-id");
