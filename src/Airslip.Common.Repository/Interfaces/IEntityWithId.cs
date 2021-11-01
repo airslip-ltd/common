@@ -1,5 +1,3 @@
-using Airslip.Common.Repository.Enums;
-
 namespace Airslip.Common.Repository.Interfaces
 {
     /// <summary>
@@ -8,7 +6,6 @@ namespace Airslip.Common.Repository.Interfaces
     public interface IEntityWithId
     {
         string Id { get; set; }
-        EntityStatus EntityStatus { get; set; }
     }
     
     /// <summary>
