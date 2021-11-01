@@ -1,4 +1,4 @@
-name: Matching - Pack and Publish
+name: Event Hub - Pack and Publish
 
 on: 
   workflow_dispatch:
