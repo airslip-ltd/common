@@ -1,5 +1,4 @@
-﻿using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
+﻿using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
@@ -74,10 +73,7 @@ namespace Airslip.Common.Services.MongoDb
             // Find appropriate collection
             IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
 
-            return await collection.Find(user => 
-                    user.Id == id && 
-                    user.EntityStatus == EntityStatus.Active)
-                .FirstOrDefaultAsync();
+            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId

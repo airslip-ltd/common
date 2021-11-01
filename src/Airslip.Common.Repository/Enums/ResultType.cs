@@ -5,7 +5,6 @@ namespace Airslip.Common.Repository.Enums
         Success = 1,
         FailedValidation = 2,
         FailedVerification = 3,
-        NotFound = 4,
-        NotActive = 5
+        NotFound = 4
     }
 }
