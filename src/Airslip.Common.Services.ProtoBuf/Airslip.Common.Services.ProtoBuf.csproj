@@ -12,7 +12,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <PackageReference Include="Airslip.Common.Types" Version="3.2.20" />
+	  <PackageReference Include="Airslip.Common.Types" Version="3.4.3" />
 	  <PackageReference Include="protobuf-net" Version="3.0.101" />
 	</ItemGroup>
 

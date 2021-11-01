@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Airslip.Common.Types.Matching.Configuration
+namespace Airslip.Common.Matching.Configuration
 {
     public class MatchRoutingSettings
     {

@@ -1,6 +1,6 @@
-using Airslip.Common.Types.Matching.Enum;
+using Airslip.Common.Matching.Enum;
 
-namespace Airslip.Common.Types.Matching.Configuration
+namespace Airslip.Common.Matching.Configuration
 {
     public class MatchRoute
     {

@@ -1,8 +1,8 @@
+using Airslip.Common.Matching.Enum;
 using Airslip.Common.Types.Interfaces;
-using Airslip.Common.Types.Matching.Enum;
 using Airslip.Common.Types.Transaction;
 
-namespace Airslip.Common.Types.Matching.Response
+namespace Airslip.Common.Matching.Response
 {
     public class TransactionResponse : ISuccess
     {

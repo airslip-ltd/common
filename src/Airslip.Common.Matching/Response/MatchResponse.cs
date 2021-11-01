@@ -1,7 +1,7 @@
 ﻿using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Types.Validator;
 
-namespace Airslip.Common.Types.Matching.Response
+namespace Airslip.Common.Matching.Response
 {
     public record MatchResponse : ISuccess
     {

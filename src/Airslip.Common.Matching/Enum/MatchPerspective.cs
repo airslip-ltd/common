@@ -1,4 +1,4 @@
-namespace Airslip.Common.Types.Matching.Enum
+namespace Airslip.Common.Matching.Enum
 {
     public enum MatchPerspective
     {
