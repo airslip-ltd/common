@@ -126,7 +126,7 @@ namespace Airslip.Common.Repository.Implementations
             TEntity? currentEntity = await _context.GetEntity<TEntity>(id);
             
             // Check to see if the entity was found within the context
-            if (currentEntity == null)
+            if (currentEntity == null || currentEntity.EntityStatus == EntityStatus.Deleted)
             {
                 // If not, return a not found message
                 return new FailedActionResultModel<TModel>
@@ -198,10 +198,10 @@ namespace Airslip.Common.Repository.Implementations
             
             // Now we load the current entity version
             TEntity? upsertEntity = await _context.GetEntity<TEntity>(id);
-            TModel? currentModel = null, previousModel = null;
+            TModel? currentModel, previousModel = null;
 
             // Check to see if the entity was found within the context
-            if (upsertEntity == null)
+            if (upsertEntity == null || upsertEntity.EntityStatus == EntityStatus.Deleted)
             {
                 // If passed, assume all ok and create a new entity
                 upsertEntity = _mapper.Create<TEntity>(model);
@@ -262,7 +262,7 @@ namespace Airslip.Common.Repository.Implementations
             TEntity? currentEntity = await _context.GetEntity<TEntity>(id);
             
             // Check to see if the entity was found within the context
-            if (currentEntity == null)
+            if (currentEntity == null || currentEntity.EntityStatus == EntityStatus.Deleted)
             {
                 // If not, return a not found message
                 return new FailedActionResultModel<TModel>
