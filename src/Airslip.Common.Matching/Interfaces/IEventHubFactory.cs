@@ -1,6 +1,4 @@
-using Airslip.Common.Matching.Interfaces;
-
-namespace Airslip.Matching.Yapily.Core.Interfaces
+namespace Airslip.Common.Matching.Interfaces
 {
     public interface IEventHubFactory
     {

@@ -1,5 +1,5 @@
-using Airslip.Common.Types.Matching.Data;
-using Airslip.Common.Types.Matching.Enum;
+using Airslip.Common.Matching.Data;
+using Airslip.Common.Matching.Enum;
 
 namespace Airslip.Common.Matching.Interfaces
 {

@@ -1,5 +1,5 @@
+using Airslip.Common.Matching.Data;
 using Airslip.Common.Matching.Enum;
-using Airslip.Common.Types.Matching.Data;
 using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
