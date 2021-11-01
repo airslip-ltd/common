@@ -7,7 +7,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="$(FluentValidation)" />
-		<PackageReference Include="Airslip.Common.Types" Version="3.4.3" />
+		<PackageReference Include="Airslip.Common.Types" Version="3.5.0" />
 		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
 	</ItemGroup>
