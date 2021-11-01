@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Airslip.Common.Types" Version="3.2.20" />
+      <PackageReference Include="Airslip.Common.Types" Version="3.4.3" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetVersion)" />
       <PackageReference Include="MongoDB.Driver" Version="$(MongoDb)" />
       <PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />

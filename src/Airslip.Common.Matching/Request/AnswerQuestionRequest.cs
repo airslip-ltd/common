@@ -1,4 +1,4 @@
-namespace Airslip.Common.Types.Matching.Request
+namespace Airslip.Common.Matching.Request
 {
     public record AnswerQuestionRequest(string QuestionId, string Answer);
 }

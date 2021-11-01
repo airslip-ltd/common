@@ -1,7 +1,7 @@
-using Airslip.Common.Types.Matching.Enum;
+using Airslip.Common.Matching.Enum;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Types.Matching.Response
+namespace Airslip.Common.Matching.Response
 {
     public class QuestionDetailResponse
     {

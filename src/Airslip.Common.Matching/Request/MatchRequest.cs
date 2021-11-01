@@ -2,7 +2,7 @@
 using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Types.Matching.Request
+namespace Airslip.Common.Matching.Request
 {
     public class MatchRequest
     {
