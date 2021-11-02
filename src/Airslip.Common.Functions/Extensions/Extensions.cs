@@ -12,6 +12,7 @@ namespace Airslip.Common.Functions.Extensions
             return builder
                 .AddJsonFile("appSettings.json", false)
                 .AddJsonFile($"appSettings.{EnvironmentName}.json", true)
+                .AddJsonFile("appSettings.local.json", true)
                 .AddEnvironmentVariables()
                 .AddCommandLine(args);
         }
