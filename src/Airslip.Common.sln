@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.Eve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.EventHub.UnitTests", "Airslip.Common.Services.EventHub.UnitTests\Airslip.Common.Services.EventHub.UnitTests.csproj", "{AB4B1291-BF85-4ADE-8291-01E01B236EBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.MongoDb.Tests", "Airslip.Common.Services.MongoDb.Tests\Airslip.Common.Services.MongoDb.Tests.csproj", "{DAF8A01A-A22E-43FF-87DC-AC9E402BB355}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{AB4B1291-BF85-4ADE-8291-01E01B236EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB4B1291-BF85-4ADE-8291-01E01B236EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB4B1291-BF85-4ADE-8291-01E01B236EBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAF8A01A-A22E-43FF-87DC-AC9E402BB355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAF8A01A-A22E-43FF-87DC-AC9E402BB355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAF8A01A-A22E-43FF-87DC-AC9E402BB355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAF8A01A-A22E-43FF-87DC-AC9E402BB355}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

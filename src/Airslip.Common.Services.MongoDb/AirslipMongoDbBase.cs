@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.MongoDb
 {
-    public abstract class AirslipMongoDbBase
+    public abstract partial class AirslipMongoDbBase : IContext
     {
         protected readonly IMongoDatabase Database;
 
@@ -54,65 +54,12 @@ namespace Airslip.Common.Services.MongoDb
             return Database.GetCollection<TType>(DeriveCollectionName<TType>());
         }
 
-        public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity)
-            where TEntity : class, IEntityWithId
-        {
-            // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
-
-            // Add entity to collection
-            await collection.InsertOneAsync(newEntity);
-
-            // Return the added entity - likely to be the same object
-            return newEntity;
-        }
-
-        public async Task<TEntity?> GetEntity<TEntity>(string id)
-            where TEntity : class, IEntityWithId
-        {
-            // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
-
-            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
-        }
-
-        public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
-        {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
-
-            await collection.ReplaceOneAsync(user => user.Id == updatedEntity.Id, updatedEntity);
-
-            return updatedEntity;
-        }
-
-        public Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters)
-            where TEntity : class, IEntityWithId
-        {
-            throw new System.NotImplementedException();
-        }
-
         public IQueryable<TEntity> QueryableOf<TEntity>()
             where TEntity : class
         {
             IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
 
             return collection.AsQueryable();
-        }
-
-        public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
-        {
-            // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
-
-            // Add entity to collection
-            await collection.ReplaceOneAsync(
-                entity => entity.Id == newEntity.Id, newEntity, new ReplaceOptions
-                {
-                    IsUpsert = true
-                });
-
-            // Return the added entity - likely to be the same object
-            return newEntity;
         }
 
         protected void CreateCollection<TType>() where TType : IEntityWithId
@@ -137,25 +84,6 @@ namespace Airslip.Common.Services.MongoDb
         private static string DeriveCollectionName<TType>()
         {
             return $"{typeof(TType).Name}s".ToCamelCase();
-        }
-
-        public async Task<TEntity> Update<TEntity>(
-            string id, 
-            string field, 
-            string value)
-            where TEntity : class, IEntityWithId
-        {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
-
-            FilterDefinition<TEntity> filter = Builders<TEntity>.Filter
-                .Eq(bankTransaction => bankTransaction.Id, id);
-
-            UpdateDefinition<TEntity> update = Builders<TEntity>.Update
-                .Set(field, value);
-
-            await collection.UpdateOneAsync(filter, update);
-
-            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
         
         public void SetupIndex<TEntity>(IndexTypes indexType, string field) where TEntity : class, IEntityWithId 
