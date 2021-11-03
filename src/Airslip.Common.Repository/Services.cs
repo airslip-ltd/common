@@ -9,11 +9,10 @@ namespace Airslip.Common.Repository
 {
     public static class Services
     {
-        public static void ConfigureServices(IServiceCollection serviceCollection, Type modelDeliveryServiceType,
+        public static void ConfigureServices(IServiceCollection serviceCollection, 
             RepositoryUserType repositoryUserType)
         {
             serviceCollection
-                .AddSingleton(typeof(IModelDeliveryService<>), modelDeliveryServiceType)
                 .AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             switch (repositoryUserType)
