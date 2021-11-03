@@ -16,5 +16,10 @@ namespace Airslip.Common.Types.Extensions
         {
             return string.Join(",", values);
         }
+        
+        public static string ToCsv(this IEnumerable<string> values)
+        {
+            return string.Join(",", values);
+        }
     }
 }
