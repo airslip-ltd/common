@@ -36,6 +36,14 @@ namespace Airslip.Common.Repository.Implementations
             _userService = userService;
         }
         
+        public Repository(IContext context, IModelValidator<TModel> validator, 
+            IModelMapper<TModel> mapper,  
+            IRepositoryUserService userService) : this(context, validator, mapper, 
+            new NullModelDeliveryService<TModel>(), userService)
+        {
+            
+        }
+        
         /// <summary>
         /// Add an entry to the context
         /// </summary>

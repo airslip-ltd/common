@@ -15,6 +15,8 @@
 	<ItemGroup>
 		<PackageReference Include="Airslip.Common.Repository" Version="1.6.2" />
 		<PackageReference Include="Azure.Messaging.EventHubs" Version="5.6.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
 		<PackageReference Include="Serilog" Version="2.10.0" />
 	</ItemGroup>
 </Project>
