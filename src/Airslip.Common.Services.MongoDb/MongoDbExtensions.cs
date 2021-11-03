@@ -59,7 +59,12 @@ namespace Airslip.Common.Services.MongoDb
 
         public static BsonRegularExpression SearchPartially(string value)
         {
-            return new BsonRegularExpression(Regex.Escape(value), "i"); //RegexOptions.IgnoreCase 
+            return new BsonRegularExpression(Regex.Escape(value), "i"); //RegexOptions.IgnoreCase
+        }
+        
+        public static BsonRegularExpression SearchCaseInsensitive(string value)
+        {
+            return new BsonRegularExpression("/^" + value + "$/i");
         }
     }
 }
