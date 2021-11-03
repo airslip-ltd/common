@@ -1,5 +1,6 @@
 ﻿using Airslip.Common.Types.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -62,6 +63,13 @@ namespace Airslip.Common.Types.Extensions
         public static Stream ToStream(this string s, Encoding encoding)
         {
             return new MemoryStream(encoding.GetBytes(s));
+        }
+        
+        public static IEnumerable<string> SplitBy(this string value, string character)
+        {
+            List<string> splitArray = value.Split(character).ToList();
+
+            return splitArray.Select(s => s.Trim());
         }
     }
 }
