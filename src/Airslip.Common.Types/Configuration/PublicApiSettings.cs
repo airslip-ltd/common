@@ -1,8 +1,9 @@
+using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Types.Configuration
 {
-    public class PublicApiSettings
+    public class PublicApiSettings : ISettingWithDictionary<PublicApiSetting>
     {
         public PublicApiSetting Base { get; set; } = new();
         public PublicApiSetting? MerchantTransactions { get; set; }

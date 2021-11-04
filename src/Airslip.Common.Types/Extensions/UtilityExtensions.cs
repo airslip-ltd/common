@@ -1,4 +1,5 @@
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,13 +14,14 @@ namespace Airslip.Common.Types.Extensions
             return ((IList) values).Contains(value);
         }
 
-        public static PublicApiSetting GetSettingByName(this PublicApiSettings settings, string name)
+        public static TReturnType GetSettingByName<TBaseType, TReturnType>(this TBaseType settings, string name)
+        where TBaseType : ISettingWithDictionary<TReturnType>
         {
-            KeyValuePair<string, PublicApiSetting>? result = settings.Settings?
+            KeyValuePair<string, TReturnType>? result = settings.Settings?
                 .FirstOrDefault(o => o.Key.Equals(name));
             
             if (result == null)
-                throw new ArgumentException($"PublicApiSettings:Settings:{name} " +
+                throw new ArgumentException($"{nameof(TBaseType)}:Settings:{name} " +
                                             $"section missing from appSettings", name);
 
             return result.Value.Value;
