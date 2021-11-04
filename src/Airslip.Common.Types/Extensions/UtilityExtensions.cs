@@ -14,17 +14,21 @@ namespace Airslip.Common.Types.Extensions
             return ((IList) values).Contains(value);
         }
 
-        public static TReturnType GetSettingByName<TBaseType, TReturnType>(this TBaseType settings, string name)
-        where TBaseType : ISettingWithDictionary<TReturnType>
+        public static TReturnType GetSettingByName<TReturnType>(this SettingCollection<TReturnType> settings, string name)
         {
             KeyValuePair<string, TReturnType>? result = settings.Settings?
                 .FirstOrDefault(o => o.Key.Equals(name));
             
             if (result == null)
-                throw new ArgumentException($"{nameof(TBaseType)}:Settings:{name} " +
+                throw new ArgumentException($"{nameof(TReturnType)}:Settings:{name} " +
                                             $"section missing from appSettings", name);
 
             return result.Value.Value;
+        }
+
+        public static PublicApiSetting GetSettingByName(this PublicApiSettings settings, string name)
+        {
+            return settings.GetSettingByName<PublicApiSetting>(name);
         }
         
         public static string ToBaseUri(this PublicApiSetting setting)
