@@ -1,7 +1,7 @@
 ﻿using Airslip.Common.Types;
-using Airslip.Common.Types.Extensions;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Utilities.Extensions;
 using FluentValidation;
 using FluentValidation.Results;
 using System.Linq;
