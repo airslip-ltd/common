@@ -1,4 +1,5 @@
 using Airslip.Common.Types.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,6 +48,13 @@ namespace Airslip.Common.Utilities.Extensions
             if (fromValue.EndsWith(removeValue)) fromValue = fromValue.Remove(fromValue.Length - 1, 1);
             if (fromValue.StartsWith(removeValue)) fromValue = fromValue[1..];
             return fromValue;
+        }
+        
+        public static T GetConfigurationSection<T>(IConfiguration configuration)
+        {
+            string className = typeof(T).Name;
+            IConfigurationSection configurationSection = configuration.GetSection(className);
+            return configurationSection.Get<T>();
         }
     }
 }
