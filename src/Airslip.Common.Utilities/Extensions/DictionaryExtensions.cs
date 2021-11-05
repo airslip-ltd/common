@@ -1,4 +1,3 @@
-using Airslip.Common.Types;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Utilities.Extensions
