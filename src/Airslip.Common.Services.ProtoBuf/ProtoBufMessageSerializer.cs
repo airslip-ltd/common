@@ -1,6 +1,6 @@
-using Airslip.Common.Types;
-using Airslip.Common.Types.Extensions;
-using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Utilities;
+using Airslip.Common.Utilities.Extensions;
+using Airslip.Common.Utilities.Interfaces;
 using ProtoBuf;
 using ProtoBuf.Meta;
 using System;
