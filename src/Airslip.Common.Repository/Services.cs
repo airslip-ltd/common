@@ -1,9 +1,7 @@
 using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Extensions;
 using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Airslip.Common.Repository
 {
