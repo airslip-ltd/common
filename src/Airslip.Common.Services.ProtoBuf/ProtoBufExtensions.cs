@@ -1,4 +1,4 @@
-using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Utilities.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
