@@ -3,7 +3,7 @@ using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
-using Airslip.Common.Types;
+using Airslip.Common.Utilities;
 using System;
 using System.Threading.Tasks;
 
