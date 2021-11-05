@@ -1,6 +1,7 @@
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Utilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
