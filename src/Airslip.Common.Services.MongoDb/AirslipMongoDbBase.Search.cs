@@ -1,15 +1,6 @@
 ﻿using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
-using Airslip.Common.Types.Configuration;
-using Airslip.Common.Types.Enums;
-using Airslip.Common.Types.Extensions;
-using Microsoft.Extensions.Options;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
