@@ -1,4 +1,3 @@
-using Airslip.Common.Auth.AspNetCore.Configuration;
 using Airslip.Common.Auth.AspNetCore.Interfaces;
 using Airslip.Common.Auth.AspNetCore.Schemes;
 using Airslip.Common.Auth.Data;
@@ -6,12 +5,8 @@ using Airslip.Common.Auth.Exceptions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

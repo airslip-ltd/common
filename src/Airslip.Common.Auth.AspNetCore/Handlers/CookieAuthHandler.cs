@@ -1,6 +1,5 @@
 using Airslip.Common.Auth.AspNetCore.Interfaces;
 using Airslip.Common.Auth.AspNetCore.Schemes;
-using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;

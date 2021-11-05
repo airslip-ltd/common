@@ -9,7 +9,7 @@ using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Types.Configuration;
-using Airslip.Common.Types.Extensions;
+using Airslip.Common.Utilities.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
