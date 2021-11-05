@@ -1,8 +1,8 @@
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.EventHub.Attributes;
 using Airslip.Common.Services.EventHub.Extensions;
-using Airslip.Common.Types;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Utilities;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
 using Microsoft.Extensions.Options;
