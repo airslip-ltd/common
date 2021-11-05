@@ -1,4 +1,5 @@
 using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Utilities.Models;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -44,8 +45,9 @@ namespace Airslip.Common.Utilities.Http
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
 
-        private static async Task<HttpRequestResult<TResponse>> _sendRequest<TResponse>(HttpClient httpClient, HttpRequestMessage httpRequestMessage, 
-            CancellationToken cancellationToken) where TResponse : class, IResponse
+        private static async Task<HttpRequestResult<TResponse>> _sendRequest<TResponse>(HttpClient httpClient, 
+            HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken) 
+            where TResponse : class, IResponse
         {
             HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
@@ -53,16 +55,12 @@ namespace Airslip.Common.Utilities.Http
 
             if (response.IsSuccessStatusCode)
             {
-                return new HttpRequestResult<TResponse>(response.StatusCode, content, 
+                return new HttpRequestResult<TResponse>(response.IsSuccessStatusCode, response.StatusCode, content, 
                     ValidContent(content) ? Json.Deserialize<TResponse>(content) : null);
             }
 
-            return new HttpRequestResult<TResponse>(response.StatusCode, content);
+            return new HttpRequestResult<TResponse>(response.IsSuccessStatusCode, response.StatusCode, content);
         }
-        
-
-        public record HttpRequestResult<TResponse>(HttpStatusCode StatusCode, 
-            string Content, TResponse? response = null) where TResponse : class, IResponse;
 
         private static bool ValidContent(string content)
         { 
