@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Airslip.Common.Types.Hateoas
 {
     public abstract class LinkResourceBase : ILinkResourceBase
     {
-        [JsonProperty("links")] public List<Link> Links { get; set; } = new();
+        public List<Link> Links { get; set; } = new();
 
         public virtual T AddHateoasLinks<T>(string baseUri, params string[] identifiers) where T : class
         {
