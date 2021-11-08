@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Utilities", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Utilities.UnitTests", "Airslip.Common.Utilities.UnitTests\Airslip.Common.Utilities.UnitTests.csproj", "{D7D6F11C-78BC-4EDC-B0D3-FB44E19C8531}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Security", "Airslip.Common.Security\Airslip.Common.Security.csproj", "{465CCF25-37BB-4647-9E1D-631FB192C601}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{D7D6F11C-78BC-4EDC-B0D3-FB44E19C8531}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7D6F11C-78BC-4EDC-B0D3-FB44E19C8531}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7D6F11C-78BC-4EDC-B0D3-FB44E19C8531}.Release|Any CPU.Build.0 = Release|Any CPU
+		{465CCF25-37BB-4647-9E1D-631FB192C601}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{465CCF25-37BB-4647-9E1D-631FB192C601}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{465CCF25-37BB-4647-9E1D-631FB192C601}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{465CCF25-37BB-4647-9E1D-631FB192C601}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
