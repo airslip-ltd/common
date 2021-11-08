@@ -1,10 +1,13 @@
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Testing;
 using Airslip.Common.Types;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Utilities;
+using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,8 +20,8 @@ namespace Airslip.Common.Services.MongoDb.Tests
 
         public async Task InitializeAsync()
         {
-            IConfiguration config = Helpers.InitialiseConfiguration();
-            _mongoDbSettings = Helpers.GetConfigurationSection<MongoDbSettings>(config);
+            IConfiguration config = TestFactory.InitialiseConfiguration(Directory.GetCurrentDirectory());
+            _mongoDbSettings = UtilityExtensions.GetConfigurationSection<MongoDbSettings>(config);
             _mongoDbSettings = new MongoDbSettings
             {
                 ConnectionString = _mongoDbSettings.ConnectionString,
