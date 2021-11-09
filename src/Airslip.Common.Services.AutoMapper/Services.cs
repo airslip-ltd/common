@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace Airslip.Common.Services.AutoMapper
 {
@@ -18,34 +19,27 @@ namespace Airslip.Common.Services.AutoMapper
             MapperConfigurationExpression configExpression = new();
             configExpression.IgnoreUnmapped();
             mapperConfiguration(configExpression);
-            configExpression.AddProfile(new IgnoreOwnershipProfile());
+            
+            configExpression.ForAllMaps((map, expression) =>
+            {
+                if (!typeof(IModelWithOwnership).IsAssignableFrom(map.SourceType)) return;
+                
+                foreach (var prop in map.PropertyMaps
+                    .Where(o => o.DestinationName
+                        .InList(nameof(IModelWithOwnership.EntityId), 
+                            nameof(IModelWithOwnership.AirslipUserType))))
+                {
+                    prop.Ignored = true;
+                }
+            });
             
             // Auto Mapper Configurations
             MapperConfiguration mappingConfig = new(configExpression);
             
-
             mappingConfig.AssertConfigurationIsValid();
             
             IMapper? mapper = mappingConfig.CreateMapper();
             serviceCollection.AddSingleton(mapper);
-        }
-        
-        public class IgnoreOwnershipProfile : Profile
-        {
-            public IgnoreOwnershipProfile()
-            {
-                // If IEntityWithOwnership - ignore names EnityId AirslipUserType
-                // If IModelWithOwnership - Allow through
-                ShouldMapProperty = p =>
-                {
-                    return !(typeof(IModelWithOwnership)
-                                 .IsAssignableFrom(p.DeclaringType)
-                             &&
-                             p.Name.InList(
-                                 nameof(IModelWithOwnership.EntityId),
-                                 nameof(IModelWithOwnership.AirslipUserType)));
-                };
-            }
         }
     }
 }

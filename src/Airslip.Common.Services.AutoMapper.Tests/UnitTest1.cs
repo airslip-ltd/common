@@ -14,7 +14,7 @@ namespace Airslip.Common.Services.AutoMapper.Tests
     public class Tests
     {
         [Fact]
-        public void Can_map_()
+        public void Mapping_model_with_ownership_doesnt_update_entity()
         {
             IServiceCollection services = new ServiceCollection();
             services.AddAutoMapper(cfg =>
@@ -40,6 +40,34 @@ namespace Airslip.Common.Services.AutoMapper.Tests
 
             result.EntityId.Should().Be(string.Empty);
             result.AirslipUserType.Should().Be(AirslipUserType.Unknown);
+        }
+        [Fact]
+        public void Mapping_entity_with_ownership_does_update_model()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.CreateMap<MyEntity, MyModel>().ReverseMap();
+            });
+
+            ServiceProvider provider = services.BuildServiceProvider() ?? 
+                                       throw new NotImplementedException();
+
+            IModelMapper<MyEntity> mapper = provider.GetService<IModelMapper<MyEntity>>() ?? 
+                                           throw new NotImplementedException();
+
+            MyEntity myEntity = new()
+            {
+                Id = CommonFunctions.GetId(),
+                EntityId = CommonFunctions.GetId(),
+                AirslipUserType = AirslipUserType.Merchant,
+                EntityStatus = EntityStatus.Active
+            };
+
+            MyModel result = mapper.Create<MyModel>(myEntity);
+
+            result.EntityId.Should().Be(myEntity.EntityId);
+            result.AirslipUserType.Should().Be(myEntity.AirslipUserType);
         }
 
         public class MyEntity : IEntityWithOwnership
