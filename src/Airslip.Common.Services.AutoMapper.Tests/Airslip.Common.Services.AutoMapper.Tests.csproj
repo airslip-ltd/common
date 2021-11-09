@@ -16,4 +16,8 @@
 		<PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunner)" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Airslip.Common.Services.AutoMapper\Airslip.Common.Services.AutoMapper.csproj" />
+	</ItemGroup>
+
 </Project>
