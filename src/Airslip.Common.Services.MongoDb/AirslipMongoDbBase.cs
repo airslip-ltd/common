@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Repository.Interfaces;
+﻿using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities.Extensions;
@@ -19,7 +20,7 @@ namespace Airslip.Common.Services.MongoDb
 
         protected AirslipMongoDbBase(IOptions<MongoDbSettings> options)
         {
-            var mongoClient = new MongoClient(options.Value.ConnectionString);
+            MongoClient mongoClient = new(options.Value.ConnectionString);
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
 
             ConventionRegistry.Register(
@@ -32,6 +33,7 @@ namespace Airslip.Common.Services.MongoDb
 
             // Enum as string
             BsonSerializer.RegisterSerializer(new EnumSerializer<AirslipUserType>(BsonType.String));
+            BsonSerializer.RegisterSerializer(new EnumSerializer<EntityStatus>(BsonType.String));
         }
 
         protected static void MapEntityWithId<TType>() where TType : IEntityWithId
