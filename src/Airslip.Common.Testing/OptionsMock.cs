@@ -9,10 +9,12 @@ using System.IO;
 
 namespace Airslip.Common.Testing
 {
-    public class TestFactory
+    public static class OptionsMock
     {
-        public static IConfiguration InitialiseConfiguration(string basePath)
+        public static IConfiguration InitialiseConfiguration(string projectName)
         {
+            string basePath = GetBasePath(projectName);
+            
             return new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
@@ -27,7 +29,7 @@ namespace Airslip.Common.Testing
             return Path.Combine(projectSrcFolder, projectName);
         }
 
-        public static Mock<IOptions<T>>  SetUpOptionSettings<T>(string projectName) where T : class
+        public static Mock<IOptions<T>> SetUpOptionSettings<T>(string projectName) where T : class
         {
             Mock<IOptions<T>> mockSettings = new();
             string basePath = GetBasePath(projectName);
@@ -39,21 +41,6 @@ namespace Airslip.Common.Testing
                 .Returns(settings);
 
             return mockSettings;
-        }
-        
-        public static Mock<IFormFile> GenerateMockFile(string content, string fileName)
-        {
-            Mock<IFormFile> logoFileMock = new();
-            MemoryStream ms = new();
-            StreamWriter writer = new(ms);
-            writer.Write(content);
-            writer.Flush();
-            ms.Position = 0;
-            logoFileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-            logoFileMock.Setup(_ => _.FileName).Returns(fileName);
-            logoFileMock.Setup(_ => _.Length).Returns(ms.Length);
-            logoFileMock.Setup(_ => _.ContentType).Returns(MimeTypeMap.GetMimeType(Path.GetExtension(fileName)));
-            return logoFileMock;
         }
     }
 }
