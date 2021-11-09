@@ -37,5 +37,16 @@ namespace Airslip.Common.Services.AutoMapper.Implementations
         {
             return _mapper.Map(source, destination);
         }
+        
+        public class MappingProfile : Profile
+        {
+            public MappingProfile()
+            {
+                // other configs...
+
+                AddGlobalIgnore("foo"); // this will ignore properties with name starting with "foo"
+                ShouldMapProperty = p => p.Name != "bar"; // this will ignore properties with name "bar"
+            }
+        }
     }
 }
