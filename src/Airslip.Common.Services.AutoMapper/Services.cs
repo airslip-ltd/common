@@ -20,7 +20,7 @@ namespace Airslip.Common.Services.AutoMapper
             configExpression.IgnoreUnmapped();
             mapperConfiguration(configExpression);
             
-            configExpression.ForAllMaps((map, expression) =>
+            configExpression.ForAllMaps((map, _) =>
             {
                 if (!typeof(IModelWithOwnership).IsAssignableFrom(map.SourceType)) return;
                 

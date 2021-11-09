@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Airslip.Common.Services.AutoMapper.Tests
 {
-    public class Tests
+    public class ServicesTests
     {
         [Fact]
         public void Mapping_model_with_ownership_doesnt_update_entity()
