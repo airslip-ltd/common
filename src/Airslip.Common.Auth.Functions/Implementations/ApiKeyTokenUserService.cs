@@ -7,16 +7,17 @@ namespace Airslip.Common.Auth.Functions.Implementations
 {
     public class ApiKeyTokenUserService : IRepositoryUserService
     {
+        private readonly ITokenDecodeService<ApiKeyToken> _tokenDecodeService;
+
         public ApiKeyTokenUserService(ITokenDecodeService<ApiKeyToken> tokenDecodeService)
         {
-            ApiKeyToken token = tokenDecodeService.GetCurrentToken();
-            UserId = null;
-            EntityId = token.EntityId;
-            AirslipUserType = token.AirslipUserType;
+            _tokenDecodeService = tokenDecodeService;
         }
 
-        public string? UserId { get; }
-        public string? EntityId { get; }
-        public AirslipUserType? AirslipUserType { get; }
+        public string? UserId => null;
+
+        public string? EntityId => _tokenDecodeService.GetCurrentToken().EntityId;
+
+        public AirslipUserType? AirslipUserType => _tokenDecodeService.GetCurrentToken().AirslipUserType;
     }
 }
