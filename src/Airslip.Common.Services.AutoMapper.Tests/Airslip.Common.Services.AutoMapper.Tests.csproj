@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="..\common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="$(Coverlet)">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Azure.Functions.Worker" Version="$(AzureFunctionsWorker)" />
+		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="$(AzureFunctionsExtensions)" />
+		<PackageReference Include="Moq" Version="$(Moq)" />
+		<PackageReference Include="FluentAssertions" Version="$(FluentAssertions)" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(NetTestSdk)" />
+		<PackageReference Include="xunit" Version="$(Xunit)" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunner)" />
+	</ItemGroup>
+
+</Project>
