@@ -39,7 +39,7 @@ namespace Airslip.Common.Services.AutoMapper.Extensions
 
         public static void IgnoreUnmapped(this IProfileExpression profile, Type src, Type dest)
         {
-            profile.IgnoreUnmapped((TypeMap map) => map.SourceType == src && map.DestinationType == dest);
+            profile.IgnoreUnmapped(map => map.SourceType == src && map.DestinationType == dest);
         }
 
         public static void IgnoreUnmapped<TSrc, TDest>(this IProfileExpression profile)
