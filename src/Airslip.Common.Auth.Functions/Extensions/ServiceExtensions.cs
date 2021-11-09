@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Airslip.Common.Auth.Functions.Extensions
 {
-    public static class Extensions
+    public static class ServiceExtensions
     {
         /// <summary>
         /// Add ApiKey Validation for use in Function Apps
