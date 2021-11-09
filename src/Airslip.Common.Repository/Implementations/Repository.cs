@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using System;
 using System.Threading.Tasks;
@@ -82,6 +83,22 @@ namespace Airslip.Common.Repository.Implementations
                 DateCreated = DateTime.UtcNow,
                 CreatedByUserId = userId ?? _userService.UserId
             };
+
+            if (newEntity is IEntityWithOwnership entityWithOwnership)
+            {
+                if (_userService.EntityId is null || _userService.AirslipUserType is null)
+                {
+                    return new FailedActionResultModel<TModel>
+                    (
+                        ErrorCodes.ValidationFailed,
+                        ResultType.FailedValidation,
+                        model
+                    );
+                }
+                
+                entityWithOwnership.EntityId = _userService.EntityId;
+                entityWithOwnership.AirslipUserType = _userService.AirslipUserType.Value;
+            }
             
             // Add the entity
             await _context.AddEntity(newEntity);
