@@ -1,3 +1,5 @@
+using Airslip.Common.Types;
+using Newtonsoft.Json;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,6 +23,31 @@ namespace Airslip.Common.Utilities.Extensions
             return Json.Deserialize<T>(payload);
         }
 
+        public static async Task<T> DeserializeStream<T>(
+            this Stream requestBody,
+            Casing casing,
+            Formatting formatting = Formatting.None,
+            NullValueHandling nullValueHandling = NullValueHandling.Include) where T : class
+        {
+            StreamReader sr = new(requestBody);
+            string payload = await sr.ReadToEndAsync();
+            return Json.Deserialize<T>(payload, casing, formatting, nullValueHandling);
+        }
+        
+        public static async Task<T> DeserializeStream<T>(
+            this Stream stream,
+            bool resetStream,
+            Casing casing,
+            Formatting formatting = Formatting.None,
+            NullValueHandling nullValueHandling = NullValueHandling.Include) where T : class
+        {
+            StreamReader sr = new(stream);
+            string payload = await sr.ReadToEndAsync();
+            if (resetStream)
+                stream.Position = 0;
+            return Json.Deserialize<T>(payload, casing, formatting, nullValueHandling);
+        }
+
         public static string ReadStream(this Stream requestBody)
         {
             StreamReader sr = new(requestBody);
@@ -30,9 +57,9 @@ namespace Airslip.Common.Utilities.Extensions
         public static string ReadStream(this Stream stream, bool resetStream)
         {
             StreamReader sr = new(stream);
-            
+
             string payload = sr.ReadToEnd();
-            
+
             if (resetStream)
                 stream.Position = 0;
 
