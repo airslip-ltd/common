@@ -12,7 +12,6 @@ namespace Airslip.Common.AppIdentifiers
             services
                 .Configure<AppleAppIdentifierSettings>(configuration.GetSection(nameof(AppleAppIdentifierSettings)))
                 .Configure<AndroidAppIdentifierSettings>(configuration.GetSection(nameof(AndroidAppIdentifierSettings)))
-                .AddScoped<IAppleAppIdentificationService, AppleAppIdentificationService>()
                 .AddScoped<IAppleAppIdentificationService, AppleAppIdentificationService>();
 
             return services;
