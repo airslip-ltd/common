@@ -1,43 +1,42 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Airslip.Common.AppIdentifiers
 {
     public class AppleAppSiteAssociation
     {
-        public AppleAppSiteAssociation(
-            string appId,
-            params string [] paths)
-        {
-            Applinks = new Applinks(appId, paths);
-        }
-
-        public Applinks Applinks { get; }
+        public Applinks? Applinks { get; set; }
+        public Webcredentials? Webcredentials { get; set; }
+        public Appclips? appclips { get; set; }
     }
-    
-    public class Applinks
+    public class Component
     {
-        public Applinks(string appId, string[] paths)
-        {
-            Details = new List<Detail>()
-            {
-                new()
-                {
-                    AppID = appId,
-                    Paths = paths
-                }
-            };
-        }
-
-        public IEnumerable<string> Apps { get; set; } = new List<string>(0);
-        public IEnumerable<Detail> Details { get; }
+        [JsonProperty("/")]
+        public string? slash { get; set; }
+        public string? comment { get; set; }
     }
-    
+
     public class Detail
     {
-        public string? AppID { get; set; }
-        public IEnumerable<string>? Paths { get; set; }
+        public List<string>? appIDs { get; set; }
+        public List<Component>? components { get; set; }
     }
 
+    public class Applinks
+    {
+        public List<Detail>? details { get; set; }
+    }
+
+    public class Webcredentials
+    {
+        public List<string>? apps { get; set; }
+    }
+
+    public class Appclips
+    {
+        public List<string>? apps { get; set; }
+    }
+    
     public class Target
     {
         public Target(string @namespace, string packageName, IEnumerable<string> sha256CertFingerprints)
