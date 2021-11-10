@@ -9,14 +9,20 @@ namespace Airslip.Common.Utilities
     {
         public const string MediaType = "application/json";
 
-        public static string Serialize(object value, Casing casing = Casing.CAMEL_CASE, Formatting formatting = Formatting.None)
+        public static string Serialize(object value,
+            Casing casing = Casing.CAMEL_CASE,
+            Formatting formatting = Formatting.None)
         {
             return Serialize(value, casing, formatting, NullValueHandling.Include);
         }
-        
-        public static string Serialize(object value, Casing casing, Formatting formatting, NullValueHandling nullValueHandling)
+
+        public static string Serialize(object value,
+            Casing casing,
+            Formatting formatting,
+            NullValueHandling nullValueHandling)
         {
-            JsonSerializerSettings jsonSerializerSettings = GetJsonSerializerSettings(casing, formatting, nullValueHandling);
+            JsonSerializerSettings jsonSerializerSettings =
+                GetJsonSerializerSettings(casing, formatting, nullValueHandling);
 
             return JsonConvert.SerializeObject(value, jsonSerializerSettings);
         }
@@ -26,8 +32,22 @@ namespace Airslip.Common.Utilities
             return JsonConvert.DeserializeObject<T>(value) ??
                    throw new InvalidOperationException("Value deserialized to null");
         }
-        
-        private static JsonSerializerSettings GetJsonSerializerSettings(Casing casing, Formatting formatting, 
+
+        public static T Deserialize<T>(string value,
+            Casing casing,
+            Formatting formatting,
+            NullValueHandling nullValueHandling)
+        {
+            JsonSerializerSettings jsonSerializerSettings =
+                GetJsonSerializerSettings(casing, formatting, nullValueHandling);
+
+            return JsonConvert.DeserializeObject<T>(value, jsonSerializerSettings) ??
+                   throw new InvalidOperationException("Value deserialized to null");
+        }
+
+        private static JsonSerializerSettings GetJsonSerializerSettings(
+            Casing casing,
+            Formatting formatting,
             NullValueHandling nullValueHandling)
         {
             return casing switch
