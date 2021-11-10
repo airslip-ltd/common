@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Airslip.Common.AppIdentifiers
 {
@@ -22,19 +23,58 @@ namespace Airslip.Common.AppIdentifiers
             AppleAppIdentifierSetting identitySettings = _appleAppIdentifierSettings.Identity;
 
             string bankTransactionPath = BuildDeepLinkingPath(
-                bankTransactionSettings.UriSuffix, 
+                bankTransactionSettings.UriSuffix,
                 bankTransactionSettings.Version,
                 bankTransactionSettings.Endpoint);
-            
+
             string identityPath = BuildDeepLinkingPath(
-                identitySettings.UriSuffix, 
+                identitySettings.UriSuffix,
                 identitySettings.Version,
                 identitySettings.Endpoint);
 
-            return new AppleAppSiteAssociation(
-                bankTransactionSettings.AppID,
-                bankTransactionPath,
-                identityPath);
+            return new AppleAppSiteAssociation
+            {
+                Applinks = new Applinks
+                {
+                    details = new List<Detail>
+                    {
+                        new()
+                        {
+                            appIDs = new List<string>
+                            {
+                                bankTransactionSettings.AppID
+                            },
+                            components = new List<Component>
+                            {
+                                new()
+                                {
+                                   slash = bankTransactionPath,
+                                   comment = "Matches any URL whose path starts with " + bankTransactionPath
+                                },
+                                new()
+                                {
+                                slash = identityPath,
+                                comment = "Matches any URL whose path starts with " + identityPath
+                            }
+                            }
+                        }
+                    }
+                },
+                Webcredentials = new Webcredentials
+                {
+                    apps = new List<string>
+                    {
+                        bankTransactionSettings.AppID
+                    }
+                },
+                appclips = new Appclips
+                {
+                    apps = new List<string>
+                    {
+                        bankTransactionSettings.AppID
+                    }
+                }
+            };
         }
 
         public IEnumerable<AssetLink> GetAssetLinks()
