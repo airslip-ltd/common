@@ -53,6 +53,26 @@ namespace Airslip.Common.Types
 
             return MakePositive(ConvertToLong(value.Value));
         }
+        
+        public static long? ConvertFivePlaceDecimalToUnit(double? value)
+        {
+            if (value is null)
+                return null;
+            
+            double truncateToTwoDecimalPlaces = TruncateToTwoDecimalPlaces(value.Value);
+            
+            return MakePositive(ConvertToLong(truncateToTwoDecimalPlaces));
+        }
+
+        public static long? ConvertFivePlaceDecimalToUnit(string? value)
+        {
+            if (value is null)
+                return null;
+            
+            double truncateToTwoDecimalPlaces = TruncateToTwoDecimalPlaces(Convert.ToDouble(value));
+
+            return MakePositive(ConvertToLong(truncateToTwoDecimalPlaces));
+        }
 
         public static decimal? ConvertToTwoPlacedDecimal(long? value)
         {
@@ -60,6 +80,12 @@ namespace Airslip.Common.Types
                 return null;
 
             return MakePositive(Convert.ToDecimal(value) / 100);
+        }
+
+        private static double TruncateToTwoDecimalPlaces(double value)
+        {
+            double truncateToTwoDecimalPlaces = Math.Truncate(100 * value) / 100;
+            return truncateToTwoDecimalPlaces;
         }
     }
 }
