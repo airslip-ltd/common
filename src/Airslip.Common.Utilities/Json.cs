@@ -35,8 +35,8 @@ namespace Airslip.Common.Utilities
 
         public static T Deserialize<T>(string value,
             Casing casing,
-            Formatting formatting,
-            NullValueHandling nullValueHandling)
+            Formatting formatting = Formatting.None,
+            NullValueHandling nullValueHandling = NullValueHandling.Include)
         {
             JsonSerializerSettings jsonSerializerSettings =
                 GetJsonSerializerSettings(casing, formatting, nullValueHandling);
