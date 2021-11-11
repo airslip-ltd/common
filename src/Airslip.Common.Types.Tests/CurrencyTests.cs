@@ -74,5 +74,23 @@ namespace Airslip.Common.Types.Tests
             decimal? currency = Currency.ConvertToTwoPlacedDecimal(value);
             currency.Should().Be((decimal)12.99);
         }
+        
+        [Theory]
+        [InlineData(63.47826)]
+        [InlineData(-63.47826)]
+        public void Can_convert_five_place_decimal_from_double_to_unit_long(double value)
+        {
+            decimal? currency = Currency.ConvertFivePlaceDecimalToUnit(value);
+            currency.Should().Be(6347);
+        }
+        
+        [Theory]
+        [InlineData("63.47826")]
+        [InlineData("-63.47826")]
+        public void Can_convert_five_place_decimal_from_string_to_unit_long(string value)
+        {
+            decimal? currency = Currency.ConvertFivePlaceDecimalToUnit(value);
+            currency.Should().Be(6347);
+        }
     }
 }
