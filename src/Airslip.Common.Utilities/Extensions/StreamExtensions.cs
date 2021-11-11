@@ -1,6 +1,8 @@
 using Airslip.Common.Types;
 using Newtonsoft.Json;
+using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Utilities.Extensions
@@ -33,7 +35,7 @@ namespace Airslip.Common.Utilities.Extensions
             string payload = await sr.ReadToEndAsync();
             return Json.Deserialize<T>(payload, casing, formatting, nullValueHandling);
         }
-        
+
         public static async Task<T> DeserializeStream<T>(
             this Stream stream,
             bool resetStream,
@@ -64,6 +66,26 @@ namespace Airslip.Common.Utilities.Extensions
                 stream.Position = 0;
 
             return payload;
+        }
+
+        public static TType GetEmbeddedResourceAsType<TType>(
+            this Assembly assembly,
+            string resourceName,
+            Casing casing = Casing.CAMEL_CASE,
+            Formatting formatting = Formatting.None)
+        {
+            string? resourceContent = null;
+            using (Stream? stream = assembly.GetManifestResourceStream(resourceName))
+                if (stream != null)
+                {
+                    using StreamReader reader = new(stream);
+                    resourceContent = reader.ReadToEnd();
+                }
+
+            if (resourceContent == null)
+                throw new NullReferenceException("Resource not found in assembly");
+
+            return Json.Deserialize<TType>(resourceContent, casing, formatting);
         }
     }
 }
