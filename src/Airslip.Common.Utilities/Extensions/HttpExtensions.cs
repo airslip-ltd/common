@@ -1,13 +1,14 @@
 using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Models;
 using System;
-using System.Net;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Utilities.Http
+namespace Airslip.Common.Utilities.Extensions
 {
     public static class HttpExtensions
     {
@@ -27,8 +28,12 @@ namespace Airslip.Common.Utilities.Http
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
         
-        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(this HttpClient httpClient,  
-            string url, string apiKey, TRequestType requestContent, CancellationToken cancellationToken)
+        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(
+            this HttpClient httpClient,  
+            string url,
+            string apiKey,
+            TRequestType requestContent, 
+            CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
             HttpRequestMessage httpRequestMessage = new()
@@ -41,6 +46,33 @@ namespace Airslip.Common.Utilities.Http
                 Content = new StringContent(Json.Serialize(requestContent!), 
                     Encoding.UTF8, Json.MediaType)
             };
+
+            return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
+        }
+        
+        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(
+            this HttpClient httpClient,
+            string url,
+            IDictionary<string, string> requestHeaders,
+            TRequestType requestContent,
+            CancellationToken cancellationToken)
+            where TResponse : class, IResponse
+        {
+            HttpRequestMessage httpRequestMessage = new()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(url),
+                Content = new StringContent(
+                    Json.Serialize(requestContent!),
+                    Encoding.UTF8, 
+                    Json.MediaType)
+            };
+
+            foreach (KeyValuePair<string, string> requestHeader in requestHeaders)
+            {
+                var (key, value) = requestHeader;
+                httpRequestMessage.Headers.Add(key, value);
+            }
 
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
