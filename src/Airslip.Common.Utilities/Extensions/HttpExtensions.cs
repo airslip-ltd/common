@@ -3,7 +3,6 @@ using Airslip.Common.Utilities.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,68 +12,81 @@ namespace Airslip.Common.Utilities.Extensions
     public static class HttpExtensions
     {
         public static async Task<HttpRequestResult<TResponse>> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
-            string apiKey, CancellationToken cancellationToken)
+            Dictionary<string, string> headers, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
             HttpRequestMessage httpRequestMessage = new()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(url),
-                Headers = { 
-                    { "x-api-key", apiKey }
-                }
+                RequestUri = new Uri(url)
             };
-
-            return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
-        }
-        
-        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(
-            this HttpClient httpClient,  
-            string url,
-            string apiKey,
-            TRequestType requestContent, 
-            CancellationToken cancellationToken)
-            where TResponse : class, IResponse
-        {
-            HttpRequestMessage httpRequestMessage = new()
+            
+            foreach (KeyValuePair<string, string> keyValuePair in headers)
             {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(url),
-                Headers = { 
-                    { "x-api-key", apiKey }
-                },
-                Content = new StringContent(Json.Serialize(requestContent!), 
-                    Encoding.UTF8, Json.MediaType)
-            };
-
-            return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
-        }
-        
-        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(
-            this HttpClient httpClient,
-            string url,
-            IDictionary<string, string> requestHeaders,
-            TRequestType requestContent,
-            CancellationToken cancellationToken)
-            where TResponse : class, IResponse
-        {
-            HttpRequestMessage httpRequestMessage = new()
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(url),
-                Content = new StringContent(
-                    Json.Serialize(requestContent!),
-                    Encoding.UTF8, 
-                    Json.MediaType)
-            };
-
-            foreach (KeyValuePair<string, string> requestHeader in requestHeaders)
-            {
-                var (key, value) = requestHeader;
-                httpRequestMessage.Headers.Add(key, value);
+                httpRequestMessage.Headers.Add(keyValuePair.Key, keyValuePair.Value);                
             }
 
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
+        }
+        
+        public static async Task<HttpRequestResult<TResponse>> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
+            string apiKey, CancellationToken cancellationToken)
+            where TResponse : class, IResponse
+        {
+            return await GetApiRequest<TResponse>(httpClient, url, new Dictionary<string, string>
+            {
+                {"x-api-key", apiKey}
+            }, cancellationToken);
+        }
+        
+        public static async Task<HttpRequestResult<TResponse>> PatchApiRequest<TResponse>(this HttpClient httpClient,  string url, 
+            Dictionary<string, string> headers, string requestContent, CancellationToken cancellationToken)
+            where TResponse : class, IResponse
+        {
+            HttpRequestMessage httpRequestMessage = new()
+            {
+                Method = HttpMethod.Patch,
+                RequestUri = new Uri(url),
+                Content = new StringContent(requestContent, 
+                    Encoding.UTF8, Json.MediaType)
+            };
+            
+            foreach (KeyValuePair<string, string> keyValuePair in headers)
+            {
+                httpRequestMessage.Headers.Add(keyValuePair.Key, keyValuePair.Value);                
+            }
+
+            return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
+        }
+
+        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(this HttpClient httpClient,  string url, 
+            Dictionary<string, string> headers, TRequestType requestContent, CancellationToken cancellationToken)
+            where TResponse : class, IResponse
+        {
+            HttpRequestMessage httpRequestMessage = new()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(url),
+                Content = new StringContent(Json.Serialize(requestContent!), 
+                    Encoding.UTF8, Json.MediaType)
+            };
+            
+            foreach (KeyValuePair<string, string> keyValuePair in headers)
+            {
+                httpRequestMessage.Headers.Add(keyValuePair.Key, keyValuePair.Value);                
+            }
+
+            return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
+        }
+        
+        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(this HttpClient httpClient,  
+            string url, string apiKey, TRequestType requestContent, CancellationToken cancellationToken)
+            where TResponse : class, IResponse
+        {
+            return await PostApiRequest<TResponse, TRequestType>(httpClient, url, new Dictionary<string, string>
+            {
+                {"x-api-key", apiKey}
+            }, requestContent, cancellationToken);
         }
 
         private static async Task<HttpRequestResult<TResponse>> _sendRequest<TResponse>(HttpClient httpClient, 
