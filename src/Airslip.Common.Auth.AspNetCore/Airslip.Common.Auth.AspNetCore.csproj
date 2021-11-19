@@ -18,7 +18,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
 		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
-		<PackageReference Include="Airslip.Common.Types" Version="3.6.1" />
+		<PackageReference Include="Airslip.Common.Types" Version="3.6.2" />
 		<PackageReference Include="Airslip.Common.Auth" Version="3.6.0" />
 		<PackageReference Include="UAParser" Version="$(UAParser)" />
 	</ItemGroup>
