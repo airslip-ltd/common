@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Types.Enums;
+﻿using Airslip.Common.Matching.Data;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
@@ -8,7 +9,7 @@ namespace Airslip.Common.Matching.Request
     {
         public string? TrackingId { get; set; }
         public long? Timestamp { get; set; }
-        public string MatchType { get; set; } = string.Empty;
+        public MatchTypes MatchType { get; set; } = MatchTypes.Unknown;
         public string EntityId { get; set; } = string.Empty;
         public AirslipUserType AirslipUserType { get; set; } = AirslipUserType.Merchant;
         public string StoreId { get; set; } = string.Empty;

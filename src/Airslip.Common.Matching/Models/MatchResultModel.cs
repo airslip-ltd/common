@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Models
 {
-    public record MatchResultModel(string MatchType,
+    public record MatchResultModel(MatchTypes MatchType,
         string TransactionTrackingId,
         string MatchTrackingId,
         string UserId,
