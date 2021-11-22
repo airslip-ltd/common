@@ -1,8 +1,8 @@
 namespace Airslip.Common.Matching.Data
 {
-    public static class MatchTypes
+    public enum MatchTypes
     {
-        public const string QR_CODE = "QrCode";
-        public const string YAPILY = "Yapily";
+        QrCode,
+        Yapily
     }
 }
