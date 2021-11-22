@@ -5,14 +5,12 @@ using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Response
 {
-    public record MatchResult(string MatchType,
+    public record MatchResultResponse(string MatchType,
         string TransactionTrackingId,
-        string MatchedTrackingId,
-        string OriginalTrackingId,
-        int Score,
+        string MatchTrackingId,
         MatchLikelihood MatchLikelihood) : ISuccess
     {
         public string? UserId { get; set; } = string.Empty;
         public List<MatchMetadata> Metadata { get; } = new();
-    }
+    } 
 }
