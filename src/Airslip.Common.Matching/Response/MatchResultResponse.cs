@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Response
 {
-    public record MatchResultResponse(string MatchType,
+    public record MatchResultResponse(MatchTypes MatchType,
         string TransactionTrackingId,
         string MatchTrackingId,
         MatchLikelihood MatchLikelihood) : ISuccess
