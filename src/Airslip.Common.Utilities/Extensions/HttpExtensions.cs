@@ -108,7 +108,7 @@ namespace Airslip.Common.Utilities.Extensions
 
         private static bool ValidContent(string content)
         { 
-            return content == string.Empty;
+            return content != string.Empty;
         }
     }
 }
