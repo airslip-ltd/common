@@ -36,7 +36,7 @@ namespace Airslip.Common.Repository.UnitTests
                 mockContext.Object,
                 mockModelValidator.Object,
                 mockModelMapper.Object,
-                mockModelDeliveryService.Object,
+                new List<IModelDeliveryService<MyModel>> {mockModelDeliveryService.Object},
                 mockTokenDecodeService.Object);
 
           RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
