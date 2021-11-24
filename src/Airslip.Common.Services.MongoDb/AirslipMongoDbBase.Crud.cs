@@ -1,4 +1,5 @@
 ﻿using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Services.MongoDb.Extensions;
 using MongoDB.Driver;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace Airslip.Common.Services.MongoDb
             where TEntity : class, IEntityWithId
         {
             // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             // Add entity to collection
             await collection.InsertOneAsync(newEntity);
@@ -24,14 +25,14 @@ namespace Airslip.Common.Services.MongoDb
             where TEntity : class, IEntityWithId
         {
             // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
         {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             await collection.ReplaceOneAsync(user => user.Id == updatedEntity.Id, updatedEntity);
 
@@ -41,7 +42,7 @@ namespace Airslip.Common.Services.MongoDb
         public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
         {
             // Find appropriate collection
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             // Add entity to collection
             await collection.ReplaceOneAsync(
@@ -60,7 +61,7 @@ namespace Airslip.Common.Services.MongoDb
             string value)
             where TEntity : class, IEntityWithId
         {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             FilterDefinition<TEntity> filter = Builders<TEntity>.Filter
                 .Eq(bankTransaction => bankTransaction.Id, id);

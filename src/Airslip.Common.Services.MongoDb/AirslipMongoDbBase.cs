@@ -1,4 +1,5 @@
 ﻿using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Services.MongoDb.Extensions;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities.Extensions;
@@ -22,7 +23,7 @@ namespace Airslip.Common.Services.MongoDb
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
         }
 
-        protected static void MapEntityWithId<TType>() where TType : IEntityWithId
+        public static void MapEntityWithId<TType>() where TType : IEntityWithId
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(TType)))
             {
@@ -33,40 +34,16 @@ namespace Airslip.Common.Services.MongoDb
                 });
             }
         }
-
-        public IMongoCollection<TType> CollectionByType<TType>()
-        {
-            return Database.GetCollection<TType>(DeriveCollectionName<TType>());
-        }
-
+        
         public IQueryable<TEntity> QueryableOf<TEntity>()
             where TEntity : class
         {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             return collection.AsQueryable();
         }
 
-        protected void CreateCollection<TType>() where TType : IEntityWithId
-        {
-            // Map classes
-            MapEntityWithId<TType>();
-
-            string collectionName = DeriveCollectionName<TType>();
-
-            if (!_checkCollection(collectionName))
-                Database.CreateCollection(collectionName);
-        }
-
-        private bool _checkCollection(string collectionName)
-        {
-            BsonDocument filter = new("name", collectionName);
-            IAsyncCursor<BsonDocument> collectionCursor =
-                Database.ListCollections(new ListCollectionsOptions { Filter = filter });
-            return collectionCursor.Any();
-        }
-
-        private static string DeriveCollectionName<TType>()
+        public static string DeriveCollectionName<TType>()
         {
             return $"{typeof(TType).Name}s".ToCamelCase();
         }
@@ -77,7 +54,7 @@ namespace Airslip.Common.Services.MongoDb
 
             IndexKeysDefinitionBuilder<TEntity> indexBuilder = Builders<TEntity>.IndexKeys;
 
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             IndexKeysDefinition<TEntity>? indexKeysDefinition = indexType switch
             {

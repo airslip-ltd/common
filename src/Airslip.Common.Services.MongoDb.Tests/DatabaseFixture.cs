@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Services.MongoDb.Extensions;
 using Airslip.Common.Testing;
 using Airslip.Common.Types;
 using Airslip.Common.Types.Configuration;
@@ -55,7 +56,7 @@ namespace Airslip.Common.Services.MongoDb.Tests
     {
         public MyBaseTestClass(MongoClient mongoClient, IOptions<MongoDbSettings> options) : base(mongoClient, options)
         {
-            CreateCollection<MyEntity>();
+            Database.CreateCollectionForEntity<MyEntity>();
         }
     }
 

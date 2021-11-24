@@ -1,5 +1,6 @@
 ﻿using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
+using Airslip.Common.Services.MongoDb.Extensions;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Airslip.Common.Services.MongoDb
         public Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters)
             where TEntity : class, IEntityWithId
         {
-            IMongoCollection<TEntity> collection = CollectionByType<TEntity>();
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             FilterDefinitionBuilder<TEntity>? filterBuilder = Builders<TEntity>.Filter;
             List<FilterDefinition<TEntity>> filters = searchFilters
