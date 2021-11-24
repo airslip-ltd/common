@@ -22,6 +22,7 @@
 		
 		<PackageReference Include="Pluralize.NET.Core" Version="1.0.0" />
 		<PackageReference Include="Microsoft.Azure.Cosmos" Version="3.23.0" />
+		<PackageReference Include="Serilog" Version="2.10.0" />
 	</ItemGroup>
 
 </Project>
