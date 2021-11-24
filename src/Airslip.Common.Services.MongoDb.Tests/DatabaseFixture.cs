@@ -27,7 +27,9 @@ namespace Airslip.Common.Services.MongoDb.Tests
                 ConnectionString = _mongoDbSettings.ConnectionString,
                 DatabaseName = $"tests_{CommonFunctions.GetId()}"
             };
-            Context = new MyBaseTestClass(Options.Create(_mongoDbSettings));
+            Context = new MyBaseTestClass(await Helpers.InitializeMongoClientInstanceAsync(config,
+                _ => Task.FromResult(true)), 
+                Options.Create(_mongoDbSettings));
             
             string[] names = {"Some Name 1", "Some Name 2", "Some Name 3", "Some Name 4"};
             
@@ -51,7 +53,7 @@ namespace Airslip.Common.Services.MongoDb.Tests
     
     public class MyBaseTestClass : AirslipMongoDbBase
     {
-        public MyBaseTestClass(IOptions<MongoDbSettings> options) : base(options)
+        public MyBaseTestClass(MongoClient mongoClient, IOptions<MongoDbSettings> options) : base(mongoClient, options)
         {
             CreateCollection<MyEntity>();
         }

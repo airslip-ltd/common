@@ -17,21 +17,9 @@ namespace Airslip.Common.Services.MongoDb
     {
         protected readonly IMongoDatabase Database;
 
-        protected AirslipMongoDbBase(IOptions<MongoDbSettings> options)
+        protected AirslipMongoDbBase(MongoClient mongoClient, IOptions<MongoDbSettings> options)
         {
-            var mongoClient = new MongoClient(options.Value.ConnectionString);
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
-
-            ConventionRegistry.Register(
-                name: "CustomConventionPack",
-                conventions: new ConventionPack
-                {
-                    new CamelCaseElementNameConvention()
-                },
-                filter: t => true);
-
-            // Enum as string
-            BsonSerializer.RegisterSerializer(new EnumSerializer<AirslipUserType>(BsonType.String));
         }
 
         protected static void MapEntityWithId<TType>() where TType : IEntityWithId
