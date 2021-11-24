@@ -10,7 +10,7 @@ namespace Airslip.Common.Services.MongoDb
 {
     public static class Services
     {
-        public static IServiceCollection AddAirslipCosmosDb<TContext>(this IServiceCollection services, 
+        public static IServiceCollection AddAirslipMongoDb<TContext>(this IServiceCollection services, 
             IConfiguration config, Func<IMongoDatabase, Task> initialiseDatabase)
         where TContext : AirslipMongoDbBase
         {
