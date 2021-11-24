@@ -26,29 +26,6 @@ namespace Airslip.Common.Services.CosmosDb
             _database = cosmosClient.GetDatabase(options.Value.DatabaseName);
         }
 
-        public static async Task<CosmosClient> InitializeCosmosClientInstanceAsync(IConfiguration configuration,
-            Func<Database, Task> initialiseCollections)
-        {
-            CosmosDbSettings settings = new();
-            configuration.GetSection(nameof(CosmosDbSettings)).Bind(settings);
-
-            CosmosClientOptions options = new()
-            {
-                SerializerOptions = new CosmosSerializationOptions
-                {
-                    PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                }
-            };
-            
-            CosmosClient client = new(settings.EndpointUri, settings.PrimaryKey, options);
-            
-            DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(settings.DatabaseName);
-            
-            await initialiseCollections(database.Database);
-
-            return client;
-        }
-
         public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
         {
             Container container = _database.GetContainerForEntity<TEntity>();
