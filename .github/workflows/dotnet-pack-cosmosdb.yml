@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOTNET_CORE_VERSION: 5.0.x
-      BUILD_PATH: ./src/Airslip.Common.Services.MongoDb/Airslip.Common.Services.CosmosDb.csproj
+      BUILD_PATH: ./src/Airslip.Common.Services.CosmosDb/Airslip.Common.Services.CosmosDb.csproj
     steps:
     - uses: actions/checkout@v2
       with:
