@@ -8,14 +8,14 @@ namespace Airslip.Common.Services.CosmosDb.Extensions
     {
         public static async Task CreateCollection<TEntity>(this Database database, string partitionKeyPath = "id")
         {
-            string containerId = CosmosDbContext.GetContainerId<TEntity>();
+            string containerId = AirslipCosmosDbBase.GetContainerId<TEntity>();
             
             await database.CreateContainerIfNotExistsAsync(containerId, $"/{partitionKeyPath}");
         }
         
         public static Container GetContainerForEntity<TEntity>(this Database database)
         {
-            string containerId = CosmosDbContext.GetContainerId<TEntity>();
+            string containerId = AirslipCosmosDbBase.GetContainerId<TEntity>();
             return database.GetContainer(containerId);
         }
     }

@@ -16,12 +16,12 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.CosmosDb
 {
-    public abstract class CosmosDbContext : IContext
+    public abstract class AirslipCosmosDbBase : IContext
     {
         private readonly Database _database;
         private static readonly Pluralizer _pluralizer = new();
         
-        protected CosmosDbContext(CosmosClient cosmosClient, IOptions<CosmosDbSettings> options)
+        protected AirslipCosmosDbBase(CosmosClient cosmosClient, IOptions<CosmosDbSettings> options)
         {
             _database = cosmosClient.GetDatabase(options.Value.DatabaseName);
         }

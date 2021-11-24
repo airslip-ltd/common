@@ -10,17 +10,17 @@ namespace Airslip.Common.Services.CosmosDb
 {
     public static class Services
     {
-        public static IServiceCollection AddCosmosDb(this IServiceCollection services, 
+        public static IServiceCollection AddAirslipCosmosDb(this IServiceCollection services, 
             IConfiguration config, Func<Database, Task> initialiseCollections)
         {
             services
                 .Configure<CosmosDbSettings>(config.GetSection(nameof(CosmosDbSettings)))
-                .AddSingleton(CosmosDbContext
+                .AddSingleton(AirslipCosmosDbBase
                     .InitializeCosmosClientInstanceAsync(config, initialiseCollections)
                     .GetAwaiter()
                     .GetResult())
-                .AddSingleton<CosmosDbContext>()
-                .AddSingleton<IContext>(provider => provider.GetService<CosmosDbContext>()!);
+                .AddSingleton<AirslipCosmosDbBase>()
+                .AddSingleton<IContext>(provider => provider.GetService<AirslipCosmosDbBase>()!);
 
             return services;
         }
