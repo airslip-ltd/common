@@ -9,7 +9,9 @@ namespace Airslip.Common.Services.CosmosDb
     internal static class Helpers
     {
         internal static async Task<CosmosClient> InitializeCosmosClientInstanceAsync(IConfiguration configuration,
-            Func<Database, Task> initialiseCollections)
+            Func<Database, Task> initialiseCollections, 
+            ConnectionMode connectionMode = ConnectionMode.Direct,
+            ConsistencyLevel consistencyLevel = ConsistencyLevel.Session)
         {
             CosmosDbSettings settings = new();
             configuration.GetSection(nameof(CosmosDbSettings)).Bind(settings);
@@ -19,7 +21,9 @@ namespace Airslip.Common.Services.CosmosDb
                 SerializerOptions = new CosmosSerializationOptions
                 {
                     PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                }
+                },
+                ConnectionMode = connectionMode,
+                ConsistencyLevel = consistencyLevel
             };
             
             CosmosClient client = new(settings.ConnectionString, options);

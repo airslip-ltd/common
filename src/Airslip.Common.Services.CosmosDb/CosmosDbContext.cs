@@ -4,10 +4,8 @@ using Airslip.Common.Services.CosmosDb.Configuration;
 using Airslip.Common.Services.CosmosDb.Extensions;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Pluralize.NET.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -20,7 +18,7 @@ namespace Airslip.Common.Services.CosmosDb
     {
         protected readonly Database Database;
         private static readonly Pluralizer _pluralizer = new();
-        
+
         protected AirslipCosmosDbBase(CosmosClient cosmosClient, IOptions<CosmosDbSettings> options)
         {
             Database = cosmosClient.GetDatabase(options.Value.DatabaseName);
@@ -29,7 +27,8 @@ namespace Airslip.Common.Services.CosmosDb
         public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
         {
             Container container = Database.GetContainerForEntity<TEntity>();
-            ItemResponse<TEntity> result = await container.CreateItemAsync(newEntity, new PartitionKey(newEntity.Id));
+            ItemResponse<TEntity> result = await container
+                .CreateItemAsync(newEntity, new PartitionKey(newEntity.Id));
             return result.Resource;
         }
 
