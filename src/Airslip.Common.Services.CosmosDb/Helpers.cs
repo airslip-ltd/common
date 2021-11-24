@@ -1,4 +1,4 @@
-using Airslip.SmartReceipts.Services.CosmosSql.Configuration;
+using Airslip.Common.Services.CosmosDb.Configuration;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -22,7 +22,7 @@ namespace Airslip.Common.Services.CosmosDb
                 }
             };
             
-            CosmosClient client = new(settings.EndpointUri, settings.PrimaryKey, options);
+            CosmosClient client = new(settings.ConnectionString, options);
             
             DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(settings.DatabaseName);
             
