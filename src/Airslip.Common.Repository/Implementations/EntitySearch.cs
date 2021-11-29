@@ -16,13 +16,14 @@ namespace Airslip.Common.Repository.Implementations
     {
         private readonly IContext _context;
         private readonly IModelMapper<TModel> _mapper;
-        private readonly IEntitySearchFormatter<TModel>? _searchFormatter;
+        private readonly IEnumerable<IEntitySearchFormatter<TModel>> _searchFormatters;
         
-        public EntitySearch(IContext context, IModelMapper<TModel> mapper, IEntitySearchFormatter<TModel>? searchFormatter)
+        public EntitySearch(IContext context, IModelMapper<TModel> mapper, 
+            IEnumerable<IEntitySearchFormatter<TModel>> searchFormatters)
         {
             _context = context;
             _mapper = mapper;
-            _searchFormatter = searchFormatter;
+            _searchFormatters = searchFormatters;
         }
         
         /// <summary>
@@ -43,9 +44,9 @@ namespace Airslip.Common.Repository.Implementations
                 TModel newModel = _mapper.Create(result);
 
                 // If we have a search formatter we can use it here to populate any additional data
-                if (_searchFormatter != null)
+                foreach (IEntitySearchFormatter<TModel> entitySearchFormatter in _searchFormatters)
                 {
-                    newModel = await _searchFormatter.FormatModel(newModel);                    
+                    newModel = await entitySearchFormatter.FormatModel(newModel);
                 }
 
                 // Add to the list
