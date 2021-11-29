@@ -25,16 +25,18 @@ namespace Airslip.Common.Repository.Implementations
         private readonly IModelValidator<TModel> _validator;
         private readonly IModelMapper<TModel> _mapper;
         private readonly IEnumerable<IModelDeliveryService<TModel>> _deliveryServices;
+        private readonly IEnumerable<IEntitySearchFormatter<TModel>> _searchFormatters;
         private readonly IRepositoryUserService _userService;
 
         public Repository(IContext context, IModelValidator<TModel> validator, 
             IModelMapper<TModel> mapper, IEnumerable<IModelDeliveryService<TModel>> deliveryServices, 
-            IRepositoryUserService userService)
+            IEnumerable<IEntitySearchFormatter<TModel>> searchFormatters, IRepositoryUserService userService)
         {
             _context = context;
             _validator = validator;
             _mapper = mapper;
             _deliveryServices = deliveryServices;
+            _searchFormatters = searchFormatters;
             _userService = userService;
         }
         
@@ -354,11 +356,19 @@ namespace Airslip.Common.Repository.Implementations
                     ResultType.NotFound
                 );
             }
+
+            TModel newModel = _mapper.Create(currentEntity);
+            
+            // If we have a search formatter we can use it here to populate any additional data
+            foreach (IEntitySearchFormatter<TModel> entitySearchFormatter in _searchFormatters)
+            {
+                newModel = await entitySearchFormatter.FormatModel(newModel);
+            }
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                _mapper.Create(currentEntity)
+                newModel
             );
         }
         
