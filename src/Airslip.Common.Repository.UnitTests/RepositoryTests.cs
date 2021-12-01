@@ -31,13 +31,15 @@ namespace Airslip.Common.Repository.UnitTests
             Mock<IModelMapper<MyModel>> mockModelMapper = new();
             Mock<IRepositoryUserService> mockTokenDecodeService = new();
             Mock<IModelDeliveryService<MyModel>> mockModelDeliveryService = new();
+            Mock<IEntitySearchFormatter<MyModel>> mockSearchFormatters = new();
 
            Repository<MyEntity, MyModel> repo = new(
                 mockContext.Object,
                 mockModelValidator.Object,
                 mockModelMapper.Object,
                 new List<IModelDeliveryService<MyModel>> {mockModelDeliveryService.Object},
-                mockTokenDecodeService.Object);
+                new List<IEntitySearchFormatter<MyModel>> {mockSearchFormatters.Object},
+           mockTokenDecodeService.Object);
 
           RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
 
