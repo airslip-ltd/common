@@ -8,7 +8,8 @@ namespace Airslip.Common.Auth.Interfaces
         where TTokenType : IDecodeToken, new()
     {
         TTokenType GetCurrentToken();
-
-        Tuple<TTokenType, ICollection<Claim>> DecodeExistingToken(string tokenValue);
+        TTokenType GetToken(string tokenValue);
+        Tuple<TTokenType, ICollection<Claim>> DecodeToken(string tokenValue);
+        Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue);
     }
 }
