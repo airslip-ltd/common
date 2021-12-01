@@ -1,5 +1,6 @@
 using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Types.Enums;
 using System.Collections.Generic;
@@ -22,12 +23,12 @@ namespace Airslip.Common.Auth.Models
         public string UserId { get; init; }
         public string YapilyUserId { get; init; }
 
-        public List<Claim> GetCustomClaims()
+        public List<Claim> GetCustomClaims(TokenEncryptionSettings settings)
         {
             List<Claim> claims = new()
             {
-                new Claim(AirslipClaimTypes.USER_ID, UserId),
-                new Claim(AirslipClaimTypes.YAPILY_USER_ID, YapilyUserId)
+                new Claim(AirslipClaimTypes.USER_ID, UserId.Encrypt(settings)),
+                new Claim(AirslipClaimTypes.YAPILY_USER_ID, YapilyUserId.Encrypt(settings))
             };
 
             return claims;

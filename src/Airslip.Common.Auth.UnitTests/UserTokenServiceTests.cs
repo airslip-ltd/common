@@ -65,7 +65,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenDecodeService<UserToken> service = HelperFunctions.
                 CreateTokenDecodeService<UserToken>("<irrelevant token>", TokenType.BearerToken);
             
-            Tuple<UserToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
+            Tuple<UserToken, ICollection<Claim>> decodedToken = service.DecodeToken(newToken);
 
             decodedToken.Should().NotBeNull();
 

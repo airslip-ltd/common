@@ -72,8 +72,14 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService uaService = GenerateUserAgentService(withUserAgent);
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
             
-            TokenGenerationService<GenerateUserToken> service = new(options.Object, ipService.Object, uaService);
+            TokenGenerationService<GenerateUserToken> service = new(options.Object, ipService.Object, 
+                uaService, Options.Create(encryptionSettings));
 
             return service;
         }
@@ -102,9 +108,13 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService userAgentService = GenerateUserAgentService(withUserAgent);
-
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
             TokenGenerationService<TTokenType> service = 
-                new(options.Object, ipService.Object, userAgentService);
+                new(options.Object, ipService.Object, userAgentService, Options.Create(encryptionSettings));
 
             return service;
         }
@@ -115,9 +125,14 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContext(withToken, tokenType, 
                 withClaimsPrincipal: withClaimsPrincipal);
             IClaimsPrincipalLocator claimsPrincipalLocator = new HttpContextPrincipalLocator(contextAccessor.Object);
-            IHttpHeaderLocator httpHeaderLocator = new HttpContextHeaderLocator(contextAccessor.Object);
-
-            TokenDecodeService<TTokenType> service = new(httpHeaderLocator, claimsPrincipalLocator);
+            IHttpContentLocator httpHeaderLocator = new HttpContextContentLocator(contextAccessor.Object);
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
+            TokenDecodeService<TTokenType> service = new(httpHeaderLocator, claimsPrincipalLocator, 
+                Options.Create(encryptionSettings));
 
             return service;
         }

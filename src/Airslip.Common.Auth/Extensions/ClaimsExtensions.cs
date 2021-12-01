@@ -1,4 +1,6 @@
-﻿using Airslip.Common.Types.Configuration;
+﻿using Airslip.Common.Auth.Models;
+using Airslip.Common.Security.Implementations;
+using Airslip.Common.Types.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -43,6 +45,22 @@ namespace Airslip.Common.Auth.Extensions
                 .AsEnumerable<string>()
                 .Select(s => s.Trim())
                 .ToList();
+        }
+
+        public static string Decrypt(this string rawText, TokenEncryptionSettings settings)
+        {
+            if (settings.UseEncryption)
+                rawText = StringCipher.Decrypt(rawText, settings.Passphrase);
+
+            return rawText;
+        }
+
+        public static string Encrypt(this string rawText, TokenEncryptionSettings settings)
+        {
+            if (settings.UseEncryption)
+                rawText = StringCipher.Encrypt(rawText, settings.Passphrase);
+
+            return rawText;
         }
     }
 }

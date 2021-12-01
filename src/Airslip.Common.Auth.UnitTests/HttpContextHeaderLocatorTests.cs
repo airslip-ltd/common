@@ -13,9 +13,9 @@ namespace Airslip.Common.Auth.UnitTests
         public void Can_decode_null_httpcontext()
         {
             Mock<IHttpContextAccessor> mockHttpContextAccessor = new();
-            IHttpHeaderLocator locator = new HttpContextHeaderLocator(mockHttpContextAccessor.Object);
+            IHttpContentLocator locator = new HttpContextContentLocator(mockHttpContextAccessor.Object);
 
-            locator.GetValue("Hello", "MyDefault").Should().Be("MyDefault");
+            locator.GetHeaderValue("Hello", "MyDefault").Should().Be("MyDefault");
         }
         
         [Fact]
@@ -27,9 +27,9 @@ namespace Airslip.Common.Auth.UnitTests
 
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
             
-            IHttpHeaderLocator locator = new HttpContextHeaderLocator(mockHttpContextAccessor.Object);
+            IHttpContentLocator locator = new HttpContextContentLocator(mockHttpContextAccessor.Object);
 
-            locator.GetValue("Authorization", "MyDefault").Should().Be("Bearer SomeToken");
+            locator.GetHeaderValue("Authorization", "MyDefault").Should().Be("Bearer SomeToken");
         }
     }
 }

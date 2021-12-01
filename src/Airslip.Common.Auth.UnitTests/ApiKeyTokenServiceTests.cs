@@ -60,7 +60,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
                 CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey);
             
-            Tuple<ApiKeyToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
+            Tuple<ApiKeyToken, ICollection<Claim>> decodedToken = service.DecodeToken(newToken);
 
             decodedToken.Should().NotBeNull();
 

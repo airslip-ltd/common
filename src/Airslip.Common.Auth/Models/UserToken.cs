@@ -10,10 +10,10 @@ namespace Airslip.Common.Auth.Models
         public string UserId { get; private set; } = "";
         public string YapilyUserId { get; private set; } = "";
 
-        public override void SetCustomClaims(List<Claim> tokenClaims)
+        public override void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings)
         {
-            UserId = tokenClaims.GetValue(AirslipClaimTypes.USER_ID);
-            YapilyUserId = tokenClaims.GetValue(AirslipClaimTypes.YAPILY_USER_ID);
+            UserId = tokenClaims.GetValue(AirslipClaimTypes.USER_ID).Decrypt(settings);
+            YapilyUserId = tokenClaims.GetValue(AirslipClaimTypes.YAPILY_USER_ID).Decrypt(settings);
         }
     }
 }

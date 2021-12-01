@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Enums;
+using Airslip.Common.Auth.Models;
 using Airslip.Common.Types.Enums;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -9,6 +10,6 @@ namespace Airslip.Common.Auth.Interfaces
     {
         string EntityId { get; init; }
         AirslipUserType AirslipUserType { get; init; }
-        List<Claim> GetCustomClaims();
+        List<Claim> GetCustomClaims(TokenEncryptionSettings settings);
     }
 }

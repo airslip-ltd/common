@@ -11,11 +11,11 @@ namespace Airslip.Common.Auth.Models
         public string CheckoutId { get; private set; } = "";
         public string QrCodeKey { get; private set; } = "";
         
-        public override void SetCustomClaims(List<Claim> tokenClaims)
+        public override void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings)
         {
-            StoreId = tokenClaims.GetValue(AirslipClaimTypes.STORE_ID);
-            CheckoutId = tokenClaims.GetValue(AirslipClaimTypes.CHECKOUT_ID);
-            QrCodeKey = tokenClaims.GetValue(AirslipClaimTypes.QR_CODE_KEY);
+            StoreId = tokenClaims.GetValue(AirslipClaimTypes.STORE_ID).Decrypt(settings);
+            CheckoutId = tokenClaims.GetValue(AirslipClaimTypes.CHECKOUT_ID).Decrypt(settings);
+            QrCodeKey = tokenClaims.GetValue(AirslipClaimTypes.QR_CODE_KEY).Decrypt(settings);
         }
     }
 }

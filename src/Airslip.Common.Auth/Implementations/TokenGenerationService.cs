@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Data;
+using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Types;
@@ -20,15 +21,18 @@ namespace Airslip.Common.Auth.Implementations
         private readonly IUserAgentService _userAgentService;
         private readonly JwtSettings _jwtSettings;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly TokenEncryptionSettings _settings;
 
         public TokenGenerationService(IOptions<JwtSettings> jwtSettings, 
             IRemoteIpAddressService remoteIpAddressService,
-            IUserAgentService userAgentService)
+            IUserAgentService userAgentService,
+            IOptions<TokenEncryptionSettings> options)
         {
             _remoteIpAddressService = remoteIpAddressService;
             _userAgentService = userAgentService;
             _jwtSettings = jwtSettings.Value;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            _settings = options.Value;
         }
 
         public NewToken GenerateNewToken(ICollection<Claim> claims)
@@ -52,15 +56,15 @@ namespace Airslip.Common.Auth.Implementations
         {
             List<Claim> claims = new()
             {
-                new Claim(AirslipClaimTypes.CORRELATION, CommonFunctions.GetId()),
-                new Claim(AirslipClaimTypes.AIRSLIP_USER_TYPE, token.AirslipUserType.ToString()),
-                new Claim(AirslipClaimTypes.ENTITY_ID, token.EntityId),
-                new Claim(AirslipClaimTypes.ENVIRONMENT, AirslipSchemeOptions.ThisEnvironment),
-                new Claim(AirslipClaimTypes.IP_ADDRESS, _remoteIpAddressService.GetRequestIP() ?? "UNKNOWN"),
-                new Claim(AirslipClaimTypes.USER_AGENT, _userAgentService.GetRequestUserAgent() ?? "UNKNOWN")
+                new Claim(AirslipClaimTypes.CORRELATION, CommonFunctions.GetId().Encrypt(_settings)),
+                new Claim(AirslipClaimTypes.AIRSLIP_USER_TYPE, token.AirslipUserType.ToString().Encrypt(_settings)),
+                new Claim(AirslipClaimTypes.ENTITY_ID, token.EntityId.Encrypt(_settings)),
+                new Claim(AirslipClaimTypes.ENVIRONMENT, AirslipSchemeOptions.ThisEnvironment.Encrypt(_settings)),
+                new Claim(AirslipClaimTypes.IP_ADDRESS, (_remoteIpAddressService.GetRequestIP() ?? "UNKNOWN").Encrypt(_settings)),
+                new Claim(AirslipClaimTypes.USER_AGENT, (_userAgentService.GetRequestUserAgent() ?? "UNKNOWN").Encrypt(_settings))
             };
 
-            claims.AddRange(token.GetCustomClaims());
+            claims.AddRange(token.GetCustomClaims(_settings));
 
             return GenerateNewToken(claims);
         }
