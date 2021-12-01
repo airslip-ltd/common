@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using Microsoft.Extensions.Configuration;
@@ -21,8 +22,6 @@ namespace Airslip.Common.Services.MongoDb
 
             MongoClient mongoClient = new(settings.ConnectionString);
             IMongoDatabase database = mongoClient.GetDatabase(settings.DatabaseName);
-            
-            await initialiseDatabase(database);
 
             // General initialisation
             ConventionRegistry.Register(
@@ -35,6 +34,8 @@ namespace Airslip.Common.Services.MongoDb
 
             // Enum as string
             BsonSerializer.RegisterSerializer(new EnumSerializer<AirslipUserType>(BsonType.String));
+
+            await initialiseDatabase(database);
 
             return mongoClient;
         }
