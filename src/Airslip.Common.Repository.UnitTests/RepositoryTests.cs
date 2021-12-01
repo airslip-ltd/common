@@ -106,7 +106,7 @@ namespace Airslip.Common.Repository.UnitTests
 
     public class TTokenType : IDecodeToken
     {
-        public void SetCustomClaims(List<Claim> tokenClaims)
+        public void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings)
         {
             throw new NotImplementedException();
         }

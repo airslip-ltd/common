@@ -53,9 +53,13 @@ namespace Airslip.Common.Auth.Functions.Tests.Helpers
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService userAgentService = GenerateUserAgentService(withUserAgent);
-
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
             TokenGenerationService<TTokenType> service = 
-                new(options.Object, ipService.Object, userAgentService);
+                new(options.Object, ipService.Object, userAgentService, Options.Create(encryptionSettings));
 
             return service;
         }
