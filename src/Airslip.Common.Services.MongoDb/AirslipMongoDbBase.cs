@@ -33,6 +33,17 @@ namespace Airslip.Common.Services.MongoDb
                     cm.MapIdMember(c => c.Id);
                 });
             }
+        }        
+        
+        public static void MapEntity<TType>()
+        {
+            if (!BsonClassMap.IsClassMapRegistered(typeof(TType)))
+            {
+                BsonClassMap.RegisterClassMap<TType>(cm =>
+                {
+                    cm.AutoMap();
+                });
+            }
         }
         
         public IQueryable<TEntity> QueryableOf<TEntity>()
