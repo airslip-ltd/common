@@ -17,6 +17,6 @@ namespace Airslip.Common.Auth.Models
         public string EntityId { get; init; } = "";
         public AirslipUserType AirslipUserType { get; init; }
         public string Environment { get; init; } = "";
-        public abstract void SetCustomClaims(List<Claim> tokenClaims);
+        public abstract void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings);
     }
 }

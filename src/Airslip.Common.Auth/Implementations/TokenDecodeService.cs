@@ -1,10 +1,10 @@
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Types;
+using Airslip.Common.Auth.Models;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,18 +16,22 @@ namespace Airslip.Common.Auth.Implementations
     public class TokenDecodeService<TTokenType> : ITokenDecodeService<TTokenType> 
         where TTokenType : IDecodeToken, new()
     {
-        private readonly IHttpHeaderLocator _httpHeaderLocator;
+        private readonly IHttpContentLocator _httpContentLocator;
         private readonly IClaimsPrincipalLocator _claimsPrincipalLocator;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly TokenEncryptionSettings _settings;
 
-        public TokenDecodeService(IHttpHeaderLocator httpHeaderLocator, IClaimsPrincipalLocator claimsPrincipalLocator)
+        public TokenDecodeService(IHttpContentLocator httpContentLocator, 
+            IClaimsPrincipalLocator claimsPrincipalLocator,
+            IOptions<TokenEncryptionSettings> options)
         {
-            _httpHeaderLocator = httpHeaderLocator;
+            _httpContentLocator = httpContentLocator;
             _claimsPrincipalLocator = claimsPrincipalLocator;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            _settings = options.Value;
         }
-        
-        public Tuple<TTokenType, ICollection<Claim>> DecodeExistingToken(string tokenValue)
+
+        public Tuple<TTokenType, ICollection<Claim>> DecodeToken(string tokenValue)
         {
             try
             {
@@ -42,6 +46,14 @@ namespace Airslip.Common.Auth.Implementations
             }
         }
 
+        public Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue)
+        {
+            string rawToken = _httpContentLocator.GetHeaderValue(headerValue) ?? 
+                              throw new ArgumentException("Header not found", nameof(headerValue));
+
+            return DecodeToken(rawToken);
+        }
+
         public TTokenType GetCurrentToken()
         {
             ClaimsPrincipal? claimsPrincipal = _claimsPrincipalLocator.GetCurrentPrincipal();
@@ -53,9 +65,9 @@ namespace Airslip.Common.Auth.Implementations
 
         public TTokenType GenerateTokenFromClaims(ICollection<Claim> tokenClaims, bool? isAuthenticated)
         {
-            
-            string correlationId = tokenClaims.GetValue(AirslipClaimTypes.CORRELATION);
-            if (!Enum.TryParse(tokenClaims.GetValue(AirslipClaimTypes.AIRSLIP_USER_TYPE), out AirslipUserType airslipUserType))
+            string correlationId = tokenClaims.GetValue(AirslipClaimTypes.CORRELATION).Decrypt(_settings);
+            if (!Enum.TryParse(tokenClaims.GetValue(AirslipClaimTypes.AIRSLIP_USER_TYPE).Decrypt(_settings), 
+                out AirslipUserType airslipUserType))
             {
                 airslipUserType = AirslipUserType.Merchant;
             }
@@ -65,16 +77,16 @@ namespace Airslip.Common.Auth.Implementations
                 CorrelationId = string.IsNullOrWhiteSpace(correlationId) ? CommonFunctions.GetId() : correlationId,
                 AirslipUserType = airslipUserType,
                 IsAuthenticated = isAuthenticated,
-                BearerToken = _httpHeaderLocator.GetValue("Authorization") ?? "",
+                BearerToken = _httpContentLocator.GetHeaderValue("Authorization") ?? "",
                 TokenType = nameof(TTokenType),
-                IpAddress = tokenClaims.GetValue(AirslipClaimTypes.IP_ADDRESS),
-                EntityId = tokenClaims.GetValue(AirslipClaimTypes.ENTITY_ID),
-                Environment = tokenClaims.GetValue(AirslipClaimTypes.ENVIRONMENT),
-                UserAgent = tokenClaims.GetValue(AirslipClaimTypes.USER_AGENT) 
+                IpAddress = tokenClaims.GetValue(AirslipClaimTypes.IP_ADDRESS).Decrypt(_settings),
+                EntityId = tokenClaims.GetValue(AirslipClaimTypes.ENTITY_ID).Decrypt(_settings),
+                Environment = tokenClaims.GetValue(AirslipClaimTypes.ENVIRONMENT).Decrypt(_settings),
+                UserAgent = tokenClaims.GetValue(AirslipClaimTypes.USER_AGENT).Decrypt(_settings) 
             };
 
             result
-                .SetCustomClaims(tokenClaims.ToList());
+                .SetCustomClaims(tokenClaims.ToList(), _settings);
 
             return result;
         }

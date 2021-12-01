@@ -58,7 +58,7 @@ namespace Airslip.Common.Auth.UnitTests
             ITokenDecodeService<QrCodeToken> service = HelperFunctions.
                 CreateTokenDecodeService<QrCodeToken>(newToken, TokenType.QrCode);
             
-            Tuple<QrCodeToken, ICollection<Claim>> decodedToken = service.DecodeExistingToken(newToken);
+            Tuple<QrCodeToken, ICollection<Claim>> decodedToken = service.DecodeToken(newToken);
 
             decodedToken.Should().NotBeNull();
 

@@ -3,21 +3,29 @@ using Microsoft.AspNetCore.Http;
 
 namespace Airslip.Common.Auth.Implementations
 {
-    public class HttpContextHeaderLocator : IHttpHeaderLocator
+    public class HttpContextContentLocator : IHttpContentLocator
     {
         private readonly HttpContext? _httpContext;
 
-        public HttpContextHeaderLocator(IHttpContextAccessor httpContextAccessor)
+        public HttpContextContentLocator(IHttpContextAccessor httpContextAccessor)
         {
             _httpContext = httpContextAccessor.HttpContext;
         }
         
-        public string? GetValue(string headerValue, string? defaultValue = null)
+        public string? GetHeaderValue(string headerValue, string? defaultValue = null)
         {
             if (!(_httpContext?.Request.Headers.ContainsKey(headerValue) ?? false)) 
                 return defaultValue;
             
             return _httpContext!.Request.Headers[headerValue].ToString();
+        }
+
+        public string? GetQueryValue(string queryValue, string? defaultValue = null)
+        {
+            if (!(_httpContext?.Request.Query.ContainsKey(queryValue) ?? false)) 
+                return defaultValue;
+            
+            return _httpContext!.Request.Query[queryValue].ToString();
         }
     }
 }

@@ -22,13 +22,11 @@ namespace Airslip.Common.Auth.Implementations
         public async Task<ClaimsPrincipal?> GetClaimsPrincipalFromToken(string value, string forScheme, 
             string forEnvironment)
         {
-            Tuple<TExisting, ICollection<Claim>> tokenDetails = _tokenService.DecodeExistingToken(value);
+            Tuple<TExisting, ICollection<Claim>> tokenDetails = _tokenService.DecodeToken(value);
 
-            List<Claim> list = tokenDetails.Item2.ToList();
-            
-            if (list.All(o => o.Type != "environment") || list.GetValue("environment") != forEnvironment)
+            if (tokenDetails.Item1.Environment != forEnvironment)
             {
-                throw new EnvironmentUnsupportedException(list.GetValue("environment"), 
+                throw new EnvironmentUnsupportedException(tokenDetails.Item1.Environment, 
                     forEnvironment);
             }
 
