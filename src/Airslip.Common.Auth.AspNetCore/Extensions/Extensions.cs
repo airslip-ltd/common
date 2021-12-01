@@ -95,7 +95,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
                 .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
                 .AddScoped<IUserAgentService, UserAgentService>()
                 .AddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>()
-                .AddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>()
+                .AddScoped<IHttpContentLocator, HttpContextContentLocator>()
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
@@ -171,7 +171,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
             services.TryAddScoped<IUserAgentService, UserAgentService>();
             services.TryAddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>();
-            services.TryAddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>();
+            services.TryAddScoped<IHttpContentLocator, HttpContextContentLocator>();
                 
             services
                 .AddScoped<IApiRequestAuthService, ApiRequestAuthService>()
@@ -191,7 +191,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
             services.TryAddScoped<IUserAgentService, UserAgentService>();
             services.TryAddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>();
-            services.TryAddScoped<IHttpHeaderLocator, HttpContextHeaderLocator>();
+            services.TryAddScoped<IHttpContentLocator, HttpContextContentLocator>();
                 
             services
                 .Configure<CookieSettings>(configuration.GetSection(nameof(CookieSettings)));

@@ -27,7 +27,7 @@ namespace Airslip.Common.Auth.Hosted.Extensions
             services.AddOptions()
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<IClaimsPrincipalLocator>(_ => new HostedContextPrincipalLocator(hostedClaimsPrincipal))
-                .AddScoped<IHttpHeaderLocator, HostedContextHeaderLocator>()
+                .AddScoped<IHttpContentLocator, HostedContextHeaderLocator>()
                 .AddScoped<ITokenDecodeService<UserToken>, TokenDecodeService<UserToken>>();
             
             AirslipSchemeOptions.ThisEnvironment = services.GetEnvironment();

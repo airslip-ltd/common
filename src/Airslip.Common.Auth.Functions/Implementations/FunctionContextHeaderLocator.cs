@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Airslip.Common.Auth.Functions.Implementations
 {
-    public class FunctionContextHeaderLocator : IHttpHeaderLocator
+    public class FunctionContextHeaderLocator : IHttpContentLocator
     {
         private readonly IFunctionContextAccessor _functionContextAccessor;
 
@@ -13,12 +13,20 @@ namespace Airslip.Common.Auth.Functions.Implementations
             _functionContextAccessor = functionContextAccessor;
         }
         
-        public string? GetValue(string headerValue, string? defaultValue = null)
+        public string? GetHeaderValue(string headerValue, string? defaultValue = null)
         {
             if (!(_functionContextAccessor.Headers?.Contains(headerValue) ?? false)) 
                 return defaultValue;
             
             return _functionContextAccessor.Headers!.GetValues(headerValue).First();
+        }
+
+        public string? GetQueryValue(string queryValue, string? defaultValue = null)
+        {
+            if (!(_functionContextAccessor.QueryString?.AllKeys.Contains(queryValue) ?? false)) 
+                return defaultValue;
+            
+            return _functionContextAccessor.QueryString!.Get(queryValue);
         }
     }
 }

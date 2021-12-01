@@ -11,7 +11,9 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -42,14 +44,20 @@ namespace Airslip.Common.Auth.Functions.Tests
             HttpHeadersCollection headerCollection = new();
             headerCollection.Add(AirslipSchemeOptions.ApiKeyHeaderField, newToken);
             mockRequestData.Setup(data => data.Headers).Returns(headerCollection);
-
+            mockRequestData.Setup(data => data.Url).Returns(new Uri("https://www.google.com"));
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
+            
             // Create the validator
             IFunctionContextAccessor functionContextAccessor = new FunctionContextAccessor();
-            IHttpHeaderLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
+            IHttpContentLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
             IClaimsPrincipalLocator claimsPrincipalLocator =
                 new FunctionContextPrincipalLocator(functionContextAccessor);
             ITokenDecodeService<ApiKeyToken> tokenDecodeService =
-                new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, claimsPrincipalLocator);
+                new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, claimsPrincipalLocator, Options.Create(encryptionSettings));
             ITokenValidator<ApiKeyToken> tokenValidator = new TokenValidator<ApiKeyToken>(tokenDecodeService);
 
             // Create the handler
@@ -97,12 +105,20 @@ namespace Airslip.Common.Auth.Functions.Tests
                 }
             };
             mockRequestData.Setup(data => data.Headers).Returns(headerCollection);
-
+            mockRequestData.Setup(data => data.Url).Returns(new Uri("https://www.google.com"));
+            
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = "Hello"
+            };
+            
             // Create the validator
             IFunctionContextAccessor functionContextAccessor = new FunctionContextAccessor();
-            IHttpHeaderLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
+            IHttpContentLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
             IClaimsPrincipalLocator claimsPrincipalLocator = new FunctionContextPrincipalLocator(functionContextAccessor);
-            ITokenDecodeService<ApiKeyToken> tokenDecodeService = new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, claimsPrincipalLocator);
+            ITokenDecodeService<ApiKeyToken> tokenDecodeService = 
+                new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, claimsPrincipalLocator, Options.Create(encryptionSettings));
             ITokenValidator<ApiKeyToken> tokenValidator = new TokenValidator<ApiKeyToken>(tokenDecodeService);
 
             ApiKeyRequestDataHandler apiKeyRequestDataHandler = new(tokenValidator, functionContextAccessor);
