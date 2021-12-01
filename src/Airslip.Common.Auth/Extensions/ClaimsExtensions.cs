@@ -49,7 +49,7 @@ namespace Airslip.Common.Auth.Extensions
 
         public static string Decrypt(this string rawText, TokenEncryptionSettings settings)
         {
-            if (settings.UseEncryption)
+            if (settings.UseEncryption && !string.IsNullOrWhiteSpace(rawText))
                 rawText = StringCipher.Decrypt(rawText, settings.Passphrase);
 
             return rawText;
@@ -57,7 +57,7 @@ namespace Airslip.Common.Auth.Extensions
 
         public static string Encrypt(this string rawText, TokenEncryptionSettings settings)
         {
-            if (settings.UseEncryption)
+            if (settings.UseEncryption && !string.IsNullOrWhiteSpace(rawText))
                 rawText = StringCipher.Encrypt(rawText, settings.Passphrase);
 
             return rawText;
