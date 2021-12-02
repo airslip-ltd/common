@@ -52,6 +52,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             where TTokenType : IGenerateToken
         {
             services
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .AddScoped<ITokenGenerationService<TTokenType>, TokenGenerationService<TTokenType>>();
 
@@ -96,6 +97,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
                 .AddScoped<IUserAgentService, UserAgentService>()
                 .AddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>()
                 .AddScoped<IHttpContentLocator, HttpContextContentLocator>()
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>()
@@ -138,6 +140,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services
                 .AddSingleton<IQrCodeRequestHandler, QrCodeRequestHandler>()
                 .AddAuthorization()
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<ITokenDecodeService<QrCodeToken>, TokenDecodeService<QrCodeToken>>()
@@ -175,6 +178,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
                 
             services
                 .AddScoped<IApiRequestAuthService, ApiRequestAuthService>()
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .Configure<ApiAccessSettings>(configuration.GetSection(nameof(ApiAccessSettings)));
             
             return services;
@@ -194,6 +198,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             services.TryAddScoped<IHttpContentLocator, HttpContextContentLocator>();
                 
             services
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .Configure<CookieSettings>(configuration.GetSection(nameof(CookieSettings)));
             
             AuthenticationBuilder result = services

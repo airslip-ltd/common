@@ -6,7 +6,6 @@ using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Airslip.Common.Types.Configuration;
@@ -26,6 +25,7 @@ namespace Airslip.Common.Auth.Functions.Extensions
             IConfiguration configuration, string? withEnvironment = null)
         {
             services
+                .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .AddScoped<IApiRequestAuthService, ApiRequestAuthService>()
                 .AddScoped<IApiKeyRequestDataHandler, ApiKeyRequestDataHandler>()
                 .AddScoped<IFunctionContextAccessor, FunctionContextAccessor>()
