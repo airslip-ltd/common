@@ -6,6 +6,8 @@ namespace Airslip.Common.Auth.Data
         public const string ApiKeyHeaderField = "x-api-key";
         public const string QrCodeAuthScheme = "QrCodeAuthScheme";
         public const string CookieAuthScheme = "CookieAuthScheme";
+        public const string JwtBearerScheme = "Bearer";
+        public const string JwtBearerHeaderField = "Authorization";
         
         public const string CookieTokenField = "tf";
         public const string CookieEncryptField = "tfe";

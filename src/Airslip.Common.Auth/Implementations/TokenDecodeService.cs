@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 
 namespace Airslip.Common.Auth.Implementations
@@ -48,9 +49,22 @@ namespace Airslip.Common.Auth.Implementations
 
         public Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue)
         {
+            return DecodeTokenFromHeader(headerValue, string.Empty);
+        }
+
+        public Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue, string withScheme)
+        {
             string rawToken = _httpContentLocator.GetHeaderValue(headerValue) ?? 
                               throw new ArgumentException("Header not found", nameof(headerValue));
 
+            switch (withScheme)
+            {
+                case AirslipSchemeOptions.JwtBearerScheme:
+                    // This should be predictable - we take the bearer off then trim the token
+                    rawToken = rawToken.Replace(AirslipSchemeOptions.JwtBearerScheme, "").TrimStart();
+                    break;
+            }
+            
             return DecodeToken(rawToken);
         }
 

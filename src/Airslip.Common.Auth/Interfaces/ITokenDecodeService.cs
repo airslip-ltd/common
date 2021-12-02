@@ -10,5 +10,6 @@ namespace Airslip.Common.Auth.Interfaces
         TTokenType GetCurrentToken();
         Tuple<TTokenType, ICollection<Claim>> DecodeToken(string tokenValue);
         Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue);
+        Tuple<TTokenType, ICollection<Claim>> DecodeTokenFromHeader(string headerValue, string withScheme);
     }
 }
