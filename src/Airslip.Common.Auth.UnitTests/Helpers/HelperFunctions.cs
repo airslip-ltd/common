@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
@@ -94,8 +95,15 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             ITokenGenerationService<GenerateUserToken> service = CreateTokenGenerationService<GenerateUserToken>
                 (withIpAddress, "",  withUserAgent: withUserAgent);
             
-            GenerateUserToken apiTokenKey = new(entityId, airslipUserType, userId,
-                yapilyUserId);
+            GenerateUserToken apiTokenKey = new(entityId, 
+                airslipUserType, 
+                userId,
+                yapilyUserId,
+                UserRoles.Administrator,
+                new[]
+                {
+                    ApplicationRoles.UserManager
+                });
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }

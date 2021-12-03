@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
@@ -22,7 +23,12 @@ namespace Airslip.Common.Auth.UnitTests
             GenerateUserToken apiTokenKey = new("Some Entity",
                 AirslipUserType.Standard, 
                 "SomeUserId",
-                "SomeYapilyUserId");
+                "SomeYapilyUserId",
+                UserRoles.Administrator,
+                new[]
+                {
+                    ApplicationRoles.UserManager
+                });
             
             service.Invoking(y => y.GenerateNewToken(apiTokenKey))
                 .Should()

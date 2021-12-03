@@ -2,6 +2,8 @@ namespace Airslip.Common.Auth.Data
 {
     public static class AirslipClaimTypes
     {
+        public const string USER_ROLE = "userrole";
+        public const string APPLCATION_ROLES = "approles";
         public const string USER_ID = "userid";
         public const string YAPILY_USER_ID = "yapilyuserid";
         public const string USER_AGENT = "ua";
