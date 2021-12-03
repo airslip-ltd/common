@@ -5,11 +5,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System;
-using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Middleware
+namespace Airslip.Common.Auth.AspNetCore.Middleware
 {
     public class JwtTokenMiddleware
     {
