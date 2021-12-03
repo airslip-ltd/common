@@ -23,9 +23,8 @@ namespace Airslip.Common.Auth.AspNetCore.Tests
 
             serviceCollection.AddAirslipJwtAuth(configurationBuilder.Build(), AuthType.All);
 
-            var count = serviceCollection.Count(o => o.ServiceType.FullName.Contains("Airslip"));
-            count.Should().Be(15);
-
+            int count = serviceCollection.Count(o => o.ServiceType.FullName.Contains("Airslip"));
+            count.Should().Be(17);
         }
         
         [Fact]
