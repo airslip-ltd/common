@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Airslip.Common.Auth.Interfaces;
+using Airslip.Common.Auth.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System;
+using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
@@ -13,13 +16,14 @@ namespace Airslip.Common.Middleware
         private readonly ILogger _logger;
         private readonly RequestDelegate _next;
 
-        public JwtTokenMiddleware(RequestDelegate next, ILogger logger)
+        public JwtTokenMiddleware(RequestDelegate next,  
+            ILogger logger)
         {
             _next = next;
             _logger = logger;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, ITokenDecodeService<UserToken> tokenDecodeService)
         {
             try
             {
@@ -27,9 +31,16 @@ namespace Airslip.Common.Middleware
                 
                 if (!(identity?.IsAuthenticated ?? false))
                 {
-                    AuthenticateResult authenticateResult = await httpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+                    AuthenticateResult authenticateResult = await httpContext
+                        .AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+
                     if (authenticateResult.Succeeded && authenticateResult.Principal != null)
+                    {
                         httpContext.User = authenticateResult.Principal;
+
+                        UserToken userToken = tokenDecodeService.GetCurrentToken();
+                        httpContext.Items["UserToken"] = userToken;
+                    }
                 }
                 await _next(httpContext);
             }
