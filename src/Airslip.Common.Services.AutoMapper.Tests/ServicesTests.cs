@@ -38,7 +38,7 @@ namespace Airslip.Common.Services.AutoMapper.Tests
 
             MyEntity result = mapper.Create<MyEntity>(myModel);
 
-            result.EntityId.Should().Be(string.Empty);
+            result.EntityId.Should().BeNull();
             result.AirslipUserType.Should().Be(AirslipUserType.Unknown);
         }
         [Fact]
