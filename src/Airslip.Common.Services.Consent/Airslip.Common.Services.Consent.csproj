@@ -17,6 +17,7 @@
 		<PackageReference Include="Airslip.Common.Matching" Version="3.6.8" />
 		<PackageReference Include="Airslip.Common.Repository" Version="3.7.1" />
 		<PackageReference Include="Airslip.Common.Services.AutoMapper" Version="3.7.0" />
+		<PackageReference Include="Airslip.Common.Services.FluentValidation" Version="3.6.0" />
 		<PackageReference Include="Airslip.Common.Types" Version="3.6.2" />
 		<PackageReference Include="Airslip.Common.Utilities" Version="3.6.12" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />

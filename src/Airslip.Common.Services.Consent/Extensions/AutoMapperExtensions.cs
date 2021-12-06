@@ -74,6 +74,8 @@ namespace Airslip.Common.Services.Consent.Extensions
             cfg.CreateMap<TransactionBank, TransactionBankModel>();
             cfg.CreateMap<TransactionMerchant, TransactionMerchantModel>().ReverseMap();
             cfg.CreateMap<TMerchantSource, MerchantSummaryModel>().ReverseMap();
+            cfg.CreateMap<Account, AccountResponse>();
+            cfg.CreateMap<Bank, BankResponse>();
         }
     }
 }
