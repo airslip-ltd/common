@@ -81,7 +81,7 @@ namespace Airslip.Common.Repository.Implementations
 
             if (newEntity is IEntityWithOwnership entityWithOwnership)
             {
-                if (_userService.EntityId is null || _userService.AirslipUserType is null)
+                if (_userService.AirslipUserType is null)
                 {
                     return new FailedActionResultModel<TModel>
                     (
@@ -90,9 +90,20 @@ namespace Airslip.Common.Repository.Implementations
                         model
                     );
                 }
-                
-                entityWithOwnership.EntityId = _userService.EntityId;
                 entityWithOwnership.AirslipUserType = _userService.AirslipUserType.Value;
+
+                // Bind the UserId and EntityId where available
+                switch (_userService.AirslipUserType.Value)
+                { 
+                    case AirslipUserType.Standard:
+                        entityWithOwnership.UserId = _userService.UserId;
+                        break;
+                    
+                    default:
+                        entityWithOwnership.UserId = _userService.UserId;
+                        entityWithOwnership.EntityId = _userService.EntityId;
+                        break;
+                }
             }
             
             // Add the entity
