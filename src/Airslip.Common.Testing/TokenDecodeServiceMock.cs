@@ -9,6 +9,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Moq;
 using System.Threading.Tasks;
 
@@ -40,10 +41,12 @@ namespace Airslip.Common.Testing
                 }
             };
             mockRequestData.Setup(data => data.Headers).Returns(headerCollection);
+            Mock<IOptions<TokenEncryptionSettings>> encryptionSettings = Helpers.GenerateEncryptionSettings();
             IFunctionContextAccessor functionContextAccessor = new FunctionContextAccessor();
-            IHttpHeaderLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
+            IHttpContentLocator httpHeaderLocator = new FunctionContextHeaderLocator(functionContextAccessor);
             IClaimsPrincipalLocator claimsPrincipalLocator = new FunctionContextPrincipalLocator(functionContextAccessor);
-            ITokenDecodeService<ApiKeyToken> tokenDecodeService = new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, claimsPrincipalLocator);
+            ITokenDecodeService<ApiKeyToken> tokenDecodeService = new TokenDecodeService<ApiKeyToken>(httpHeaderLocator, 
+                claimsPrincipalLocator, encryptionSettings.Object);
             ITokenValidator<ApiKeyToken> tokenValidator = new TokenValidator<ApiKeyToken>(tokenDecodeService);
 
             ApiKeyRequestDataHandler apiKeyRequestDataHandler = new(tokenValidator, functionContextAccessor);
