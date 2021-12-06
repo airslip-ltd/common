@@ -1,6 +1,10 @@
+using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Configuration;
+using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Implementations;
 using Airslip.Common.Services.Consent.Interfaces;
+using Airslip.Common.Services.Consent.Models;
+using Airslip.Common.Services.FluentValidation;
 using Airslip.Common.Types.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,8 +41,17 @@ namespace Airslip.Common.Services.Consent.Extensions
             services
                 .AddHttpClient()
                 .Configure<SettingCollection<ProviderSetting>>(configuration.GetSection("ProviderSettings"))
+                .AddSingleton<IModelValidator<AccountResponse>, NullValidator<AccountResponse>>()
+                .AddSingleton<IModelValidator<AccountModel>, NullValidator<AccountModel>>()
+                .AddSingleton<IModelValidator<BankModel>, NullValidator<BankModel>>()
+                .AddSingleton<IModelValidator<IncomingTransactionModel>, NullValidator<IncomingTransactionModel>>()
+                .AddSingleton<IRegisterDataService<Bank, BankModel>, RegisterDataService<Bank, BankModel>>()
+                .AddSingleton<IRegisterDataService<Account, AccountModel>, RegisterDataService<Account, AccountModel>>()
+                .AddSingleton<IRegisterDataService<Transaction, IncomingTransactionModel>, RegisterTransactionService>()
                 .AddScoped<IProviderDiscoveryService, ProviderDiscoveryService>()
-                .AddScoped<IProviderConsentService, ProviderConsentService>();
+                .AddScoped<IProviderConsentService, ProviderConsentService>()
+                .AddScoped<IBankService, BankService>()
+                .AddScoped<IAccountService, AccountService>();
 
             return services;
         }
