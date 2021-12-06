@@ -2,6 +2,7 @@ using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities.Extensions;
 using JetBrains.Annotations;
 using System;
@@ -9,13 +10,13 @@ using System;
 namespace Airslip.Common.Services.Consent.Implementations
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-    public class IncomingTransactionModel : IModel, IOwnedModel, IFromDataSource
+    public class IncomingTransactionModel : IModelWithOwnership, IFromDataSource
     {
         public string? Id { get; set; }
         public EntityStatus EntityStatus { get; set; }
         public string BankTransactionId { get; set; } = string.Empty;
         public string? TransactionHash { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        public string? UserId { get; set; }
         public string AccountId { get; set; } = string.Empty;
         public string BankId { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
@@ -31,6 +32,7 @@ namespace Airslip.Common.Services.Consent.Implementations
         public string? TransactionIdentifier { get; set; }
         public string? Reference { get; set; }
         public string? EntityId { get; set; }
+        public AirslipUserType AirslipUserType { get; set; }
         public DataSources DataSource { get; set; } = DataSources.Unknown;
         public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
     }
