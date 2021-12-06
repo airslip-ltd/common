@@ -36,12 +36,14 @@ namespace Airslip.Common.Testing
             Mock<IOptions<JwtSettings>> options = GenerateOptionsWithKey(withKey);
             Mock<IRemoteIpAddressService> ipService = GenerateMockRemoteIpAddressService(withIpAddress);
             IUserAgentService userAgentService = GenerateUserAgentService(withUserAgent);
+            Mock<IOptions<TokenEncryptionSettings>> encryptionSettings = Helpers.GenerateEncryptionSettings();
 
             TokenGenerationService<TTokenType> service = 
-                new(options.Object, ipService.Object, userAgentService);
+                new(options.Object, ipService.Object, userAgentService, encryptionSettings.Object);
 
             return service;
         }
+        
         public static Mock<IOptions<JwtSettings>> GenerateOptionsWithKey(string key)
         {
             JwtSettings settings = new()

@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	
     <ItemGroup>
-      <PackageReference Include="Airslip.Common.Repository" Version="3.6.6" />
+      <PackageReference Include="Airslip.Common.Repository" Version="3.7.0" />
       <PackageReference Include="FluentValidation" Version="10.3.3" />
     </ItemGroup>
 
