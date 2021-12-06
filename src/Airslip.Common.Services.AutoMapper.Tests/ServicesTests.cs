@@ -75,7 +75,8 @@ namespace Airslip.Common.Services.AutoMapper.Tests
             public string Id { get; set; } = string.Empty;
             public BasicAuditInformation? AuditInformation { get; set; }
             public EntityStatus EntityStatus { get; set; }
-            public string EntityId { get; set; } = string.Empty;
+            public string? UserId { get; set; }
+            public string? EntityId { get; set; }
             public AirslipUserType AirslipUserType { get; set; }
         }
         
@@ -83,8 +84,9 @@ namespace Airslip.Common.Services.AutoMapper.Tests
         {
             public string? Id { get; set; }
             public EntityStatus EntityStatus { get; set; }
+            public string? UserId { get; set; }
             public string? EntityId { get; set; }
-            public AirslipUserType? AirslipUserType { get; set; }
+            public AirslipUserType AirslipUserType { get; set; }
         }
     }
 }

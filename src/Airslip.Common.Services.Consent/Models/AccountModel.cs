@@ -1,5 +1,4 @@
-using Airslip.Common.Repository.Entities;
-using Airslip.Common.Repository.Enums;
+﻿using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
@@ -8,18 +7,15 @@ using Airslip.Common.Utilities.Extensions;
 using JetBrains.Annotations;
 using System;
 
-namespace Airslip.Common.Services.Consent.Entities
+namespace Airslip.Common.Services.Consent.Models
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-    public class Account : IFromDataSource, IEntityWithOwnership
+    public record AccountModel : IModelWithOwnership, IFromDataSource
     {
-        public string Id { get; set; } = string.Empty;
-        public BasicAuditInformation? AuditInformation { get; set; }
+        public string? Id { get; set; }
         public EntityStatus EntityStatus { get; set; }
-        public AccountStatus AccountStatus { get; set; }
-        public DataSources DataSource { get; set; } = DataSources.Unknown;
-        public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
         public string AccountId { get; set; } = string.Empty;
+        public DataSources DataSource { get; set; } = DataSources.Unknown;
         public string? UserId { get; set; }
         public string? EntityId { get; set; }
         public AirslipUserType AirslipUserType { get; set; }
@@ -29,7 +25,10 @@ namespace Airslip.Common.Services.Consent.Entities
         public string AccountType { get; set; } = string.Empty;
         public string? SortCode { get; set; }
         public string? AccountNumber { get; set; }
-        public string BankId { get; set; } = string.Empty;
+        public long CreatedTimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+        public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
         public string InstitutionId { get; set; } = string.Empty;
+        public AccountStatus AccountStatus { get; set; } = AccountStatus.Active;
     }
 }
+    

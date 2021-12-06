@@ -14,7 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Airslip.Common.Types" Version="3.6.2" />
-		<PackageReference Include="Airslip.Common.Repository" Version="3.7.0" />
+		<PackageReference Include="Airslip.Common.Repository" Version="3.7.1" />
 	</ItemGroup>
 	
 </Project>
