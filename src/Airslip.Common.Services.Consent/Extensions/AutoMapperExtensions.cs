@@ -1,8 +1,12 @@
 using Airslip.Common.Matching.Data;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Implementations;
+using Airslip.Common.Services.Consent.Models;
 using Airslip.Common.Types;
+using Airslip.Common.Utilities.Extensions;
+using Airslip.SmartReceipts.Api.Core.Models;
 using AutoMapper;
+using System.Globalization;
 
 namespace Airslip.Common.Services.Consent.Extensions
 {
@@ -51,6 +55,25 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .ForPath(d => d.EntityId, c => c
                     .MapFrom(s => s.EntityId))
                 .ReverseMap();
+        }
+
+        public static void AddConsentMapperConfiguration<TMerchantSource>(this IMapperConfigurationExpression cfg)
+        {
+            cfg.CreateMap<Account, AccountModel>()
+                .ReverseMap();
+            cfg.CreateMap<Bank, BankModel>()
+                .ReverseMap();
+            cfg.CreateMap<Transaction, TransactionModel>()
+                .ForMember(s => s.CapturedDate, c => c.MapFrom(d => d.CapturedTimeStamp!.Value.ToUtcDate().ToString(CultureInfo.InvariantCulture)))
+                .ForMember(s => s.CapturedTime, c => c.MapFrom(d => d.CapturedTimeStamp!.Value.GetTime().ToString(CultureInfo.InvariantCulture)))
+                .ForMember(s => s.AuthorisedDate, c => c.MapFrom(d => d.AuthorisedTimeStamp != null ? d.AuthorisedTimeStamp.Value.ToUtcDate().ToString(CultureInfo.InvariantCulture) : null))
+                .ForMember(s => s.AuthorisedTime, c => c.MapFrom(d => d.AuthorisedTimeStamp != null ? d.AuthorisedTimeStamp.Value.GetTime().ToString(CultureInfo.InvariantCulture) : null))
+                .ForMember(s => s.CurrencySymbol, c => c.MapFrom(d => Currency.GetSymbol(d.CurrencyCode!)))
+                .ForMember(s => s.Amount, c => c.MapFrom(d =>  Currency.ConvertToTwoPlacedDecimal(d.Amount).ToString()));
+            cfg.CreateMap<Transaction, TransactionSummaryModel>();
+            cfg.CreateMap<TransactionBank, TransactionBankModel>();
+            cfg.CreateMap<TransactionMerchant, TransactionMerchantModel>().ReverseMap();
+            cfg.CreateMap<TMerchantSource, MerchantSummaryModel>().ReverseMap();
         }
     }
 }

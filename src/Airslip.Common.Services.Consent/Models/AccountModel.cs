@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using JetBrains.Annotations;
 using System;
@@ -10,7 +11,7 @@ using System;
 namespace Airslip.Common.Services.Consent.Models
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-    public record AccountModel : IModelWithOwnership, IFromDataSource
+    public record AccountModel : IModelWithOwnership, IFromDataSource, ISuccess
     {
         public string? Id { get; set; }
         public EntityStatus EntityStatus { get; set; }
