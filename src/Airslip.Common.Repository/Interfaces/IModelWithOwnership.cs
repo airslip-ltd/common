@@ -7,8 +7,10 @@ namespace Airslip.Common.Repository.Interfaces
     /// </summary>
     public interface IModelWithOwnership : IModel
     {
+        string? UserId { get; set; }
+        
         string? EntityId { get; set; }
         
-        AirslipUserType? AirslipUserType { get; set; }
+        AirslipUserType AirslipUserType { get; set; }
     }
 }
