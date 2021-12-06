@@ -3,7 +3,7 @@
 	<Import Project="..\common.props" />
 
 	<PropertyGroup>
-		<PackageId>Airslip.Common.Services.CosmosDb</PackageId>
+		<PackageId>Airslip.Common.Services.Consent</PackageId>
 		<Company>Airslip</Company>
 		<Authors>Airslip</Authors>
 		<PackageProjectUrl>https://github.com/airslip-ltd/common</PackageProjectUrl>
