@@ -1,3 +1,4 @@
+using Airslip.Common.Types.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,11 +7,11 @@ namespace Airslip.Common.AppIdentifiers
 {
     public class AppleAppIdentificationService : IAppleAppIdentificationService
     {
-        private readonly AppleAppIdentifierSettings _appleAppIdentifierSettings;
+        private readonly SettingCollection<AppleAppIdentifierSetting> _appleAppIdentifierSettings;
         private readonly AndroidAppIdentifierSettings _androidAppIdentifierSettings;
 
         public AppleAppIdentificationService(
-            IOptions<AppleAppIdentifierSettings> appIdentifierOptions,
+            IOptions<SettingCollection<AppleAppIdentifierSetting>> appIdentifierOptions,
             IOptions<AndroidAppIdentifierSettings> packageOptions)
         {
             _appleAppIdentifierSettings = appIdentifierOptions.Value;
@@ -19,19 +20,22 @@ namespace Airslip.Common.AppIdentifiers
 
         public AppleAppSiteAssociation GetAppSiteAssociation()
         {
-            AppleAppIdentifierSetting bankTransactionSettings = _appleAppIdentifierSettings.BankTransactions;
-            AppleAppIdentifierSetting identitySettings = _appleAppIdentifierSettings.Identity;
+            List<string> appIds = _appleAppIdentifierSettings
+                .Settings!.Values.Select(o => o.AppID).Distinct().ToList();
 
-            string bankTransactionPath = BuildDeepLinkingPath(
-                bankTransactionSettings.UriSuffix,
-                bankTransactionSettings.Version,
-                bankTransactionSettings.Endpoint);
-
-            string identityPath = BuildDeepLinkingPath(
-                identitySettings.UriSuffix,
-                identitySettings.Version,
-                identitySettings.Endpoint);
-
+            IEnumerable<Component> components = _appleAppIdentifierSettings
+                .Settings!
+                .Values
+                .Select(o =>
+                {
+                    string path = BuildDeepLinkingPath(o);
+                    return new Component()
+                    {
+                        comment = "Matches any URL whose path starts with " + path,
+                        slash = path
+                    };
+                });
+            
             return new AppleAppSiteAssociation
             {
                 Applinks = new Applinks
@@ -40,41 +44,27 @@ namespace Airslip.Common.AppIdentifiers
                     {
                         new()
                         {
-                            appIDs = new List<string>
-                            {
-                                bankTransactionSettings.AppID
-                            },
-                            components = new List<Component>
-                            {
-                                new()
-                                {
-                                   slash = bankTransactionPath,
-                                   comment = "Matches any URL whose path starts with " + bankTransactionPath
-                                },
-                                new()
-                                {
-                                slash = identityPath,
-                                comment = "Matches any URL whose path starts with " + identityPath
-                            }
-                            }
+                            appIDs = appIds,
+                            components = components.ToList()
                         }
                     }
                 },
                 Webcredentials = new Webcredentials
                 {
-                    apps = new List<string>
-                    {
-                        bankTransactionSettings.AppID
-                    }
+                    apps = appIds
                 },
                 appclips = new Appclips
                 {
-                    apps = new List<string>
-                    {
-                        bankTransactionSettings.AppID
-                    }
+                    apps = appIds
                 }
             };
+        }
+
+        private string BuildDeepLinkingPath(AppleAppIdentifierSetting setting)
+        {
+            return string.IsNullOrWhiteSpace(setting.UriSuffix)
+                ? $"/{setting.Version}/{setting.Endpoint}/*"
+                : $"/{setting.UriSuffix}/{setting.Version}/{setting.Endpoint}/*";
         }
 
         public IEnumerable<AssetLink> GetAssetLinks()
@@ -86,13 +76,6 @@ namespace Airslip.Common.AppIdentifiers
                 new(androidPackageSettings.Namespace, androidPackageSettings.PackageName,
                     androidPackageSettings.Relation, androidPackageSettings.Sha256CertFingerprints)
             };
-        }
-
-        private static string BuildDeepLinkingPath(string uriSuffix, string version, string endpoint)
-        {
-            return string.IsNullOrWhiteSpace(uriSuffix)
-                ? $"/{version}/{endpoint}/*"
-                : $"/{uriSuffix}/{version}/{endpoint}/*";
         }
     }
 }
