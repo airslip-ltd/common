@@ -10,9 +10,9 @@ namespace Airslip.Common.Matching.Models
         string TransactionTrackingId,
         string MatchTrackingId,
         string? UserId,
-        string? EntityId,
-        AirslipUserType AirslipUserType,
-        MatchLikelihood MatchLikelihood)
+        MatchLikelihood MatchLikelihood,
+        string? EntityId = null,
+        AirslipUserType AirslipUserType = AirslipUserType.Standard)
     {
         public List<MatchMetadata> Metadata { get; } = new();
     }
