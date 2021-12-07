@@ -3,6 +3,7 @@
     public enum PosProviders
     {
         SwanRetailMidas,
+        Api2Cart,
         Volusion,
         Shopify,
         Stripe,
