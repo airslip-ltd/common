@@ -39,6 +39,8 @@ namespace Airslip.Common.Services.Consent.Implementations
             // Apply some dynamic replacement
             url = url.ApplyReplacements(new Dictionary<string, string>
             {
+                {"entityId", _userToken.EntityId},
+                {"airslipUserType", _userToken.AirslipUserType.ToString().ToLower()},
                 {"userId", _userToken.UserId},
                 {"bankId", bankId},
                 {"callbackUrl", providerDetails.CallbackUrl}
@@ -65,7 +67,6 @@ namespace Airslip.Common.Services.Consent.Implementations
                 {"providerUserId", providerUserId},
                 {"bankId", bankId}
             });
-
             
             HttpRequestResult<AccountAuthorisedResponse> apiCallResponse = await _httpClient
                 .GetApiRequest<AccountAuthorisedResponse>(url, providerDetails.ApiKey, cancellationToken);
