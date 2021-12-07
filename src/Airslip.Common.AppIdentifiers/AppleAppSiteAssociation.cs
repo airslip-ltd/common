@@ -9,6 +9,7 @@ namespace Airslip.Common.AppIdentifiers
         public Webcredentials? Webcredentials { get; set; }
         public Appclips? appclips { get; set; }
     }
+    
     public class Component
     {
         [JsonProperty("/")]

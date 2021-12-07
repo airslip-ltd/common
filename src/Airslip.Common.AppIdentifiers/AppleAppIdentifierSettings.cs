@@ -1,11 +1,5 @@
 namespace Airslip.Common.AppIdentifiers
 {
-    public class AppleAppIdentifierSettings
-    {
-        public AppleAppIdentifierSetting BankTransactions { get; set; } = new();
-        public AppleAppIdentifierSetting Identity { get; set; } = new();
-    }
-    
     public class AppleAppIdentifierSetting
     {
         public string BaseUri { get; set; } = string.Empty;
