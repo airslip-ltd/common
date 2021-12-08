@@ -90,18 +90,21 @@ namespace Airslip.Common.Repository.Implementations
                         model
                     );
                 }
-                entityWithOwnership.AirslipUserType = _userService.AirslipUserType.Value;
+                
+                entityWithOwnership.AirslipUserType =
+                    entityWithOwnership.AirslipUserType == AirslipUserType.Unknown ?
+                        _userService.AirslipUserType.Value : entityWithOwnership.AirslipUserType;
 
                 // Bind the UserId and EntityId where available
                 switch (_userService.AirslipUserType.Value)
                 { 
                     case AirslipUserType.Standard:
-                        entityWithOwnership.UserId = _userService.UserId;
+                        entityWithOwnership.UserId ??= _userService.UserId;
                         break;
                     
                     default:
-                        entityWithOwnership.UserId = _userService.UserId;
-                        entityWithOwnership.EntityId = _userService.EntityId;
+                        entityWithOwnership.UserId ??= _userService.UserId;
+                        entityWithOwnership.EntityId ??= _userService.EntityId;
                         break;
                 }
             }
