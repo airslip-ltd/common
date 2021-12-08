@@ -48,9 +48,10 @@ namespace Airslip.Common.Services.AutoMapper.Extensions
         }
 
         public static IServiceCollection AddAutoMapper(this IServiceCollection services, 
-            Action<IMapperConfigurationExpression> mapperConfiguration)
+            Action<IMapperConfigurationExpression> mapperConfiguration, 
+            MapperUsageType configureFor = MapperUsageType.Api)
         {
-            Services.ConfigureServices(services, mapperConfiguration);
+            Services.ConfigureServices(services, mapperConfiguration, configureFor);
 
             return services;
         }
