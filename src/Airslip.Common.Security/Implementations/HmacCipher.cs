@@ -48,7 +48,9 @@ namespace Airslip.Common.Security.Implementations
             if (string.IsNullOrEmpty(result))
                 return string.Empty;
 
-            result = (result.Replace("%", "%25").Replace("&", "%26")) ?? "";
+            // Replacements for decoding a HMAC
+            // Replace % before replacing &. Else second replace will replace those %25s.
+            result = result.Replace("%", "%25").Replace("&", "%26");
 
             if (isKey)
                 result = result.Replace("=", "%3D").Replace("[]", "");
