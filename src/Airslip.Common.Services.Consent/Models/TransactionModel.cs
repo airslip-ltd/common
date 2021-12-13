@@ -2,7 +2,6 @@
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Hateoas;
 using Airslip.Common.Types.Interfaces;
-using Airslip.SmartReceipts.Api.Core.Models;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -42,8 +41,14 @@ namespace Airslip.Common.Services.Consent.Models
         
         public static class Endpoints
         {
-            public static string GetTransactions(string baseUri, string accountId) => $"{baseUri}/v1/transactions/{accountId}";
-            public static string GetTransaction(string baseUri, string accountId, string transactionId) => $"{baseUri}/v1/transactions/{accountId}/{transactionId}";
+            public static string GetTransactions(string baseUri, string accountId) 
+                => $"{baseUri}/v1/transactions/{accountId}";
+            public static string GetTransaction(string baseUri, string accountId, string transactionId) 
+                => $"{baseUri}/v1/transactions/{accountId}/{transactionId}";
+            public static string GetLogoUrl(string baseUri, string merchantId)
+                => $"{baseUri}/merchant/{merchantId}/logo";
+            public static string GetIconUrl(string baseUri, string merchantId)
+                => $"{baseUri}/merchant/{merchantId}/icon";
         }
 
     }

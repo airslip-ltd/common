@@ -1,4 +1,4 @@
-namespace Airslip.SmartReceipts.Api.Core.Models
+namespace Airslip.Common.Services.Consent.Models
 {
     public class TransactionBankModel
     {

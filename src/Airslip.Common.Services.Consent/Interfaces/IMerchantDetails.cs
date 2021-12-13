@@ -1,6 +1,5 @@
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Models;
-using Airslip.SmartReceipts.Api.Core.Models;
 
 namespace Airslip.Common.Services.Consent.Interfaces
 {

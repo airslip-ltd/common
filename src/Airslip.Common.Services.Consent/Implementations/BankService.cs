@@ -2,8 +2,8 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Interfaces;
+using Airslip.Common.Services.Consent.Models;
 using Airslip.Common.Types.Interfaces;
-using Airslip.SmartReceipts.Api.Core.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

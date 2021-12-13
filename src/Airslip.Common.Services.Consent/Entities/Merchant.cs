@@ -1,14 +1,17 @@
 using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Services.Consent.Enums;
+using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using Airslip.Common.Utilities.Extensions;
+using System;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Services.Consent.UnitTests
+namespace Airslip.Common.Services.Consent.Entities
 {
-    public record TestMerchant(string Name, MerchantTypes Type) : IEntity
+    public record Merchant(string Name, MerchantTypes Type) : IEntity, IFromDataSource
     {
         public string Id { get; set; } = CommonFunctions.GetId();
         public List<string> BankStatementDescriptions { get; private set; } = new List<string>();
@@ -31,5 +34,7 @@ namespace Airslip.Common.Services.Consent.UnitTests
         public long CreatedTimestamp { get; private set; } = DateTimeExtensions.GetTimestamp();
         public BasicAuditInformation? AuditInformation { get; set; }
         public EntityStatus EntityStatus { get; set; }
+        public DataSources DataSource { get; set; } = DataSources.Unknown;
+        public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
     }
 }
