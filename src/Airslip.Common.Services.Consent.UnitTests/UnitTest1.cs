@@ -2,17 +2,23 @@ using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.AutoMapper;
 using Airslip.Common.Services.AutoMapper.Extensions;
+using Airslip.Common.Services.Consent.Data;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Extensions;
 using Airslip.Common.Services.Consent.Models;
+using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Moq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Airslip.Common.Services.Consent.UnitTests
@@ -26,7 +32,6 @@ namespace Airslip.Common.Services.Consent.UnitTests
             IConfigurationRoot configuration= builder.Build();
             IServiceCollection services = new ServiceCollection();
             services.AddConsentAuthorisation(configuration);
-            
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddTransactionMapperConfiguration();
@@ -34,7 +39,6 @@ namespace Airslip.Common.Services.Consent.UnitTests
             }, MapperUsageType.Service);
 
             ServiceProvider provider = services.BuildServiceProvider();
-
 
             using IServiceScope scope = provider.CreateScope();
             
@@ -83,8 +87,165 @@ namespace Airslip.Common.Services.Consent.UnitTests
             entity.AirslipUserType.Should().Be(model.AirslipUserType);
             // entity.CreatedTimeStamp = 2,
             entity.LastCardDigits.Should().Be(model.LastCardDigits);
+        }
+        
+        [Theory]
+        [InlineData("some-merchant")]
+        [InlineData(null)]
+        public void AccountId_maps_as_expected_when_null(string? accountId)
+        {
+            ConfigurationBuilder builder = new();
+            IConfigurationRoot configuration= builder.Build();
+            IServiceCollection services = new ServiceCollection();
+            services.AddConsentAuthorisation(configuration);
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddTransactionMapperConfiguration();
+                cfg.AddConsentMapperConfiguration();
+            }, MapperUsageType.Service);
+
+            ServiceProvider provider = services.BuildServiceProvider();
+
+            using IServiceScope scope = provider.CreateScope();
             
+            IModelMapper<TransactionSummaryModel> mappers = scope
+                .ServiceProvider
+                .GetService<IModelMapper<TransactionSummaryModel>>() ?? throw new NotImplementedException();
+
+            Transaction entity = new()
+            {
+                BankDetails = new TransactionBank()
+                {
+                    AccountId = accountId
+                }
+            };
+
+            TransactionSummaryModel model = mappers
+                .Create(entity);
+
+            model.AccountId.Should().Be(accountId);
+        }
+        
+        [Fact]
+        public async Task Merchant_maps_as_expected_unknown_merchant()
+        {
+            ConfigurationBuilder builder = new();
+            IConfigurationRoot configuration= builder.Build();
+            IServiceCollection services = new ServiceCollection();
+            Mock<IContext> context = new();
+            PublicApiSettings settings = new()
+            {
+                Settings = new Dictionary<string, PublicApiSetting>
+                {
+                    {"CustomerPortalApi", new PublicApiSetting()}
+                }
+            };
+            services.AddSingleton(Options.Create(settings));
+            services.AddConsentAuthorisation(configuration);
             
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddTransactionMapperConfiguration();
+                cfg.AddConsentMapperConfiguration();
+            }, MapperUsageType.Service);
+            services.AddSingleton(context.Object);
+            
+            ServiceProvider provider = services.BuildServiceProvider();
+
+            using IServiceScope scope = provider.CreateScope();
+            
+            IEntitySearchFormatter<TransactionSummaryModel> mappers = scope
+                .ServiceProvider
+                .GetService<IEntitySearchFormatter<TransactionSummaryModel>>() ?? throw new NotImplementedException();
+
+            TransactionSummaryModel model = new()
+            {
+                Id = "SomeId",
+                CurrencyCode = "CurrencyCode",
+                EntityStatus = EntityStatus.Active,
+                Merchant = new TransactionMerchantModel
+                {
+                    EntityId = null
+                }
+            };
+
+            TransactionSummaryModel entity = await mappers
+                .FormatModel(model);
+
+            entity.Id.Should().Be(model.Id);
+            entity.MerchantDetails.Should().NotBeNull();
+            entity.MerchantDetails?.CategoryCode.Should().Be(Constants.DEFAULT_CATEGORY_CODE);
+        }
+        
+        [Theory]
+        [InlineData("some-merchant", "My merchant name 1", MerchantTypes.Unsupported, "cat1", "cat1")]
+        [InlineData("some-merchant","My merchant name 2", MerchantTypes.Customer, "cat2", "cat2")]
+        [InlineData("some-merchant","My merchant name 3", MerchantTypes.Merchant, "cat4", "cat4")]
+        [InlineData("some-merchant","My merchant name 4", MerchantTypes.PaymentProcessor, "cat6", "cat6")]
+        [InlineData(null, null, MerchantTypes.Unsupported, null, Constants.DEFAULT_CATEGORY_CODE)]
+        public async Task Merchant_maps_as_expected_with_data(string? merchantId, string? merchantName, MerchantTypes merchantType,
+            string? categoryCode, string expectedCatCode)
+        {
+            Merchant merchant = new(merchantName ?? string.Empty, merchantType)
+            {
+                Id = merchantId ?? string.Empty,
+                CategoryCode = categoryCode
+            };
+            
+            ConfigurationBuilder builder = new();
+            IConfigurationRoot configuration= builder.Build();
+            IServiceCollection services = new ServiceCollection();
+            Mock<IContext> context = new();
+
+            context
+                .Setup(o => o.GetEntity<Merchant>(merchantId ?? string.Empty))
+                .Returns(async () => await Task.FromResult(merchant));
+            
+            PublicApiSettings settings = new()
+            {
+                Settings = new Dictionary<string, PublicApiSetting>
+                {
+                    {"CustomerPortalApi", new PublicApiSetting()}
+                }
+            };
+            services.AddSingleton(Options.Create(settings));
+            services.AddConsentAuthorisation(configuration);
+            
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddTransactionMapperConfiguration();
+                cfg.AddConsentMapperConfiguration();
+            }, MapperUsageType.Service);
+            services.AddSingleton(context.Object);
+            
+            ServiceProvider provider = services.BuildServiceProvider();
+
+            using IServiceScope scope = provider.CreateScope();
+            
+            IEntitySearchFormatter<TransactionSummaryModel> mappers = scope
+                .ServiceProvider
+                .GetService<IEntitySearchFormatter<TransactionSummaryModel>>() ?? throw new NotImplementedException();
+
+            TransactionSummaryModel model = new()
+            {
+                Id = "SomeId",
+                CurrencyCode = "CurrencyCode",
+                EntityStatus = EntityStatus.Active,
+                Merchant = new TransactionMerchantModel
+                {
+                    EntityId = merchantId
+                }
+            };
+
+            TransactionSummaryModel entity = await mappers
+                .FormatModel(model);
+
+            entity.Id.Should().Be(model.Id);
+            entity.MerchantDetails.Should().NotBeNull();
+            entity.MerchantDetails?.Id.Should().Be(merchantId);
+            entity.MerchantDetails?.CategoryCode.Should().Be(expectedCatCode);
+            entity.MerchantDetails?.Name.Should().Be(merchantName);
+            entity.MerchantDetails?.Type.Should().Be(merchantType);
         }
     }
 }

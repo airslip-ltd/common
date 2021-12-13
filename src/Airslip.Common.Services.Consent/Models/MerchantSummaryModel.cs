@@ -6,7 +6,7 @@ namespace Airslip.Common.Services.Consent.Models
     public record MerchantSummaryModel(
         string? Id,
         string? Name,
-        string? CategoryCode,
+        string CategoryCode,
         MerchantTypes Type)
     {
         public string? IconUrl { [UsedImplicitly] get; private set; }
