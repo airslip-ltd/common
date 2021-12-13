@@ -2,15 +2,14 @@ using Airslip.Common.Matching.Data;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.Consent.Interfaces;
-using Airslip.Common.Services.Consent.Models;
 using Airslip.Common.Types.Hateoas;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace Airslip.SmartReceipts.Api.Core.Models
+namespace Airslip.Common.Services.Consent.Models
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-    public class TransactionSummaryModel : LinkResourceBase, IModel, IMerchantDetails
+    public class TransactionSummaryModel : LinkResourceBase, IMerchantDetails
     {
         public string? Id { get; set; } = string.Empty;
         public EntityStatus EntityStatus { get; set; }
@@ -24,6 +23,9 @@ namespace Airslip.SmartReceipts.Api.Core.Models
         public string? Description { get; set; }
         [JsonIgnore]
         public TransactionMerchantModel Merchant { get; init; } = new();
+        [JsonIgnore]
+        public TransactionBankModel? BankDetails { get; set; }
         public MerchantSummaryModel? MerchantDetails { get; set; }
+        public string? AccountId { get; set; }
     }
 }

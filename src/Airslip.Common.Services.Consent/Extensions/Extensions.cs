@@ -51,7 +51,11 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .AddScoped<IProviderDiscoveryService, ProviderDiscoveryService>()
                 .AddScoped<IProviderConsentService, ProviderConsentService>()
                 .AddScoped<IBankService, BankService>()
-                .AddScoped<IAccountService, AccountService>();
+                .AddScoped<IAccountService, AccountService>()
+                .AddSingleton<IEntitySearchFormatter<TransactionModel>, 
+                    MerchantSearchFormatter<TransactionModel>>()
+                .AddSingleton<IEntitySearchFormatter<TransactionSummaryModel>, 
+                    MerchantSearchFormatter<TransactionSummaryModel>>();
 
             return services;
         }

@@ -4,7 +4,6 @@ using Airslip.Common.Services.Consent.Implementations;
 using Airslip.Common.Services.Consent.Models;
 using Airslip.Common.Types;
 using Airslip.Common.Utilities.Extensions;
-using Airslip.SmartReceipts.Api.Core.Models;
 using AutoMapper;
 using System.Globalization;
 
@@ -57,7 +56,7 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .ReverseMap();
         }
 
-        public static void AddConsentMapperConfiguration<TMerchantSource>(this IMapperConfigurationExpression cfg)
+        public static void AddConsentMapperConfiguration(this IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<Account, AccountModel>()
                 .ReverseMap();
@@ -70,10 +69,11 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .ForMember(s => s.AuthorisedTime, c => c.MapFrom(d => d.AuthorisedTimeStamp != null ? d.AuthorisedTimeStamp.Value.GetTime().ToString(CultureInfo.InvariantCulture) : null))
                 .ForMember(s => s.CurrencySymbol, c => c.MapFrom(d => Currency.GetSymbol(d.CurrencyCode!)))
                 .ForMember(s => s.Amount, c => c.MapFrom(d =>  Currency.ConvertToTwoPlacedDecimal(d.Amount).ToString()));
-            cfg.CreateMap<Transaction, TransactionSummaryModel>();
+            cfg.CreateMap<Transaction, TransactionSummaryModel>()
+                .ForMember(s => s.AccountId, c => c.MapFrom(d => d.BankDetails.AccountId));
             cfg.CreateMap<TransactionBank, TransactionBankModel>();
             cfg.CreateMap<TransactionMerchant, TransactionMerchantModel>().ReverseMap();
-            cfg.CreateMap<TMerchantSource, MerchantSummaryModel>().ReverseMap();
+            cfg.CreateMap<Merchant, MerchantSummaryModel>().ReverseMap();
             cfg.CreateMap<Account, AccountResponse>();
             cfg.CreateMap<Bank, BankResponse>();
         }

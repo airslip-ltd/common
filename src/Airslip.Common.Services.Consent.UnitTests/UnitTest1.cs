@@ -30,7 +30,7 @@ namespace Airslip.Common.Services.Consent.UnitTests
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddTransactionMapperConfiguration();
-                cfg.AddConsentMapperConfiguration<TestMerchant>();
+                cfg.AddConsentMapperConfiguration();
             }, MapperUsageType.Service);
 
             ServiceProvider provider = services.BuildServiceProvider();

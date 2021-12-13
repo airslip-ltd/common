@@ -3,7 +3,7 @@ using Airslip.Common.Types.Interfaces;
 using JetBrains.Annotations;
 using System.Collections.Generic;
 
-namespace Airslip.SmartReceipts.Api.Core.Models
+namespace Airslip.Common.Services.Consent.Models
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class BanksResponse : LinkResourceBase, ISuccess
