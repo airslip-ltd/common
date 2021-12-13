@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Services.Consent.Data;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Services.Consent.Models;
@@ -31,7 +32,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             if (string.IsNullOrWhiteSpace(model.Merchant.EntityId))
             {
                 model.MerchantDetails =
-                    new MerchantSummaryModel(null, null, null,  
+                    new MerchantSummaryModel(null, null, Constants.DEFAULT_CATEGORY_CODE,  
                         MerchantTypes.Unsupported);
                 return model;
             }
@@ -42,7 +43,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             if (merchant == null)
             {
                 model.MerchantDetails =
-                    new MerchantSummaryModel(model.Merchant.EntityId, null, null,  
+                    new MerchantSummaryModel(model.Merchant.EntityId, null, Constants.DEFAULT_CATEGORY_CODE,  
                         MerchantTypes.Unsupported);
                 return model;
             }
