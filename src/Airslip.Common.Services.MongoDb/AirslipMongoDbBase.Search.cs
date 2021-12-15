@@ -14,7 +14,6 @@ namespace Airslip.Common.Services.MongoDb
         public Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters)
             where TEntity : class, IEntityWithId
         {
-
             if (typeof(IEntityWithOwnership).IsAssignableFrom(typeof(TEntity)))
             {
                 switch (_userContext.AirslipUserType ?? AirslipUserType.Standard)
@@ -30,19 +29,33 @@ namespace Airslip.Common.Services.MongoDb
                         break;
                 } 
             }
-            
-            
-            
-            
-            
-            
-            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             FilterDefinitionBuilder<TEntity>? filterBuilder = Builders<TEntity>.Filter;
-            List<FilterDefinition<TEntity>> filters = searchFilters
-                .Select(searchFilterModel => filterBuilder
-                    .Eq(searchFilterModel.FieldName, searchFilterModel.FieldValue))
-                .ToList();
+            List<FilterDefinition<TEntity>> filters = new();
+            foreach (SearchFilterModel searchFilterModel in searchFilters)
+            {
+                switch (searchFilterModel.FieldValue)
+                {
+                    case bool boolValue:
+                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, boolValue));
+                        break;
+                    case int intValue:
+                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, intValue));
+                        break;
+                    case long lngValue:
+                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, lngValue));
+                        break;
+                    case AirslipUserType airslipUserType:
+                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, airslipUserType));
+                        break;
+                    default:
+                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, searchFilterModel.FieldValue
+                            .ToString()));
+                        break;
+                }
+            }
+
+            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
             return collection
                 .Find(filters.Count > 0 ? filterBuilder.And(filters) : FilterDefinition<TEntity>.Empty)
