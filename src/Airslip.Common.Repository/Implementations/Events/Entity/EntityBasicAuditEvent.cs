@@ -1,6 +1,7 @@
 using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Types.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -9,9 +10,9 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
     public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity> 
         where TEntity : class, IEntity
     {
-        private readonly IRepositoryUserService _userService;
+        private readonly IUserContext _userService;
 
-        public EntityBasicAuditEvent(IRepositoryUserService userService)
+        public EntityBasicAuditEvent(IUserContext userService)
         {
             _userService = userService;
         }

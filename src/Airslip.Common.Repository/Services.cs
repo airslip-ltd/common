@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Implementations.Events.Entity;
 using Airslip.Common.Repository.Implementations.Events.Model;
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Airslip.Common.Repository
@@ -25,10 +26,10 @@ namespace Airslip.Common.Repository
             switch (repositoryUserType)
             {
                 case RepositoryUserType.Null:
-                    serviceCollection.AddSingleton<IRepositoryUserService, NullUserService>();
+                    serviceCollection.AddSingleton<IUserContext, NullUserService>();
                     break;
                 case RepositoryUserType.TokenBased:
-                    serviceCollection.AddScoped<IRepositoryUserService, TokenBasedUserService>();
+                    serviceCollection.AddScoped<IUserContext, TokenBasedUserService>();
                     break;
                 case RepositoryUserType.Manual:
                     // Inject nothing, let the developer do it...

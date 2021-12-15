@@ -4,6 +4,7 @@ using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Exception;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -12,9 +13,9 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
     public class EntityOwnershipEvent<TEntity> : IEntityPreProcessEvent<TEntity> 
         where TEntity : class, IEntity
     {
-        private readonly IRepositoryUserService _userService;
+        private readonly IUserContext _userService;
 
-        public EntityOwnershipEvent(IRepositoryUserService userService)
+        public EntityOwnershipEvent(IUserContext userService)
         {
             _userService = userService;
         }

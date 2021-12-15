@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Failures;
+using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace Airslip.Common.Repository.Extensions
             return new ErrorResponses(errors);
         }
 
-        public static bool CanView<TEntity>(this TEntity entity, IRepositoryUserService userService)
+        public static bool CanView<TEntity>(this TEntity entity, IUserContext userService)
             where TEntity: class, IEntityWithOwnership
         {
             if (userService.AirslipUserType is null) return false;

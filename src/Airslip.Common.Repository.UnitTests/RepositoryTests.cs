@@ -9,6 +9,7 @@ using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +48,7 @@ namespace Airslip.Common.Repository.UnitTests
                 .AddRepositories(RepositoryUserType.Manual)
                 .AddScoped(_ =>
                 {
-                    Mock<IRepositoryUserService> mockTokenDecodeService = new();
+                    Mock<IUserContext> mockTokenDecodeService = new();
                     mockTokenDecodeService.Setup(service => service.EntityId).Returns((string?)null);
                     mockTokenDecodeService.Setup(service => service.UserId).Returns((string?)null);
                     mockTokenDecodeService.Setup(service => service.AirslipUserType).Returns((AirslipUserType?)null);
@@ -70,7 +71,7 @@ namespace Airslip.Common.Repository.UnitTests
             Mock<IContext> mockContext = new();
             Mock<IModelValidator<MyModel>> mockModelValidator = new();
             Mock<IModelMapper<MyModel>> mockModelMapper = new();
-            Mock<IRepositoryUserService> mockTokenDecodeService = new();
+            Mock<IUserContext> mockTokenDecodeService = new();
 
             IServiceCollection serviceCollection = new ServiceCollection();
 
@@ -93,7 +94,7 @@ namespace Airslip.Common.Repository.UnitTests
             Mock<IContext> mockContext = new();
             Mock<IModelValidator<MyModel>> mockModelValidator = new();
             Mock<IModelMapper<MyModel>> mockModelMapper = new();
-            Mock<IRepositoryUserService> mockTokenDecodeService = new();
+            Mock<IUserContext> mockTokenDecodeService = new();
 
             IServiceCollection serviceCollection = new ServiceCollection();
 
