@@ -27,7 +27,9 @@ namespace Airslip.Common.Services.MongoDb
             // Find appropriate collection
             IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
 
-            return await collection.Find(user => user.Id == id).FirstOrDefaultAsync();
+            return await collection
+                .Find(entity => entity.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
