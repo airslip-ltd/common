@@ -9,6 +9,6 @@ namespace Airslip.Common.Repository.Interfaces
     {
         TEntity PreProcess(TEntity entity, LifecycleStage lifecycleStage, string? userId = null);
         TEntity PostProcess(TEntity entity, LifecycleStage lifecycleStage, string? userId = null);
-        Task<TModel> PostProcess(TModel model, LifecycleStage lifecycleStage);
+        Task<TModel> PostProcessModel(TModel model, LifecycleStage lifecycleStage);
     }
 }

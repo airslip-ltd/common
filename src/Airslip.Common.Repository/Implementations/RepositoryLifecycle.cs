@@ -35,7 +35,7 @@ namespace Airslip.Common.Repository.Implementations
                 .Aggregate(entity, (current, postProcessEvent) => postProcessEvent.Execute(current, lifecycleStage, userId));
         }
 
-        public async Task<TModel> PostProcess(TModel model, LifecycleStage lifecycleStage)
+        public async Task<TModel> PostProcessModel(TModel model, LifecycleStage lifecycleStage)
         {
             foreach (IModelPostProcessEvent<TModel> postProcessEvent in _modelPostProcessEvents
                          .Where(o => o.AppliesTo.Contains(lifecycleStage)))
