@@ -26,7 +26,7 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
             
             if (_userService.AirslipUserType is null)
             {
-                throw new RepositoryLifecycleException(ErrorCodes.OwnershipCannotBeDerived, false);
+                throw new RepositoryLifecycleException(ErrorCodes.OwnershipCannotBeVerified, false);
             }
                 
             entityWithOwnership.AirslipUserType =

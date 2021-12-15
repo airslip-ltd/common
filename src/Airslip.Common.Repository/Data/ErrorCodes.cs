@@ -4,6 +4,6 @@ namespace Airslip.Common.Repository.Data
     {
         public const string ValidationFailed = "REP00001";
         public const string NotFound = "REP00002";
-        public const string OwnershipCannotBeDerived = "REP00003";
+        public const string OwnershipCannotBeVerified = "REP00003";
     }
 }

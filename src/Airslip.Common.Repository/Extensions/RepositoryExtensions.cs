@@ -1,6 +1,7 @@
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Failures;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,18 @@ namespace Airslip.Common.Repository.Extensions
                 .ToList();
 
             return new ErrorResponses(errors);
+        }
+
+        public static bool CanView<TEntity>(this TEntity entity, IRepositoryUserService userService)
+            where TEntity: class, IEntityWithOwnership
+        {
+            if (userService.AirslipUserType is null) return false;
+            if (userService.UserId is null) return false;
+            if (entity.AirslipUserType != userService.AirslipUserType) return false;
+            if (entity.AirslipUserType == AirslipUserType.Standard && entity.UserId != userService.UserId) return false;
+            if (entity.AirslipUserType != AirslipUserType.Standard && entity.EntityId != userService.EntityId) return false;
+
+            return true;
         }
     }
 }
