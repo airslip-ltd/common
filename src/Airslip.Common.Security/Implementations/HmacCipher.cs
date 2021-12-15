@@ -9,9 +9,9 @@ namespace Airslip.Common.Security.Implementations
 {
     public static class HmacCipher
     {
-        public static bool Validate(IEnumerable<KeyValuePair<string, StringValues>> querystringValuePairs, string hmac, string secretKey)
+        public static bool Validate(IEnumerable<KeyValuePair<string, string>> queryStringValuePairs, string hmac, string secretKey)
         {
-            string queryString = PrepareQuerystring(querystringValuePairs, "&");
+            string queryString = PrepareQuerystring(queryStringValuePairs, "&");
             HMACSHA256 hmacHasher = new(Encoding.UTF8.GetBytes(secretKey));
             byte[] hash = hmacHasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("&", queryString)));
             string calculatedSignature = BitConverter.ToString(hash).Replace("-", ""); 
@@ -19,7 +19,7 @@ namespace Airslip.Common.Security.Implementations
             return calculatedSignature.ToUpper() == hmac.ToUpper();
         }
         
-        private static string PrepareQuerystring(IEnumerable<KeyValuePair<string, StringValues>> querystring, string joinWith)
+        private static string PrepareQuerystring(IEnumerable<KeyValuePair<string, string>> querystring, string joinWith)
         {
             IEnumerable<string> kvps = querystring.Select(kvp => new
                 {

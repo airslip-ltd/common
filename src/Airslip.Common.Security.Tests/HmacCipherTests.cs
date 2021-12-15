@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Airslip.Common.Security.Tests
 {
-    public class HmacValidatorTests
+    public class HmacCipherTests
     {
         private const string SecretKey = "SECRET_KEY";
         
         [Fact]
         public void Can_decipher_a_query_string_and_match_to_a_hmac()
         {
-            Dictionary<string, StringValues> queryStrings = new()
+            Dictionary<string, string> queryStrings = new()
             {
                 {"shop", "mystore.airslip.com"},
                 {"signature", "f477a85f3ed6027735589159f9da74da"},
@@ -26,9 +26,23 @@ namespace Airslip.Common.Security.Tests
         }
         
         [Fact]
+        public void Can_decipher_a_query_string_and_match_to_a_hmac_from_shopify_development_store()
+        {
+            Dictionary<string, string> queryStrings = new()
+            {
+                {"shop", "airslip-development.myshopify.com"},
+                {"timestamp", "1639563584"}
+            };
+
+            string hmac = "848d17f2f2ccc0dd96db1be9314901f4948637cbdf2db8a56b8edd17248904d8";
+            bool isValid = HmacCipher.Validate(queryStrings, hmac, "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");
+            isValid.Should().BeTrue();
+        }
+        
+        [Fact]
         public void Can_decipher_an_unordered_query_string_and_match_to_a_hmac()
         {
-            Dictionary<string, StringValues> queryStrings = new()
+            Dictionary<string, string> queryStrings = new()
             {
                 {"timestamp", "1459779785"},
                 {"shop", "mystore.airslip.com"},
