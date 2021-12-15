@@ -1,6 +1,7 @@
 using Airslip.Common.Repository.Data;
 using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Exception;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Types.Enums;
@@ -29,7 +30,6 @@ namespace Airslip.Common.Repository.Implementations
         public Repository(IContext context, 
             IModelValidator<TModel> validator, 
             IModelMapper<TModel> mapper, 
-            IRepositoryUserService userService, 
             IRepositoryLifecycle<TEntity, TModel> repositoryLifecycle)
         {
             _context = context;
@@ -64,29 +64,27 @@ namespace Airslip.Common.Repository.Implementations
                 );
             }
             
-            // If passed, assume all ok and create a new entity
-            TEntity newEntity = _mapper.Create<TEntity>(model);
-
-            // Lifecycle
-            newEntity = _repositoryLifecycle.PreProcess(newEntity, LifecycleStage.Create, userId);
-            
-            // Add the entity
-            await _context.AddEntity(newEntity);
-            
-            // Lifecycle
-            newEntity = _repositoryLifecycle.PostProcess(newEntity, LifecycleStage.Update, userId);
-            
-            // Build model based on created entity
-            TModel newModel = _mapper.Create(newEntity);
-            
-            // Deliver model using delivery service
-            newModel = await _repositoryLifecycle.PostProcess(newModel, LifecycleStage.Create);
+            RepositoryLifecycleResult<TModel> lifecycle;
+            try
+            {
+                lifecycle =
+                    await _processLifecycle(null, model, LifecycleStage.Delete, userId);
+            }
+            catch (RepositoryLifecycleException exc)
+            {
+                // If not, return a not found message
+                return new FailedActionResultModel<TModel>
+                (
+                    exc.ErrorCode,
+                    ResultType.FailedVerification
+                );
+            }
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
-            (
-                newModel
-            );
+            {
+                CurrentVersion = lifecycle.CurrentModel
+            };
         }
 
         /// <summary>
@@ -140,33 +138,29 @@ namespace Airslip.Common.Repository.Implementations
                     ResultType.NotFound
                 );
             }
-            
-            // Create a representation as it is today
-            TModel currentModel = _mapper.Create(currentEntity);
-            
-            // Update the current entity with the new values passed in
-            _mapper.Update(model, currentEntity);
 
-            // Lifecycle
-            currentEntity = _repositoryLifecycle.PreProcess(currentEntity, LifecycleStage.Update, userId);
+            RepositoryLifecycleResult<TModel> lifecycle;
             
-            // Update in the context
-            await _context.UpdateEntity(currentEntity);
-            
-            // Lifecycle
-            currentEntity = _repositoryLifecycle.PostProcess(currentEntity, LifecycleStage.Update, userId);
-            
-            // Build model based on created entity
-            TModel newModel = _mapper.Create(currentEntity);
-            
-            // Deliver model using delivery service
-            newModel = await _repositoryLifecycle.PostProcess(newModel, LifecycleStage.Update);
+            try
+            {
+                lifecycle =
+                    await _processLifecycle(currentEntity, model, LifecycleStage.Update, userId);
+            }
+            catch (RepositoryLifecycleException exc)
+            {
+                // If not, return a not found message
+                return new FailedActionResultModel<TModel>
+                (
+                    exc.ErrorCode,
+                    ResultType.FailedVerification
+                );
+            }
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                PreviousVersion: currentModel,
-                CurrentVersion: newModel
+                PreviousVersion: lifecycle.PreviousModel,
+                CurrentVersion: lifecycle.CurrentModel
             );
         }
 
@@ -210,46 +204,30 @@ namespace Airslip.Common.Repository.Implementations
             
             // Now we load the current entity version
             TEntity? upsertEntity = await _context.GetEntity<TEntity>(id);
-            TModel? previousModel = null;
-            LifecycleStage lifecycleStage = LifecycleStage.Create;
+            LifecycleStage lifecycleStage = 
+                upsertEntity == null ? LifecycleStage.Create : LifecycleStage.Update;
 
-            // Check to see if the entity was found within the context
-            if (upsertEntity == null || upsertEntity.EntityStatus == EntityStatus.Deleted)
+            RepositoryLifecycleResult<TModel> lifecycle;
+            try
             {
-                // If passed, assume all ok and create a new entity
-                upsertEntity = _mapper.Create<TEntity>(model);
+                lifecycle =
+                    await _processLifecycle(upsertEntity, model, lifecycleStage, userId);
             }
-            else
+            catch (RepositoryLifecycleException exc)
             {
-                lifecycleStage = LifecycleStage.Update;
-                
-                // Create a representation as it is today
-                previousModel = _mapper.Create(upsertEntity);
-                
-                // Update the current entity with the new values passed in
-                _mapper.Update(model, upsertEntity);
+                // If not, return a not found message
+                return new FailedActionResultModel<TModel>
+                (
+                    exc.ErrorCode,
+                    ResultType.FailedVerification
+                );
             }
-            
-            // Lifecycle
-            upsertEntity = _repositoryLifecycle.PreProcess(upsertEntity, lifecycleStage, userId);
-            
-            // Update in the context
-            await _context.UpsertEntity(upsertEntity);
-                
-            // Lifecycle
-            upsertEntity = _repositoryLifecycle.PostProcess(upsertEntity, LifecycleStage.Update, userId);
-            
-            // Create a representation as it is today
-            TModel currentModel = _mapper.Create(upsertEntity);
-            
-            // Deliver model using delivery service
-            currentModel = await _repositoryLifecycle.PostProcess(currentModel, LifecycleStage.Update);
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                PreviousVersion: previousModel,
-                CurrentVersion: currentModel
+                PreviousVersion: lifecycle.PreviousModel,
+                CurrentVersion: lifecycle.CurrentModel
             );
         }
 
@@ -277,29 +255,27 @@ namespace Airslip.Common.Repository.Implementations
                     ResultType.NotFound
                 );
             }
-                        
-            // Create a representation as it is today
-            TModel currentModel = _mapper.Create(currentEntity);
-            
-            // Lifecycle
-            currentEntity = _repositoryLifecycle.PreProcess(currentEntity, LifecycleStage.Delete, userId);
 
-            // Update in the context
-            await _context.UpdateEntity(currentEntity);
-            
-            // Lifecycle
-            currentEntity = _repositoryLifecycle.PostProcess(currentEntity, LifecycleStage.Delete, userId);
-            
-            // Build model based on created entity
-            TModel newModel = _mapper.Create(currentEntity);
-            
-            // Lifecycle
-            await _repositoryLifecycle.PostProcess(newModel, LifecycleStage.Delete);
+            RepositoryLifecycleResult<TModel> lifecycle;
+            try
+            {
+                lifecycle =
+                    await _processLifecycle(currentEntity, null, LifecycleStage.Delete, userId);
+            }
+            catch (RepositoryLifecycleException exc)
+            {
+                // If not, return a not found message
+                return new FailedActionResultModel<TModel>
+                (
+                    exc.ErrorCode,
+                    ResultType.FailedVerification
+                );
+            }
 
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                PreviousVersion: currentModel
+                PreviousVersion: lifecycle.PreviousModel
             );
         }
 
@@ -342,5 +318,57 @@ namespace Airslip.Common.Repository.Implementations
                 newModel
             );
         }
+
+        private async Task<RepositoryLifecycleResult<TModel>> _processLifecycle(TEntity? entity, TModel? model,
+            LifecycleStage lifecycleStage, string? userId)
+        {
+            // Validate the request
+            if (entity == null && model == null) 
+                throw new ArgumentException("Invalid parameter combination");
+            if (model == null && lifecycleStage != LifecycleStage.Delete) 
+                throw new ArgumentException("Invalid parameter combination");
+            if (entity == null && lifecycleStage != LifecycleStage.Create) 
+                throw new ArgumentException("Invalid parameter combination");
+            
+            // Create a representation as it is today
+            TModel? previousModel = lifecycleStage == LifecycleStage.Create ? null : _mapper.Create(entity);
+
+            // Update from the model
+            if (model != null)
+            {
+                entity = 
+                    lifecycleStage == LifecycleStage.Create ? 
+                        _mapper.Create<TEntity>(model) : 
+                        _mapper.Update(model, entity);
+            }
+            
+            // Lifecycle
+            entity = _repositoryLifecycle.PreProcess(entity!, lifecycleStage, userId);
+            
+            // Update in the context
+            await _context.UpsertEntity(entity);
+            
+            // Lifecycle
+            entity = _repositoryLifecycle.PostProcess(entity, lifecycleStage, userId);
+            
+            // Build model based on created entity
+            TModel currentModel = _mapper.Create(entity);
+            
+            // Lifecycle
+            await _repositoryLifecycle.PostProcess(currentModel, lifecycleStage);
+
+            return new RepositoryLifecycleResult<TModel>
+            {
+                CurrentModel = currentModel,
+                PreviousModel = previousModel
+            };
+        }
+    }
+
+    internal class RepositoryLifecycleResult<TModel> 
+        where TModel : class, IModel
+    {
+        public TModel? PreviousModel { get; set; }
+        public TModel? CurrentModel { get; set; }
     }
 }
