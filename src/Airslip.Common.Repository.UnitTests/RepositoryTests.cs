@@ -26,25 +26,42 @@ namespace Airslip.Common.Repository.UnitTests
         [Fact]
         public async Task Error_is_not_thrown_when_unknown_resource_is_deleted()
         {
-            Mock<IContext> mockContext = new();
-            Mock<IModelValidator<MyModel>> mockModelValidator = new();
-            Mock<IModelMapper<MyModel>> mockModelMapper = new();
-            Mock<IRepositoryUserService> mockTokenDecodeService = new();
-            Mock<IModelDeliveryService<MyModel>> mockModelDeliveryService = new();
-            Mock<IEntitySearchFormatter<MyModel>> mockSearchFormatters = new();
+            IServiceCollection services = new ServiceCollection();
 
-           Repository<MyEntity, MyModel> repo = new(
-                mockContext.Object,
-                mockModelValidator.Object,
-                mockModelMapper.Object,
-                new List<IModelDeliveryService<MyModel>> {mockModelDeliveryService.Object},
-                new List<IEntitySearchFormatter<MyModel>> {mockSearchFormatters.Object},
-           mockTokenDecodeService.Object);
+            services
+                .AddSingleton(_ =>
+                {
+                    Mock<IContext> mock = new();
+                    return mock.Object;
+                })
+                .AddSingleton(_ =>
+                {
+                    Mock<IModelValidator<MyModel>> mock = new();
+                    return mock.Object;
+                })
+                .AddSingleton(_ =>
+                {
+                    Mock<IModelMapper<MyModel>> mock = new();
+                    return mock.Object;
+                })
+                .AddRepositories(RepositoryUserType.Manual)
+                .AddScoped(_ =>
+                {
+                    Mock<IRepositoryUserService> mockTokenDecodeService = new();
+                    mockTokenDecodeService.Setup(service => service.EntityId).Returns((string?)null);
+                    mockTokenDecodeService.Setup(service => service.UserId).Returns((string?)null);
+                    mockTokenDecodeService.Setup(service => service.AirslipUserType).Returns((AirslipUserType?)null);
+                    return mockTokenDecodeService.Object;
+                });
+            IServiceProvider provider = services.BuildServiceProvider();
 
-          RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
+            IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
+               ?? throw new NotImplementedException();
 
-          delete.Should().BeOfType<FailedActionResultModel<MyModel>>();
-          delete.ResultType.Should().Be(ResultType.NotFound);
+            RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
+
+            delete.Should().BeOfType<FailedActionResultModel<MyModel>>();
+            delete.ResultType.Should().Be(ResultType.NotFound);
         }
         
         [Fact]
