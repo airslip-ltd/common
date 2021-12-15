@@ -2,10 +2,11 @@ using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 
 namespace Airslip.Common.Auth.Functions.Implementations
 {
-    public class ApiKeyTokenUserService : IRepositoryUserService
+    public class ApiKeyTokenUserService : IUserContext
     {
         private readonly ITokenDecodeService<ApiKeyToken> _tokenDecodeService;
 

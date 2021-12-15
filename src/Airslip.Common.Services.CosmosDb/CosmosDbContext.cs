@@ -2,6 +2,8 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
 using Airslip.Common.Services.CosmosDb.Configuration;
 using Airslip.Common.Services.CosmosDb.Extensions;
+using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
@@ -17,13 +19,16 @@ namespace Airslip.Common.Services.CosmosDb
 {
     public abstract class AirslipCosmosDbBase : IContext
     {
+        private readonly IUserContext _userContext;
         private readonly ILogger _logger;
         protected readonly Database Database;
         private static readonly Pluralizer _pluralizer = new();
         private readonly bool LogMetrics;
 
-        protected AirslipCosmosDbBase(CosmosClient cosmosClient, IOptions<CosmosDbSettings> options, ILogger logger)
+        protected AirslipCosmosDbBase(CosmosClient cosmosClient, IUserContext userContext, 
+            IOptions<CosmosDbSettings> options, ILogger logger)
         {
+            _userContext = userContext;
             _logger = logger;
             Database = cosmosClient.GetDatabase(options.Value.DatabaseName);
             LogMetrics = options.Value.LogMetrics;
@@ -76,8 +81,26 @@ namespace Airslip.Common.Services.CosmosDb
             return response.Resource;
         }
 
-        public async Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters) where TEntity : class, IEntityWithId
+        public async Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters) 
+            where TEntity : class, IEntityWithId
         {
+            
+            if (typeof(IEntityWithOwnership).IsAssignableFrom(typeof(TEntity)))
+            {
+                switch (_userContext.AirslipUserType ?? AirslipUserType.Standard)
+                {
+                    case AirslipUserType.Standard:
+                        searchFilters.Add(new SearchFilterModel("userId", _userContext.UserId!));
+                        break;
+                    default:
+                        searchFilters.Add(new SearchFilterModel("entityId", 
+                            _userContext.EntityId!));
+                        searchFilters.Add(new SearchFilterModel("airslipUserType", 
+                            _userContext.AirslipUserType!));
+                        break;
+                } 
+            }
+            
             Container container = Database.GetContainerForEntity<TEntity>();
             StringBuilder sb = new();
             sb.Append($"SELECT * FROM {GetContainerId<TEntity>()} f WHERE 1=1");
@@ -88,8 +111,7 @@ namespace Airslip.Common.Services.CosmosDb
             }
 
             QueryDefinition query = new(sb.ToString());
-
-            foreach (SearchFilterModel searchFilterModel in searchFilters)
+           foreach (SearchFilterModel searchFilterModel in searchFilters)
             {
                 query = query.WithParameter($"@{searchFilterModel.FieldName}", searchFilterModel.FieldValue);
             }    

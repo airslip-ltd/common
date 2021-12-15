@@ -1,13 +1,14 @@
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Services.MongoDb.Extensions;
 using Airslip.Common.Testing;
-using Airslip.Common.Types;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Moq;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -54,7 +55,8 @@ namespace Airslip.Common.Services.MongoDb.Tests
     
     public class MyBaseTestClass : AirslipMongoDbBase
     {
-        public MyBaseTestClass(MongoClient mongoClient, IOptions<MongoDbSettings> options) : base(mongoClient, options)
+        public MyBaseTestClass(MongoClient mongoClient, IOptions<MongoDbSettings> options) 
+            : base(mongoClient, new Mock<IUserContext>().Object, options)
         {
             Database.CreateCollectionForEntity<MyEntity>();
         }

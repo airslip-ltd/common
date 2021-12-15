@@ -9,6 +9,7 @@ using Airslip.Common.Auth.Models;
 using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Airslip.Common.Auth.Functions.Extensions
@@ -36,7 +37,7 @@ namespace Airslip.Common.Auth.Functions.Extensions
                 .Configure<ApiAccessSettings>(configuration.GetSection(nameof(ApiAccessSettings)))
                 .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
                 .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>()
-                .AddScoped<IRepositoryUserService, ApiKeyTokenUserService>();
+                .AddScoped<IUserContext, ApiKeyTokenUserService>();
 
             AirslipSchemeOptions.ThisEnvironment = services.GetEnvironment();
 
