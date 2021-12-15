@@ -2,10 +2,11 @@ using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 
 namespace Airslip.Common.Repository.Implementations
 {
-    public class TokenBasedUserService : IRepositoryUserService
+    public class TokenBasedUserService : IUserContext
     {
         public TokenBasedUserService(ITokenDecodeService<UserToken> tokenDecodeService)
         {
