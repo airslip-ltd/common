@@ -2,6 +2,7 @@
 using Airslip.Common.Services.MongoDb.Extensions;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -16,10 +17,13 @@ namespace Airslip.Common.Services.MongoDb
 {
     public abstract partial class AirslipMongoDbBase : IContext
     {
+        private readonly IUserContext _userContext;
         protected readonly IMongoDatabase Database;
 
-        protected AirslipMongoDbBase(MongoClient mongoClient, IOptions<MongoDbSettings> options)
+        protected AirslipMongoDbBase(MongoClient mongoClient, IUserContext userContext, 
+            IOptions<MongoDbSettings> options)
         {
+            _userContext = userContext;
             Database = mongoClient.GetDatabase(options.Value.DatabaseName);
         }
 
