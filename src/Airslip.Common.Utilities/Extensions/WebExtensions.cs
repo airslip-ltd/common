@@ -13,5 +13,22 @@ namespace Airslip.Common.Utilities.Extensions
             string json = Json.Serialize(formDictionary);
             return Json.Deserialize<T>(json);
         }
+
+        public static IEnumerable<KeyValuePair<string, string>>? GetQueryParams(this string query)
+        {
+            NameValueCollection nvc = System.Web.HttpUtility.ParseQueryString(query);
+
+            if (!nvc.HasKeys())
+                return null;
+            
+            return nvc.AllKeys.SelectMany(
+                nvc.GetValues!,
+                (k, v) => new KeyValuePair<string, string>(k!, v));
+        }
+        
+        public static KeyValuePair<string, string> Get(this IEnumerable<KeyValuePair<string, string>> source, string key)
+        {
+            return source.FirstOrDefault(pair => pair.Key == key);
+        }
     }
 }

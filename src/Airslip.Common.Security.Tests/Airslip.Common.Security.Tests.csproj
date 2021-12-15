@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Airslip.Common.Security\Airslip.Common.Security.csproj" />
+      <ProjectReference Include="..\Airslip.Common.Utilities\Airslip.Common.Utilities.csproj" />
     </ItemGroup>
 
 </Project>
