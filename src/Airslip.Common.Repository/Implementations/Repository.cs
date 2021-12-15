@@ -326,7 +326,11 @@ namespace Airslip.Common.Repository.Implementations
                     ResultType.NotFound
                 );
             }
-
+            
+            // If we have a search formatter we can use it here to populate any additional data
+            currentEntity = _repositoryLifecycle.PostProcess(currentEntity, LifecycleStage.Get);
+            
+            // Map the entity
             TModel newModel = _mapper.Create(currentEntity);
             
             // If we have a search formatter we can use it here to populate any additional data
