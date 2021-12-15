@@ -70,9 +70,12 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .ForMember(s => s.CurrencySymbol, c => c.MapFrom(d => Currency.GetSymbol(d.CurrencyCode!)))
                 .ForMember(s => s.Amount, c => c.MapFrom(d =>  Currency.ConvertToTwoPlacedDecimal(d.Amount).ToString()));
             cfg.CreateMap<Transaction, TransactionSummaryModel>()
-                .ForMember(s => s.AccountId, c => c.MapFrom(d => d.BankDetails.AccountId));
+                .ForMember(s => s.AccountId, c => c.MapFrom(d => d.BankDetails.AccountId))
+                .ForMember(s => s.TimeStamp, c => c.MapFrom(d => d.CapturedTimeStamp ?? d.TimeStamp));
             cfg.CreateMap<TransactionBank, TransactionBankModel>();
             cfg.CreateMap<TransactionMerchant, TransactionMerchantModel>().ReverseMap();
+            cfg.CreateMap<TransactionMerchant, MerchantSummaryModel>()
+                .ForMember(s => s.Id, c => c.MapFrom(d => d.EntityId));
             cfg.CreateMap<Merchant, MerchantSummaryModel>().ReverseMap();
             cfg.CreateMap<Account, AccountResponse>();
             cfg.CreateMap<Bank, BankResponse>();

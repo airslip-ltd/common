@@ -5,7 +5,6 @@ namespace Airslip.Common.Services.Consent.Interfaces
 {
     public interface IMerchantDetails : IModel
     {
-        TransactionMerchantModel Merchant { get; }
-        MerchantSummaryModel? MerchantDetails { get; set; }
+        MerchantSummaryModel MerchantDetails { get; set; }
     }
 }

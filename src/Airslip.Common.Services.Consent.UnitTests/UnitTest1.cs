@@ -163,9 +163,9 @@ namespace Airslip.Common.Services.Consent.UnitTests
                 Id = "SomeId",
                 CurrencyCode = "CurrencyCode",
                 EntityStatus = EntityStatus.Active,
-                Merchant = new TransactionMerchantModel
+                MerchantDetails = new MerchantSummaryModel
                 {
-                    EntityId = null
+                    Id = null
                 }
             };
 
@@ -174,7 +174,7 @@ namespace Airslip.Common.Services.Consent.UnitTests
 
             entity.Id.Should().Be(model.Id);
             entity.MerchantDetails.Should().NotBeNull();
-            entity.MerchantDetails?.CategoryCode.Should().Be(Constants.DEFAULT_CATEGORY_CODE);
+            entity.MerchantDetails.CategoryCode.Should().Be(Constants.DEFAULT_CATEGORY_CODE);
         }
         
         [Theory]
@@ -231,9 +231,9 @@ namespace Airslip.Common.Services.Consent.UnitTests
                 Id = "SomeId",
                 CurrencyCode = "CurrencyCode",
                 EntityStatus = EntityStatus.Active,
-                Merchant = new TransactionMerchantModel
+                MerchantDetails = new MerchantSummaryModel
                 {
-                    EntityId = merchantId
+                    Id = merchantId
                 }
             };
 
@@ -242,10 +242,10 @@ namespace Airslip.Common.Services.Consent.UnitTests
 
             entity.Id.Should().Be(model.Id);
             entity.MerchantDetails.Should().NotBeNull();
-            entity.MerchantDetails?.Id.Should().Be(merchantId);
-            entity.MerchantDetails?.CategoryCode.Should().Be(expectedCatCode);
-            entity.MerchantDetails?.Name.Should().Be(merchantName);
-            entity.MerchantDetails?.Type.Should().Be(merchantType);
+            entity.MerchantDetails.Id.Should().Be(merchantId);
+            entity.MerchantDetails.CategoryCode.Should().Be(expectedCatCode);
+            entity.MerchantDetails.Name.Should().Be(merchantName);
+            entity.MerchantDetails.Type.Should().Be(merchantType);
         }
     }
 }

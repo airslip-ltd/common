@@ -1,25 +1,16 @@
+using Airslip.Common.Services.Consent.Data;
 using Airslip.Common.Types.Enums;
 using JetBrains.Annotations;
 
 namespace Airslip.Common.Services.Consent.Models
 {
-    public record MerchantSummaryModel(
-        string? Id,
-        string? Name,
-        string CategoryCode,
-        MerchantTypes Type)
+    public class MerchantSummaryModel
     {
-        public string? IconUrl { [UsedImplicitly] get; private set; }
-        public string? LogoUrl { [UsedImplicitly] get; private set; }
-
-        public void SetLogoUrl(string newUrl)
-        {
-            LogoUrl = newUrl;
-        }
-        
-        public void SetIconUrl(string newUrl)
-        {
-            IconUrl = newUrl;
-        }
+        public string? IconUrl { [UsedImplicitly] get; set; }
+        public string? LogoUrl { [UsedImplicitly] get; set; }
+        public string? Id { get; init; }
+        public string? Name { get; init; }
+        public string CategoryCode { get; set; } = Constants.DEFAULT_CATEGORY_CODE;
+        public MerchantTypes Type { get; set; } = MerchantTypes.Unsupported;
     }
 }

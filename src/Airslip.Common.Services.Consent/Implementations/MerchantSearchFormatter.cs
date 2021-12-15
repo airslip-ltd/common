@@ -29,30 +29,24 @@ namespace Airslip.Common.Services.Consent.Implementations
         public async Task<TModel> FormatModel(TModel model)
         {
             // Populate with merchant...
-            if (string.IsNullOrWhiteSpace(model.Merchant.EntityId))
+            if (string.IsNullOrWhiteSpace(model.MerchantDetails.Id))
             {
-                model.MerchantDetails =
-                    new MerchantSummaryModel(null, null, Constants.DEFAULT_CATEGORY_CODE,  
-                        MerchantTypes.Unsupported);
                 return model;
             }
 
             Merchant? merchant = await _context
-                .GetEntity<Merchant>(model.Merchant.EntityId);
+                .GetEntity<Merchant>(model.MerchantDetails.Id);
 
             if (merchant == null)
             {
-                model.MerchantDetails =
-                    new MerchantSummaryModel(model.Merchant.EntityId, null, Constants.DEFAULT_CATEGORY_CODE,  
-                        MerchantTypes.Unsupported);
                 return model;
             }
             
             model.MerchantDetails = _mapper.Create(merchant);
             if (model.Id == null) return model;
             
-            model.MerchantDetails.SetLogoUrl(TransactionModel.Endpoints.GetLogoUrl(_baseUri, model.Id));
-            model.MerchantDetails.SetIconUrl(TransactionModel.Endpoints.GetIconUrl(_baseUri, model.Id));
+            model.MerchantDetails.LogoUrl = TransactionModel.Endpoints.GetLogoUrl(_baseUri, model.Id);
+            model.MerchantDetails.IconUrl = TransactionModel.Endpoints.GetIconUrl(_baseUri, model.Id);
 
             return model;
         }
