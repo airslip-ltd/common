@@ -1,5 +1,7 @@
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Implementations;
+using Airslip.Common.Repository.Implementations.Events.Entity;
+using Airslip.Common.Repository.Implementations.Events.Model;
 using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +13,14 @@ namespace Airslip.Common.Repository
             RepositoryUserType repositoryUserType)
         {
             serviceCollection
-                .AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+                .AddScoped(typeof(IRepositoryLifecycle<,>), typeof(RepositoryLifecycle<,>))
+                .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
+                .AddScoped(typeof(IModelPostProcessEvent<>), typeof(ModelDeliveryEvent<>))
+                .AddScoped(typeof(IModelPostProcessEvent<>), typeof(ModelFormatEvent<>))
+                .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityBasicAuditEvent<>))
+                .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityOwnershipEvent<>))
+                .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityStatusEvent<>))
+                .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityDefaultIdEvent<>));
 
             switch (repositoryUserType)
             {
