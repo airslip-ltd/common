@@ -1,5 +1,6 @@
 using Airslip.Common.Repository.Data;
 using Airslip.Common.Repository.Entities;
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Exception;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Types.Enums;
