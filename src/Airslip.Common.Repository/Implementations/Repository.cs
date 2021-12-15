@@ -310,7 +310,7 @@ namespace Airslip.Common.Repository.Implementations
             TModel newModel = _mapper.Create(currentEntity);
             
             // If we have a search formatter we can use it here to populate any additional data
-            newModel = await _repositoryLifecycle.PostProcess(newModel, LifecycleStage.Get);
+            newModel = await _repositoryLifecycle.PostProcessModel(newModel, LifecycleStage.Get);
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
@@ -355,7 +355,7 @@ namespace Airslip.Common.Repository.Implementations
             TModel currentModel = _mapper.Create(entity);
             
             // Lifecycle
-            await _repositoryLifecycle.PostProcess(currentModel, lifecycleStage);
+            await _repositoryLifecycle.PostProcessModel(currentModel, lifecycleStage);
 
             return new RepositoryLifecycleResult<TModel>
             {
