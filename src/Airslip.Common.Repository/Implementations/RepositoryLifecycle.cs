@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,6 @@ namespace Airslip.Common.Repository.Implementations
             _entityPostProcessEvents = entityPostProcessEvents;
             _modelPostProcessEvents = modelPostProcessEvents;
         }
-        
         
         public TEntity PreProcess(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
         {

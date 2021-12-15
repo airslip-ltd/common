@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Entities;
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
