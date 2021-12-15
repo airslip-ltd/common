@@ -22,9 +22,7 @@ namespace Airslip.Common.Services.Consent.Models
         public string? Description { get; set; }
         public TransactionBankModel? BankDetails { get; set; }
         public TransactionMatchModel? MatchDetails { get; set; }
-        [JsonIgnore]
-        public TransactionMerchantModel Merchant { get; set; } = new();
-        public MerchantSummaryModel? MerchantDetails { get; set; }
+        public MerchantSummaryModel MerchantDetails { get; set; } = new();
         
         public override T AddHateoasLinks<T>(string baseUri, params string[] identifiers)
         {

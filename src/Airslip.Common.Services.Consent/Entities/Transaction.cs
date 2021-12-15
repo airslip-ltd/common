@@ -11,7 +11,7 @@ using System;
 
 namespace Airslip.Common.Services.Consent.Entities
 {
-    public class Transaction : IEntity, IFromDataSource, IEntityWithOwnership
+    public class Transaction : IFromDataSource, IEntityWithOwnership
     {
         public string Id { get; set; } = CommonFunctions.GetId();
         public BasicAuditInformation? AuditInformation { get; set; }
