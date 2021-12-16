@@ -15,7 +15,7 @@ namespace Airslip.Common.Repository.Exception
             CanContinue = canContinue;
         }
 
-        protected RepositoryLifecycleException(SerializationInfo info, StreamingContext context)
+        protected RepositoryLifecycleException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             ErrorCode = (string)info.GetValue(nameof(ErrorCode), typeof(string))!;
             CanContinue = (bool)info.GetValue(nameof(CanContinue), typeof(bool))!;

@@ -319,7 +319,7 @@ namespace Airslip.Common.Repository.Implementations
             );
         }
 
-        private async Task<RepositoryLifecycleResult<TModel>> _processLifecycle(TEntity? entity, TModel? model,
+        private Task<RepositoryLifecycleResult<TModel>> _processLifecycle(TEntity? entity, TModel? model,
             LifecycleStage lifecycleStage, string? userId)
         {
             // Validate the request
@@ -329,7 +329,13 @@ namespace Airslip.Common.Repository.Implementations
                 throw new ArgumentException("Invalid parameter combination");
             if (entity == null && lifecycleStage != LifecycleStage.Create) 
                 throw new ArgumentException("Invalid parameter combination");
-            
+
+            return _processLifecycleAsync(entity, model, lifecycleStage, userId);
+        }
+
+        private async Task<RepositoryLifecycleResult<TModel>> _processLifecycleAsync(TEntity? entity, TModel? model,
+            LifecycleStage lifecycleStage, string? userId)
+        {
             // Create a representation as it is today
             TModel? previousModel = lifecycleStage == LifecycleStage.Create ? null : _mapper.Create(entity);
 
