@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Implementations.Events.Entity;
 using Airslip.Common.Repository.Implementations.Events.Model;
 using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 

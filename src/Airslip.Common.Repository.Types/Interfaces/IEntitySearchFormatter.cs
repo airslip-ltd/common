@@ -1,7 +1,6 @@
-using Airslip.Common.Repository.Types.Interfaces;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// Interface to define a custom entity search formatter. This would be used if you want to extend

@@ -1,9 +1,8 @@
-using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// A generic search definition for use when searching entities

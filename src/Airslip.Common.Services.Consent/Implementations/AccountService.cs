@@ -1,7 +1,7 @@
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Services.Consent.Models;

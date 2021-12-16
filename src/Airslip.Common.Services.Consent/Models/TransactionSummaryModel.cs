@@ -1,5 +1,5 @@
 using Airslip.Common.Matching.Data;
-using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Hateoas;
 using JetBrains.Annotations;

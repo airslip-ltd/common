@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.Consent.Models;
 
 namespace Airslip.Common.Services.Consent.Interfaces
