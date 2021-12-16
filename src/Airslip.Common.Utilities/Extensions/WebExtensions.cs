@@ -14,12 +14,12 @@ namespace Airslip.Common.Utilities.Extensions
             return Json.Deserialize<T>(json);
         }
 
-        public static IEnumerable<KeyValuePair<string, string>>? GetQueryParams(this string query)
+        public static IEnumerable<KeyValuePair<string, string>> GetQueryParams(this string query)
         {
             NameValueCollection nvc = System.Web.HttpUtility.ParseQueryString(query);
 
             if (!nvc.HasKeys())
-                return null;
+                return new List<KeyValuePair<string, string>>();
             
             return nvc.AllKeys.SelectMany(
                 nvc.GetValues!,
