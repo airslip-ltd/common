@@ -1,7 +1,7 @@
-using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
-using System;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Repository.Implementations.Events.Entity

@@ -1,4 +1,3 @@
-using Airslip.Common.Repository.Enums;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Enums;
 using Microsoft.Extensions.Configuration;

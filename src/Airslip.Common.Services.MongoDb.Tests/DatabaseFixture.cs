@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.MongoDb.Extensions;
 using Airslip.Common.Testing;
 using Airslip.Common.Types.Configuration;
@@ -19,6 +19,7 @@ namespace Airslip.Common.Services.MongoDb.Tests
     {
         private MongoDbSettings _mongoDbSettings = null!;
         public IContext Context = null!;
+        public ISearchContext SearchContext = null!;
 
         public async Task InitializeAsync()
         {
@@ -31,6 +32,9 @@ namespace Airslip.Common.Services.MongoDb.Tests
             };
             Context = new MyBaseTestClass(await Helpers.InitializeMongoClientInstanceAsync(config,
                 _ => Task.FromResult(true)), 
+                Options.Create(_mongoDbSettings));
+            SearchContext = new MyBaseTestClass(await Helpers.InitializeMongoClientInstanceAsync(config,
+                    _ => Task.FromResult(true)), 
                 Options.Create(_mongoDbSettings));
             
             string[] names = {"Some Name 1", "Some Name 2", "Some Name 3", "Some Name 4"};

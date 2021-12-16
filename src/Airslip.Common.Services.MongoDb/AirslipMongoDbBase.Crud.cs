@@ -1,4 +1,4 @@
-﻿using Airslip.Common.Repository.Interfaces;
+﻿using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.MongoDb.Extensions;
 using MongoDB.Driver;
 using System.Threading.Tasks;

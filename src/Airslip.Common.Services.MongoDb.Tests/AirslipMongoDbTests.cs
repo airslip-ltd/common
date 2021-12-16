@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Models;
 using FluentAssertions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,8 +18,8 @@ namespace Airslip.Common.Services.MongoDb.Tests
         [Fact]
         public async Task Can_query_all_data_using_search()
         {
-            List<MyEntity> results = await fixture.Context
-                .GetEntities<MyEntity>(new List<SearchFilterModel>());
+            List<MyEntity> results = await fixture.SearchContext
+                .SearchEntities<MyEntity>(new List<SearchFilterModel>());
 
             results.Should().NotBeNull();
             results.Should().NotBeEmpty();
@@ -29,8 +29,8 @@ namespace Airslip.Common.Services.MongoDb.Tests
         [Fact]
         public async Task Can_query_data_using_search()
         {
-            List<MyEntity> results = await fixture.Context
-                .GetEntities<MyEntity>(new List<SearchFilterModel>
+            List<MyEntity> results = await fixture.SearchContext
+                .SearchEntities<MyEntity>(new List<SearchFilterModel>
                 {
                     new(nameof(MyEntity.Name), "Some Name 1")
                 });

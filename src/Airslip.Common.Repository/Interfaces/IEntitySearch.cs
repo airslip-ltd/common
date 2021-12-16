@@ -1,4 +1,5 @@
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
