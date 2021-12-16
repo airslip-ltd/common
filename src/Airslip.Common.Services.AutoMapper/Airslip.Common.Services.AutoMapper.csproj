@@ -13,14 +13,11 @@
 	</PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Airslip.Common.Repository.Types" Version="4.0.0" />
     <PackageReference Include="AutoMapper" Version="$(AutoMapper)" />
 	  <PackageReference Include="Airslip.Common.Types" Version="3.7.1" />
 	  <PackageReference Include="Airslip.Common.Auth" Version="3.7.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(NetVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Airslip.Common.Repository.Types\Airslip.Common.Repository.Types.csproj" />
   </ItemGroup>
 
 </Project>
