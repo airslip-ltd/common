@@ -1,8 +1,7 @@
-using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// Generic repository definition for common CRUD functions, uses a design pattern which doesn't directly

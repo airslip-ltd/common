@@ -1,7 +1,7 @@
 ﻿using Airslip.Common.Matching.Data;
-using Airslip.Common.Repository.Entities;
-using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Entities;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Enums;

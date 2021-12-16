@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.Consent.Configuration;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Implementations;

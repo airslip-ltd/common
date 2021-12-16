@@ -19,4 +19,8 @@
 		<PackageReference Include="Airslip.Common.Utilities" Version="3.6.13" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Airslip.Common.Repository.Types\Airslip.Common.Repository.Types.csproj" />
+	</ItemGroup>
+
 </Project>
