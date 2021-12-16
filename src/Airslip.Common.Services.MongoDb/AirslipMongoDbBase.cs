@@ -62,26 +62,5 @@ namespace Airslip.Common.Services.MongoDb
         {
             return $"{typeof(TType).Name}s".ToCamelCase();
         }
-        
-        public void SetupIndex<TEntity>(IndexTypes indexType, string field) where TEntity : class, IEntityWithId 
-        {
-            CreateIndexOptions indexOptions = new();
-
-            IndexKeysDefinitionBuilder<TEntity> indexBuilder = Builders<TEntity>.IndexKeys;
-
-            IMongoCollection<TEntity> collection = Database.CollectionByType<TEntity>();
-
-            IndexKeysDefinition<TEntity>? indexKeysDefinition = indexType switch
-            {
-                IndexTypes.Ascending => indexBuilder.Ascending(field),
-                IndexTypes.Descending => indexBuilder.Descending(field),
-                _ => throw new ArgumentOutOfRangeException(nameof(indexType), indexType, null)
-            };
-
-            collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<TEntity>(
-                    indexKeysDefinition,
-                    indexOptions));
-        }
     }
 }

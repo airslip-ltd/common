@@ -20,8 +20,8 @@ namespace Airslip.Common.Services.MongoDb
                     .InitializeMongoClientInstanceAsync(config, initialiseDatabase)
                     .GetAwaiter()
                     .GetResult())
-                .AddSingleton<TContext>()
-                .AddSingleton<IContext>(provider => provider.GetService<TContext>()!);
+                .AddScoped<TContext>()
+                .AddScoped<IContext>(provider => provider.GetService<TContext>()!);
 
             return services;
         }
