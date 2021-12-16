@@ -29,8 +29,14 @@ namespace Airslip.Common.Services.Consent.Implementations
             _userToken = tokenDecodeService.GetCurrentToken();
         }
         
-        public async Task<IResponse?> GetConsentUrl(Provider provider, string bankId, 
+        public Task<IResponse?> GetConsentUrl(Provider provider, string bankId, 
             string? countryCode, CancellationToken cancellationToken)
+        {
+            return GetConsentUrl(provider, bankId, countryCode, null, cancellationToken);
+        }
+
+        public async Task<IResponse?> GetConsentUrl(Provider provider, string bankId, string? countryCode, string? callbackUrl,
+            CancellationToken cancellationToken)
         {
             ProviderDetails providerDetails = _discoveryService.GetProviderDetails(provider);
             
@@ -43,7 +49,7 @@ namespace Airslip.Common.Services.Consent.Implementations
                 {"airslipUserType", _userToken.AirslipUserType.ToString().ToLower()},
                 {"userId", _userToken.UserId},
                 {"bankId", bankId},
-                {"callbackUrl", providerDetails.CallbackUrl}
+                {"callbackUrl", callbackUrl ?? providerDetails.CallbackUrl}
             });
             
             HttpRequestResult<AccountAuthorisationResponse> apiCallResponse = await _httpClient
