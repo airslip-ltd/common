@@ -1,10 +1,8 @@
 using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Services.Consent.Data;
 using Airslip.Common.Services.Consent.Entities;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Services.Consent.Models;
 using Airslip.Common.Types.Configuration;
-using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;

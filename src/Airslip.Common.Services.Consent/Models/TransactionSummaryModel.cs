@@ -3,7 +3,6 @@ using Airslip.Common.Repository.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Hateoas;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace Airslip.Common.Services.Consent.Models
 {

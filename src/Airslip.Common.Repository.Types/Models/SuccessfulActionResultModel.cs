@@ -1,8 +1,8 @@
 using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Interfaces;
 
-namespace Airslip.Common.Repository.Models
+namespace Airslip.Common.Repository.Types.Models
 {
     public record SuccessfulActionResultModel<TModel>(
             TModel? CurrentVersion = null,

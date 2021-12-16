@@ -1,5 +1,5 @@
-using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Services.CosmosDb.Configuration;
 using Airslip.Common.Services.CosmosDb.Extensions;
 using Airslip.Common.Types.Enums;

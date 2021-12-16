@@ -1,9 +1,7 @@
 using Airslip.Common.Auth.Exceptions;
-using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

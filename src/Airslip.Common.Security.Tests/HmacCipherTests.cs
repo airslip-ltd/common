@@ -1,7 +1,6 @@
 using Airslip.Common.Security.Implementations;
 using Airslip.Common.Utilities.Extensions;
 using FluentAssertions;
-using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;

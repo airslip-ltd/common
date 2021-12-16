@@ -1,8 +1,4 @@
-﻿using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
-using FluentValidation;
-using FluentValidation.Results;
-using System.Threading.Tasks;
+﻿using Airslip.Common.Repository.Types.Interfaces;
 
 namespace Airslip.Common.Services.FluentValidation
 {

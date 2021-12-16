@@ -1,4 +1,3 @@
-using Airslip.Common.Types;
 using Airslip.Common.Utilities;
 using AutoMapper;
 using System.Collections.Generic;

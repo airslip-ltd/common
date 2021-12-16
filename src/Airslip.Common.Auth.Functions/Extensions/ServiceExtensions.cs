@@ -6,7 +6,6 @@ using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Implementations;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
-using Airslip.Common.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Interfaces;

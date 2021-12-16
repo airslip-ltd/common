@@ -4,7 +4,6 @@ using Airslip.Common.Repository.Types.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using IModel = Airslip.Common.Repository.Interfaces.IModel;
 
 namespace Airslip.Common.Repository.Implementations
 {

@@ -1,4 +1,4 @@
-namespace Airslip.Common.Repository.Models
+namespace Airslip.Common.Repository.Types.Models
 {
     public record ValidationResultMessageModel(string FieldName, string Message);
 }

@@ -1,11 +1,9 @@
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Extensions;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Types.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 
 namespace Airslip.Common.Auth.Models

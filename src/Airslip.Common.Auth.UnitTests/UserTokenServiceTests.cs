@@ -1,5 +1,4 @@
 using Airslip.Common.Auth.Data;
-using Airslip.Common.Auth.Enums;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Auth.UnitTests.Helpers;
