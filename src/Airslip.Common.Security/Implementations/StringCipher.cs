@@ -62,6 +62,12 @@ namespace Airslip.Common.Security.Implementations
 
             return plaintext;
         }
+
+        public static string DecryptForUrl(string cipherText, string passPhrase, int iterations = 1000)
+        {
+            string decryptedText = Decrypt(cipherText, passPhrase, iterations);
+            return decryptedText.Replace(" ", "+");
+        }
         
         private static byte[] GenerateRandomBytes()
         {
