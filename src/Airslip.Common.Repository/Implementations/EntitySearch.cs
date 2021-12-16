@@ -1,7 +1,9 @@
 using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IModel = Airslip.Common.Repository.Interfaces.IModel;
 
 namespace Airslip.Common.Repository.Implementations
 {
@@ -14,11 +16,11 @@ namespace Airslip.Common.Repository.Implementations
         where TEntity : class, IEntity 
         where TModel : class, IModel
     {
-        private readonly IContext _context;
+        private readonly ISearchContext _context;
         private readonly IModelMapper<TModel> _mapper;
         private readonly IEnumerable<IEntitySearchFormatter<TModel>> _searchFormatters;
         
-        public EntitySearch(IContext context, IModelMapper<TModel> mapper, 
+        public EntitySearch(ISearchContext context, IModelMapper<TModel> mapper, 
             IEnumerable<IEntitySearchFormatter<TModel>> searchFormatters)
         {
             _context = context;
@@ -34,7 +36,7 @@ namespace Airslip.Common.Repository.Implementations
         public async Task<List<TModel>> GetSearchResults(List<SearchFilterModel> searchFilters)
         {
             // Get search results for our entities
-            List<TEntity> searchResults = await _context.GetEntities<TEntity>(searchFilters);
+            List<TEntity> searchResults = await _context.SearchEntities<TEntity>(searchFilters);
             List<TModel> results = new();
             
             // Format them into models

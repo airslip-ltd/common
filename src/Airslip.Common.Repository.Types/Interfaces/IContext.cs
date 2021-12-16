@@ -1,9 +1,7 @@
-using Airslip.Common.Repository.Models;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// An interface defining the expected data access functions.
@@ -37,15 +35,6 @@ namespace Airslip.Common.Repository.Interfaces
         /// <typeparam name="TEntity">The entity type</typeparam>
         /// <returns>The entity after being added to the context</returns>
         Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) 
-            where TEntity : class, IEntityWithId;
-
-        /// <summary>
-        /// Returns a list of entities based on search criteria
-        /// </summary>
-        /// <param name="searchFilters">Search filters to apply to the search</param>
-        /// <typeparam name="TEntity">The entity type</typeparam>
-        /// <returns>A list of entities matching the search criteria</returns>
-        Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters)
             where TEntity : class, IEntityWithId;
 
         /// <summary>

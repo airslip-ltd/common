@@ -1,7 +1,7 @@
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using System;
 
-namespace Airslip.Common.Repository.Entities
+namespace Airslip.Common.Repository.Types.Entities
 {
     public class BasicAuditInformation : IEntityNoId
     {

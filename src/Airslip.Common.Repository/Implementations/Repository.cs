@@ -1,14 +1,13 @@
 using Airslip.Common.Repository.Data;
-using Airslip.Common.Repository.Entities;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Exception;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Models;
-using Airslip.Common.Types.Enums;
-using Airslip.Common.Utilities;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using IModel = Airslip.Common.Repository.Interfaces.IModel;
 
 namespace Airslip.Common.Repository.Implementations
 {

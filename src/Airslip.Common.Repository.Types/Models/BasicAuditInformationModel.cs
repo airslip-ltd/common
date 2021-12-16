@@ -1,6 +1,6 @@
 using System;
 
-namespace Airslip.Common.Repository.Models
+namespace Airslip.Common.Repository.Types.Models
 {
     public class BasicAuditInformationModel
     {

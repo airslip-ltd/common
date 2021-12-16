@@ -1,4 +1,4 @@
-namespace Airslip.Common.Repository.Enums
+namespace Airslip.Common.Repository.Types.Enums
 {
     public enum EntityStatus
     {

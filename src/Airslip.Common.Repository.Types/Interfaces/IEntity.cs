@@ -1,7 +1,7 @@
-using Airslip.Common.Repository.Entities;
-using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Types.Entities;
+using Airslip.Common.Repository.Types.Enums;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// A simple interface defining the common data properties for basic auditing of changes to an entity object
