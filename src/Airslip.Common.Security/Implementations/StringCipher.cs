@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Web;
 
 namespace Airslip.Common.Security.Implementations
 {
@@ -39,6 +40,12 @@ namespace Airslip.Common.Security.Implementations
             return Convert.ToBase64String(cipherTextBytes);
         }
 
+        public static string EncryptForUrl(string plainText, string passPhrase, int iterations = 1000)
+        {
+            string cipherText = Encrypt(plainText, passPhrase, iterations);
+            return HttpUtility.UrlEncode(cipherText);
+        }
+
         public static string Decrypt(string cipherText, string passPhrase, int iterations = 1000)
         {
             byte[] cipherTextBytesWithIv = Convert.FromBase64String(cipherText);
@@ -61,12 +68,6 @@ namespace Airslip.Common.Security.Implementations
             string plaintext = srDecrypt.ReadToEnd();
 
             return plaintext;
-        }
-
-        public static string DecryptForUrl(string cipherText, string passPhrase, int iterations = 1000)
-        {
-            string decryptedText = Decrypt(cipherText, passPhrase, iterations);
-            return decryptedText.Replace(" ", "+");
         }
         
         private static byte[] GenerateRandomBytes()
