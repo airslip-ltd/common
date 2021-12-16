@@ -1,12 +1,11 @@
-using Airslip.Common.Repository.Models;
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using IModel = Airslip.Common.Repository.Interfaces.IModel;
 
 namespace Airslip.Common.Repository.Extensions
 {

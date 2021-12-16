@@ -1,6 +1,6 @@
-using Airslip.Common.Repository.Entities;
-using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Entities;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.AutoMapper.Extensions;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
@@ -26,7 +26,7 @@ namespace Airslip.Common.Services.AutoMapper.Tests
                                         throw new NotImplementedException();
 
             IModelMapper<MyModel> mapper = provider.GetService<IModelMapper<MyModel>>() ?? 
-                                            throw new NotImplementedException();
+                                           throw new NotImplementedException();
 
             MyModel myModel = new()
             {

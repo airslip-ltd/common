@@ -1,5 +1,5 @@
-﻿using Airslip.Common.Repository.Interfaces;
-using Newtonsoft.Json;
+﻿using Airslip.Common.Repository.Types.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Airslip.Common.CustomerPortal.Interfaces
 {

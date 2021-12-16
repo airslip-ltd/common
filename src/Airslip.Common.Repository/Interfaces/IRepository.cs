@@ -1,5 +1,5 @@
-using Airslip.Common.Repository.Models;
 using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Interfaces

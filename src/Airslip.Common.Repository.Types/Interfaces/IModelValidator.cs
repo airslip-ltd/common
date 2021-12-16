@@ -1,7 +1,7 @@
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Models;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// A validation definition, this is required for every repository implementation

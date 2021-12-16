@@ -13,7 +13,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Airslip.Common.Repository" Version="3.8.0" />
 		<PackageReference Include="Airslip.Common.Security" Version="3.7.2" />
 		<PackageReference Include="JetBrains.Annotations" Version="$(JetBrainsAnnoations)" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="$(NetVersion)" />
@@ -23,6 +22,10 @@
 		<PackageReference Include="Airslip.Common.Auth" Version="3.7.2" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="UAParser" Version="$(UAParser)" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Airslip.Common.Repository.Types\Airslip.Common.Repository.Types.csproj" />
 	</ItemGroup>
 
 </Project>

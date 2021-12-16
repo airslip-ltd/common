@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.EventHub.Attributes;
 using Airslip.Common.Services.EventHub.Extensions;
 using Airslip.Common.Types.Configuration;

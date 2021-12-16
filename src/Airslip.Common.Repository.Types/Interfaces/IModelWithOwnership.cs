@@ -1,6 +1,6 @@
 using Airslip.Common.Types.Enums;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// A simple interface defining the common properties you can expect on an Api facing model

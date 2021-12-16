@@ -6,7 +6,6 @@ using Airslip.Common.Auth.Models;
 using Microsoft.Azure.Functions.Worker.Http;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;

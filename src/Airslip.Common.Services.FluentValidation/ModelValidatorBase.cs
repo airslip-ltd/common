@@ -1,5 +1,5 @@
-﻿using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
+﻿using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using FluentValidation;
 using FluentValidation.Results;
 using System.Threading.Tasks;

@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Types.Interfaces;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Interfaces

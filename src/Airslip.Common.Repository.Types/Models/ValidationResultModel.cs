@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Airslip.Common.Repository.Models
+namespace Airslip.Common.Repository.Types.Models
 {
     public class ValidationResultModel
     {

@@ -1,6 +1,5 @@
 using Airslip.Common.Auth.Data;
 using Airslip.Common.Auth.Interfaces;
-using Airslip.Common.Types;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using System.Collections.Generic;

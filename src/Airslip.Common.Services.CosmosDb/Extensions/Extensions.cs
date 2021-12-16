@@ -1,5 +1,4 @@
 using Microsoft.Azure.Cosmos;
-using Pluralize.NET.Core;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.CosmosDb.Extensions

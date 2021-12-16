@@ -30,10 +30,10 @@ namespace Airslip.Common.Services.MongoDb.Tests
                 ConnectionString = _mongoDbSettings.ConnectionString,
                 DatabaseName = $"tests_{CommonFunctions.GetId()}"
             };
-            Context = new MyBaseTestClass(await Helpers.InitializeMongoClientInstanceAsync(config,
+            Context = new BaseContext(await Helpers.InitializeMongoClientInstanceAsync(config,
                 _ => Task.FromResult(true)), 
                 Options.Create(_mongoDbSettings));
-            SearchContext = new MyBaseTestClass(await Helpers.InitializeMongoClientInstanceAsync(config,
+            SearchContext = new SearchContext(await Helpers.InitializeMongoClientInstanceAsync(config,
                     _ => Task.FromResult(true)), 
                 Options.Create(_mongoDbSettings));
             
@@ -57,9 +57,18 @@ namespace Airslip.Common.Services.MongoDb.Tests
         }
     }
     
-    public class MyBaseTestClass : AirslipMongoDbBase
+    public class BaseContext : AirslipMongoDbBase
     {
-        public MyBaseTestClass(MongoClient mongoClient, IOptions<MongoDbSettings> options) 
+        public BaseContext(MongoClient mongoClient, IOptions<MongoDbSettings> options) 
+            : base(mongoClient, options)
+        {
+            Database.CreateCollectionForEntity<MyEntity>();
+        }
+    }
+    
+    public class SearchContext : AirslipMongoDbSearchBase
+    {
+        public SearchContext(MongoClient mongoClient, IOptions<MongoDbSettings> options) 
             : base(mongoClient, new Mock<IUserContext>().Object, options)
         {
             Database.CreateCollectionForEntity<MyEntity>();

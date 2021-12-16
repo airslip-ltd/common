@@ -10,7 +10,7 @@ namespace Airslip.Common.Services.MongoDb
 {
     public static class Services
     {
-        public static IServiceCollection AddAirslipMongoDb<TContext>(this IServiceCollection services, 
+        public static MongoDbInitialisation AddAirslipMongoDb<TContext>(this IServiceCollection services, 
             IConfiguration config, Func<IMongoDatabase, Task> initialiseDatabase)
         where TContext : AirslipMongoDbBase
         {
@@ -20,10 +20,22 @@ namespace Airslip.Common.Services.MongoDb
                     .InitializeMongoClientInstanceAsync(config, initialiseDatabase)
                     .GetAwaiter()
                     .GetResult())
-                .AddScoped<TContext>()
-                .AddScoped<IContext>(provider => provider.GetService<TContext>()!);
+                .AddSingleton<TContext>()
+                .AddSingleton<IContext>(provider => provider.GetService<TContext>()!);
 
-            return services;
+            return new MongoDbInitialisation(services, config);
+        }
+        
+        public static IServiceCollection UseSearch<TContext>(this MongoDbInitialisation initialisation)
+            where TContext : AirslipMongoDbSearchBase
+        {
+            initialisation.services
+                .AddScoped<TContext>()
+                .AddSingleton<ISearchContext>(provider => provider.GetService<TContext>()!);
+
+            return initialisation.services;
         }
     }
+
+    public record MongoDbInitialisation(IServiceCollection services, IConfiguration config);
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Airslip.Common.Repository.Interfaces
+namespace Airslip.Common.Repository.Types.Interfaces
 {
     /// <summary>
     /// Simple model mapping interface for creating and updating entities and models
