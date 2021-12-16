@@ -30,12 +30,11 @@ namespace Airslip.Common.Services.MongoDb.Tests
                 ConnectionString = _mongoDbSettings.ConnectionString,
                 DatabaseName = $"tests_{CommonFunctions.GetId()}"
             };
-            Context = new BaseContext(await Helpers.InitializeMongoClientInstanceAsync(config,
-                _ => Task.FromResult(true)), 
-                Options.Create(_mongoDbSettings));
-            SearchContext = new SearchContext(await Helpers.InitializeMongoClientInstanceAsync(config,
-                    _ => Task.FromResult(true)), 
-                Options.Create(_mongoDbSettings));
+            MongoClient client = await Helpers.InitializeMongoClientInstanceAsync(config,
+                _ => Task.FromResult(true));
+            
+            Context = new BaseContext(client, Options.Create(_mongoDbSettings));
+            SearchContext = new SearchContext(client, Options.Create(_mongoDbSettings));
             
             string[] names = {"Some Name 1", "Some Name 2", "Some Name 3", "Some Name 4"};
             

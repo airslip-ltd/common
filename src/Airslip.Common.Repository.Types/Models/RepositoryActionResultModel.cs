@@ -1,4 +1,4 @@
-using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Interfaces;
 
