@@ -2,6 +2,7 @@
 using Airslip.Common.Types.Interfaces;
 using Microsoft.Azure.Functions.Worker.Http;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -26,6 +27,9 @@ namespace Airslip.Common.Auth.Functions.Extensions
                     break;
                 case ErrorResponses r:
                     await httpResponseData.WriteAsJsonAsync(r, HttpStatusCode.BadRequest);
+                    break;
+                case ErrorResponse r:
+                    await httpResponseData.WriteAsJsonAsync(new ErrorResponses(new List<ErrorResponse> {r}), HttpStatusCode.BadRequest);
                     break;
                 case IFail r:
                     await httpResponseData.WriteAsJsonAsync(r, HttpStatusCode.BadRequest);
