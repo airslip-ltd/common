@@ -27,6 +27,9 @@ namespace Airslip.Common.Auth.Functions.Extensions
                 case ErrorResponses r:
                     await httpResponseData.WriteAsJsonAsync(r, HttpStatusCode.BadRequest);
                     break;
+                case ErrorResponse r:
+                    await httpResponseData.WriteAsJsonAsync(r, HttpStatusCode.BadRequest);
+                    break;
                 case IFail r:
                     await httpResponseData.WriteAsJsonAsync(r, HttpStatusCode.BadRequest);
                     break;
