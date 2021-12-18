@@ -11,11 +11,11 @@ namespace Airslip.Common.Types.Failures
         public string? Message { get; }
         public IDictionary<string, object> Metadata { get; }
 
-        public ErrorResponse(string errorCode, string? messageTemplate = null, IDictionary<string, object>? metadata = null)
+        public ErrorResponse(string errorCode, string? message = null, IDictionary<string, object>? metadata = null)
         {
             Message = metadata == null
-                ? messageTemplate
-                : metadata.Aggregate(messageTemplate,
+                ? message
+                : metadata.Aggregate(message,
                     (current, pair) => current?.Replace($"{{{pair.Key}}}", $"{pair.Value}"));
             ErrorCode = errorCode;
             Metadata = metadata ?? new Dictionary<string, object>();
