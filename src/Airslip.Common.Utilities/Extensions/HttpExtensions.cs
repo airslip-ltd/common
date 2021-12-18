@@ -1,7 +1,9 @@
+using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Models;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -104,6 +106,23 @@ namespace Airslip.Common.Utilities.Extensions
             }
 
             return new HttpRequestResult<TResponse>(response.IsSuccessStatusCode, response.StatusCode, content);
+        }
+        
+        public static async Task<IResponse> CommonResponseHandler<TExpectedType>(
+            this HttpResponseMessage httpResponseMessage)
+            where TExpectedType : class, IResponse
+        {
+            string content = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+                return Json.Deserialize<TExpectedType>(content);
+
+            // Backwards compatability - We need a common error response, probably best to default to an array of errors
+            ErrorResponse errorObject = Json.Deserialize<ErrorResponse>(content);
+
+            return string.IsNullOrEmpty(errorObject.ErrorCode)
+                ? Json.Deserialize<ErrorResponses>(content)
+                : new ErrorResponses(new List<ErrorResponse> {errorObject});
         }
 
         private static bool ValidContent(string content)
