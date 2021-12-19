@@ -66,7 +66,7 @@ namespace Airslip.Common.Repository.Implementations
             try
             {
                 lifecycle =
-                    await _processLifecycle(null, model, LifecycleStage.Delete, userId);
+                    await _processLifecycle(null, model, LifecycleStage.Create, userId);
             }
             catch (RepositoryLifecycleException exc)
             {
