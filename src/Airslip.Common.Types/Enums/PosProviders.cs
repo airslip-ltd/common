@@ -11,6 +11,27 @@
         IZettle,
         EposNow,
         Square,
-        Vend
+        Vend,
+        Cart3D,
+        Cart3DApi,
+        AmazonSP,
+        Amazon,
+        Demandware,
+        EBay,
+        Etsy,
+        EtsyAPIv3,
+        Hybris,
+        Magento,
+        AspDotNetStorefront,
+        CommerceHQ,
+        Ecwid,
+        Neto,
+        LightSpeed,
+        Prestashop,
+        Squarespace,
+        Shopware,
+        ShopwareApi,
+        Walmart,
+        Woocommerce
     }
 }
