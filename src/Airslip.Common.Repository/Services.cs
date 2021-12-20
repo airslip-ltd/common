@@ -27,10 +27,13 @@ namespace Airslip.Common.Repository
             switch (repositoryUserType)
             {
                 case RepositoryUserType.Null:
-                    serviceCollection.AddSingleton<IUserContext, NullUserService>();
+                    serviceCollection.AddSingleton<IUserContext, NullUserContext>();
                     break;
                 case RepositoryUserType.TokenBased:
-                    serviceCollection.AddScoped<IUserContext, TokenBasedUserService>();
+                    serviceCollection.AddScoped<IUserContext, TokenBasedUserContext>();
+                    break;
+                case RepositoryUserType.Service:
+                    serviceCollection.AddScoped<IUserContext, ServiceUserContext>();
                     break;
                 case RepositoryUserType.Manual:
                     // Inject nothing, let the developer do it...

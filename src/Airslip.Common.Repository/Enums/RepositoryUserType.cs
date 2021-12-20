@@ -4,6 +4,7 @@ namespace Airslip.Common.Repository.Enums
     {
         TokenBased,
         Null,
-        Manual
+        Manual,
+        Service
     }
 }

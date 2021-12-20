@@ -3,7 +3,7 @@ using Airslip.Common.Types.Interfaces;
 
 namespace Airslip.Common.Repository.Implementations
 {
-    public class NullUserService : IUserContext
+    public class NullUserContext : IUserContext
     {
         public string? UserId => null;
         public string? EntityId => null;
