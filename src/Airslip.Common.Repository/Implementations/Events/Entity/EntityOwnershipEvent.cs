@@ -18,8 +18,10 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
         {
             _userService = userService;
         }
+        
         public IEnumerable<LifecycleStage> AppliesTo => new[]
             {LifecycleStage.Create};
+        
         public TEntity Execute(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
         {
             if (entity is not IEntityWithOwnership entityWithOwnership) 
