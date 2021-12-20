@@ -26,34 +26,7 @@ namespace Airslip.Common.Repository.UnitTests
         [Fact]
         public async Task Error_is_not_thrown_when_unknown_resource_is_deleted()
         {
-            IServiceCollection services = new ServiceCollection();
-
-            services
-                .AddSingleton(_ =>
-                {
-                    Mock<IContext> mock = new();
-                    return mock.Object;
-                })
-                .AddSingleton(_ =>
-                {
-                    Mock<IModelValidator<MyModel>> mock = new();
-                    return mock.Object;
-                })
-                .AddSingleton(_ =>
-                {
-                    Mock<IModelMapper<MyModel>> mock = new();
-                    return mock.Object;
-                })
-                .AddRepositories(RepositoryUserType.Manual)
-                .AddScoped(_ =>
-                {
-                    Mock<IUserContext> mockTokenDecodeService = new();
-                    mockTokenDecodeService.Setup(service => service.EntityId).Returns((string?)null);
-                    mockTokenDecodeService.Setup(service => service.UserId).Returns((string?)null);
-                    mockTokenDecodeService.Setup(service => service.AirslipUserType).Returns((AirslipUserType?)null);
-                    return mockTokenDecodeService.Object;
-                });
-            IServiceProvider provider = services.BuildServiceProvider();
+            IServiceProvider provider = Helpers.BuildRepoProvider();
 
             IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
                ?? throw new NotImplementedException();
@@ -113,11 +86,14 @@ namespace Airslip.Common.Repository.UnitTests
         }
     }
 
-    public class MyEntity : IEntity
+    public class MyEntity : IEntityWithOwnership
     {
         public string Id { get; set; } = string.Empty;
         public BasicAuditInformation? AuditInformation { get; set; }
         public EntityStatus EntityStatus { get; set; }
+        public string? UserId { get; set; }
+        public string? EntityId { get; set; }
+        public AirslipUserType AirslipUserType { get; set; }
     }
 
 
