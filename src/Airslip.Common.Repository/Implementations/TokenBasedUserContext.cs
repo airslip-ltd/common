@@ -5,9 +5,9 @@ using Airslip.Common.Types.Interfaces;
 
 namespace Airslip.Common.Repository.Implementations
 {
-    public class TokenBasedUserService : IUserContext
+    public class TokenBasedUserContext : IUserContext
     {
-        public TokenBasedUserService(ITokenDecodeService<UserToken> tokenDecodeService)
+        public TokenBasedUserContext(ITokenDecodeService<UserToken> tokenDecodeService)
         {
             UserToken token = tokenDecodeService.GetCurrentToken();
             UserId = token.UserId;
