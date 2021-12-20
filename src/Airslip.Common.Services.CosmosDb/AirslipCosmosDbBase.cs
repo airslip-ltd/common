@@ -19,16 +19,14 @@ namespace Airslip.Common.Services.CosmosDb
 {
     public abstract class AirslipCosmosDbBase : IContext
     {
-        private readonly IUserContext _userContext;
         private readonly ILogger _logger;
         protected readonly Database Database;
         private static readonly Pluralizer _pluralizer = new();
         private readonly bool LogMetrics;
 
-        protected AirslipCosmosDbBase(CosmosClient cosmosClient, IUserContext userContext, 
+        protected AirslipCosmosDbBase(CosmosClient cosmosClient,  
             IOptions<CosmosDbSettings> options, ILogger logger)
         {
-            _userContext = userContext;
             _logger = logger;
             Database = cosmosClient.GetDatabase(options.Value.DatabaseName);
             LogMetrics = options.Value.LogMetrics;
@@ -79,47 +77,6 @@ namespace Airslip.Common.Services.CosmosDb
                 .UpsertItemAsync(updatedEntity, new PartitionKey(updatedEntity.Id));
             LogMetric(nameof(UpdateEntity), response);
             return response.Resource;
-        }
-
-        public async Task<List<TEntity>> GetEntities<TEntity>(List<SearchFilterModel> searchFilters) 
-            where TEntity : class, IEntityWithId
-        {
-            
-            if (typeof(IEntityWithOwnership).IsAssignableFrom(typeof(TEntity)))
-            {
-                switch (_userContext.AirslipUserType ?? AirslipUserType.Standard)
-                {
-                    case AirslipUserType.Standard:
-                        searchFilters.Add(new SearchFilterModel("userId", _userContext.UserId!));
-                        break;
-                    default:
-                        searchFilters.Add(new SearchFilterModel("entityId", 
-                            _userContext.EntityId!));
-                        searchFilters.Add(new SearchFilterModel("airslipUserType", 
-                            _userContext.AirslipUserType!));
-                        break;
-                } 
-            }
-            
-            Container container = Database.GetContainerForEntity<TEntity>();
-            StringBuilder sb = new();
-            sb.Append($"SELECT * FROM {GetContainerId<TEntity>()} f WHERE 1=1");
-
-            foreach (SearchFilterModel searchFilterModel in searchFilters)
-            {
-                sb.Append($" AND f.{searchFilterModel.FieldName.ToCamelCase()} = @{searchFilterModel.FieldName}");
-            }
-
-            QueryDefinition query = new(sb.ToString());
-           foreach (SearchFilterModel searchFilterModel in searchFilters)
-            {
-                query = query.WithParameter($"@{searchFilterModel.FieldName}", searchFilterModel.FieldValue);
-            }    
-                
-            using FeedIterator<TEntity> feedIterator = container.GetItemQueryIterator<TEntity>(
-                query);
-            
-            return await FeedIteratorToResults(feedIterator);
         }
 
         public IQueryable<TEntity> QueryableOf<TEntity>() where TEntity : class
