@@ -6,6 +6,8 @@ namespace Airslip.Common.Types.Enums
         Standard = 1,
         Merchant = 2,
         Unregistered = 3,
+        Partner = 4,
+        Administrator = 98,
         InternalApi = 99
     }
 }
