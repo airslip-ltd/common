@@ -1,3 +1,4 @@
+using Airslip.Common.Auth.AspNetCore.Attributes;
 using Airslip.Common.Auth.AspNetCore.Configuration;
 using Airslip.Common.Auth.AspNetCore.Handlers;
 using Airslip.Common.Auth.AspNetCore.Implementations;
