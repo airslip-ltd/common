@@ -8,6 +8,6 @@ namespace Airslip.Common.Types.Responses
         /// <summary>
         ///     The list of data items in the current page.
         /// </summary>
-        public List<T> Results { get; } = new();
+        public List<T> Results { get; init; } = new();
     }
 }
