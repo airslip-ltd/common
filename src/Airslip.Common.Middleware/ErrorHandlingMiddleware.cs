@@ -66,7 +66,7 @@ namespace Airslip.Common.Middleware
             context.Response.ContentType = Json.MediaType;
             context.Response.StatusCode = errorResponse.StatusCode ?? (int) HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(Json
-                .Serialize(errorResponse.Value, Casing.CAMEL_CASE, Formatting.Indented, NullValueHandling.Ignore));
+                .Serialize(errorResponse.Value!, Casing.CAMEL_CASE, Formatting.Indented, NullValueHandling.Ignore));
         }
     }
 }

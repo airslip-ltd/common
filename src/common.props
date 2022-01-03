@@ -1,39 +1,12 @@
 ﻿<Project>
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <NetVersion>5.0.*</NetVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <NetVersion>6.0.*</NetVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
         <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <Coverlet>3.1.0</Coverlet>
-        <JetBrainsAnnoations>2021.2.0</JetBrainsAnnoations>
-        <Moq>4.16.1</Moq>
-		<FluentAssertions>6.1.0</FluentAssertions>
-		<FluentValidation>10.3.3</FluentValidation>
-        <MicrosoftAspNetCoreHttp>2.2.2</MicrosoftAspNetCoreHttp>
-        <NewtonsoftJson>13.0.1</NewtonsoftJson>
-        <NetTestSdk>16.11.0</NetTestSdk>
-        <Xunit>2.4.1</Xunit>
-        <XunitRunner>2.4.3</XunitRunner>
-		<MongoDb>2.13.1</MongoDb>
-		<SerilogAspNetCore>4.1.0</SerilogAspNetCore>
-		<UAParser>3.1.47</UAParser>
-		<AutoMapper>10.1.1</AutoMapper>
-        <AzureFunctionsWorker>1.5.1</AzureFunctionsWorker>
-        <AzureFunctionsExtensions>3.0.13</AzureFunctionsExtensions>
-		<IdentityModelTokens>6.7.1</IdentityModelTokens>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <AirslipCommonContracts>1.1.7</AirslipCommonContracts>
-		<AirslipCommonTypes>3.2.6</AirslipCommonTypes>
-		<AirslipCommonAuth>1.2.0</AirslipCommonAuth>
-		<AirslipCommonRepository>1.0.0</AirslipCommonRepository>
     </PropertyGroup>
 
 </Project>

@@ -2,18 +2,6 @@
 	<Import Project="..\common.props" />
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Airslip.Common.Utilities" Version="3.6.13" />
-		<PackageReference Include="FluentValidation" Version="$(FluentValidation)" />
-		<PackageReference Include="Airslip.Common.Types" Version="3.7.4" />
-		<PackageReference Include="Serilog.AspNetCore" Version="$(SerilogAspNetCore)" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
-	</ItemGroup>
-
-	<PropertyGroup>
 		<PackageId>Airslip.Common.Middleware</PackageId>
 		<Company>Airslip</Company>
 		<Authors>Airslip</Authors>
@@ -22,5 +10,16 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="10.3.3" />
+		<PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(NetVersion)" NoWarn="NU1605" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Airslip.Common.Utilities" Version="3.6.13" />
+		<PackageReference Include="Airslip.Common.Types" Version="3.7.4" />
+	</ItemGroup>
 
 </Project>

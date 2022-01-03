@@ -16,7 +16,9 @@ namespace Airslip.Common.Security.Implementations
             byte[] keyBytes;
             byte[] saltBytes = GenerateRandomBytes();
             
+#pragma warning disable CS0618
             using RijndaelManaged rijAlg = new();
+#pragma warning restore CS0618
             using Rfc2898DeriveBytes password = new(passPhrase, saltBytes, iterations);
             keyBytes = password.GetBytes(KeySizeBytes);
 
@@ -56,7 +58,9 @@ namespace Airslip.Common.Security.Implementations
             using Rfc2898DeriveBytes password = new(passPhrase, saltBytes, iterations);
             byte[] keyBytes = password.GetBytes(KeySizeBytes);
                 
+#pragma warning disable CS0618
             using RijndaelManaged rijAlg = new();
+#pragma warning restore CS0618
             rijAlg.IV = ivStringBytes;
 
             ICryptoTransform decryptor = rijAlg.CreateDecryptor(keyBytes, rijAlg.IV);
@@ -73,7 +77,9 @@ namespace Airslip.Common.Security.Implementations
         private static byte[] GenerateRandomBytes()
         {
             byte[] randomBytes = new byte[KeySizeBytes];
+#pragma warning disable CS0618
             using RNGCryptoServiceProvider rngCsp = new();
+#pragma warning restore CS0618
             rngCsp.GetBytes(randomBytes);
             return randomBytes;
         }
