@@ -11,7 +11,7 @@ jobs:
   pack-and-publish:
     runs-on: ubuntu-latest
     env:
-      DOTNET_CORE_VERSION: 5.0.x
+      DOTNET_CORE_VERSION: 6.0.x
       BUILD_PATH: ./src/Airslip.Common.Repository.Types/Airslip.Common.Repository.Types.csproj
     steps:
     - uses: actions/checkout@v2
