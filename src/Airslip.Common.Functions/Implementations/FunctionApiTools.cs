@@ -1,9 +1,9 @@
 ﻿using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Models;
 using Airslip.Common.Functions.Interfaces;
-using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
-using Airslip.Common.Repository.Models;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Hateoas;
