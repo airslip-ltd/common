@@ -6,6 +6,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Monitoring.Implementations.Checks
@@ -14,9 +15,12 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
     {
         private readonly ILogger _logger;
         private readonly PublicApiSettings _settings;
+        private readonly HttpClient _httpClient;
 
-        public ApiConnectionCheck(IOptions<PublicApiSettings> settings, ILogger logger)
+        public ApiConnectionCheck(IHttpClientFactory httpClientFactory, IOptions<PublicApiSettings> settings, 
+            ILogger logger)
         {
+            _httpClient = httpClientFactory.CreateClient("ApiConnectionCheck");
             _logger = logger;
             _settings = settings.Value;
         }
@@ -37,23 +41,11 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
                 var uri = $"{api.BaseUri}/{api.UriSuffix ?? ""}/v1/heartbeat/ping";
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
-                    request.Timeout = 5000;
-                    HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
+                    HttpRequestMessage message = new(HttpMethod.Get, uri);
+                    _httpClient.Timeout = new TimeSpan(0, 0, 5);
+                    HttpResponseMessage response = await _httpClient.SendAsync(message);
 
                     results.Add(checkStatusCode(response, uri));
-                }
-                catch (WebException we)
-                {
-                    if (we.Response is HttpWebResponse response)
-                    {
-                        results.Add(checkStatusCode(response, uri, we));
-                    }
-                    else
-                    {
-                        results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
-                            we.Message));
-                    }
                 }
                 catch (Exception? ee) {
                     results.Add(new HealthCheckResult(nameof(ApiConnectionCheck), uri, false,
@@ -64,7 +56,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             return new HealthCheckResults(results);
         }
 
-        private HealthCheckResult checkStatusCode(HttpWebResponse response, string uri, Exception? ee = null)
+        private HealthCheckResult checkStatusCode(HttpResponseMessage response, string uri, Exception? ee = null)
         {
             if (response.StatusCode != HttpStatusCode.OK)
             {
