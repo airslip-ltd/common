@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Airslip.Common.Types" Version="3.7.4" />
+	  <PackageReference Include="Airslip.Common.Types" Version="6.0.0" />
 	</ItemGroup>
 
 </Project>
