@@ -18,12 +18,13 @@ namespace Airslip.Common.Services.MongoDb.Tests
     public class DatabaseFixture : IAsyncLifetime
     {
         private MongoDbSettings _mongoDbSettings = null!;
-        public IContext Context = null!;
+        private IContext Context = null!;
         public ISearchContext SearchContext = null!;
 
         public async Task InitializeAsync()
         {
-            IConfiguration config = TestFactory.InitialiseConfiguration(Directory.GetCurrentDirectory());
+            IConfiguration config = OptionsMock
+                .InitialiseConfiguration("Airslip.Common.Services.MongoDb.Tests")!;
             _mongoDbSettings = UtilityExtensions.GetConfigurationSection<MongoDbSettings>(config);
             _mongoDbSettings = new MongoDbSettings
             {
