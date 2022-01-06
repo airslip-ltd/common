@@ -3,8 +3,10 @@ using System;
 
 namespace Airslip.Common.Repository.Types.Entities
 {
-    public class BasicAuditInformation : IEntityNoId
+    public class BasicAuditInformation : IEntityWithId
     {
+        public string Id { get; set; } = string.Empty;
+        
         public string? CreatedByUserId { get; set; }
         
         public DateTime DateCreated { get; set; }
