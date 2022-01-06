@@ -69,10 +69,10 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
 
         if (result == null) return result!;
         
-        Set(result, field, value);
+        _set(result, field, value);
         await SaveChangesAsync();
 
-        return result!;
+        return result;
     }
     
     public async Task<List<TEntity>> SearchEntities<TEntity>(List<SearchFilterModel> searchFilters) where TEntity : class, IEntityWithId
@@ -89,7 +89,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return await q.ToListAsync();
     }
     
-    private Expression<Func<T, bool>> _equality<T>(string propertyName, string value)
+    private static Expression<Func<T, bool>> _equality<T>(string propertyName, string value)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), propertyName);
         Expression property = Expression.Property(parameter, propertyName);
@@ -100,16 +100,14 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return lambda;
     }
     
-    private void Set<T, TProperty>(T instance, string propertyName, TProperty value)
+    private static void _set<T, TProperty>(T instance, string propertyName, TProperty value)
     {
-        var instanceExpression = Expression.Parameter(typeof(T), "p");
-        var propertyGetterExpression = Expression.PropertyOrField(instanceExpression, propertyName);
-
-        //generate setter
-        var newValueExpression = Expression.Parameter(typeof(TProperty), "value");
-        var assignmentExpression = Expression.Assign(propertyGetterExpression, newValueExpression);
-        var lambdaExpression = Expression.Lambda<Action<T, TProperty>>(assignmentExpression, instanceExpression, newValueExpression);
-        var setter = lambdaExpression.Compile();// the generated lambda will look like so: (p, value) => p.{your_property_name} = value;
+        ParameterExpression instanceExpression = Expression.Parameter(typeof(T), "p");
+        MemberExpression propertyGetterExpression = Expression.PropertyOrField(instanceExpression, propertyName);
+        ParameterExpression newValueExpression = Expression.Parameter(typeof(TProperty), "value");
+        BinaryExpression assignmentExpression = Expression.Assign(propertyGetterExpression, newValueExpression);
+        Expression<Action<T, TProperty>> lambdaExpression = Expression.Lambda<Action<T, TProperty>>(assignmentExpression, instanceExpression, newValueExpression);
+        Action<T, TProperty> setter = lambdaExpression.Compile();
         setter(instance, value);
     }
 }
