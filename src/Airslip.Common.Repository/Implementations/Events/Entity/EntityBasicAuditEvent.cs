@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Entities;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Utilities;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +22,10 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
             {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
         public TEntity Execute(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
         {
-            entity.AuditInformation ??= new BasicAuditInformation();
+            entity.AuditInformation ??= new BasicAuditInformation
+            {
+                Id = CommonFunctions.GetId()
+            };
 
             switch (lifecycleStage)
             {
