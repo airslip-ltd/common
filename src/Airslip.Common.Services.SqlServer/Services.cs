@@ -18,8 +18,8 @@ namespace Airslip.Common.Services.SqlServer
                     .UseSqlServer(config.GetConnectionString("SqlServer")));
             
             services
-                .AddSingleton<IContext>(provider => provider.GetService<TContext>()!)
-                .AddSingleton<ISearchContext>(provider => provider.GetService<TContext>()!);
+                .AddScoped<IContext>(provider => provider.GetService<TContext>()!)
+                .AddScoped<ISearchContext>(provider => provider.GetService<TContext>()!);
 
             return services;
         }
