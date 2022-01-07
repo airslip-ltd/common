@@ -1,3 +1,4 @@
+using Airslip.Common.Services.Handoff.Data;
 using Airslip.Common.Services.Handoff.Implementations;
 using Airslip.Common.Services.Handoff.Interfaces;
 
@@ -16,8 +17,4 @@ public static class Extensions
 
         return messageHandoff;
     }
-}
-
-public class MessageHandoffOptions
-{
 }
