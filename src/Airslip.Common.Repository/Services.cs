@@ -28,7 +28,6 @@ public static class Services
             .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityStatusEvent<>))
             .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityDefaultIdEvent<>))
             .AddScoped(typeof(IEntityPreValidateEvent<,>), typeof(EntityFoundValidation<,>))
-            .AddScoped(typeof(IEntityPreValidateEvent<,>), typeof(EntityOwnershipValidationEvent<,>))
             .AddScoped(typeof(IEntityPreValidateEvent<,>), typeof(EntityStatusValidation<,>))
             .AddScoped(typeof(IEntityPreValidateEvent<,>), typeof(EntityTimelineValidation<,>))
             .AddScoped(typeof(IModelPreValidateEvent<,>), typeof(ModelCreateValidation<,>))
@@ -42,7 +41,10 @@ public static class Services
                 serviceCollection.AddSingleton<IUserContext, NullUserContext>();
                 break;
             case RepositoryUserType.TokenBased:
-                serviceCollection.AddScoped<IUserContext, TokenBasedUserContext>();
+                serviceCollection
+                    .AddScoped<IUserContext, TokenBasedUserContext>()
+                    .AddScoped(typeof(IEntityPreValidateEvent<,>), 
+                        typeof(EntityOwnershipValidationEvent<,>));
                 break;
             case RepositoryUserType.Service:
                 serviceCollection.AddScoped<IUserContext, ServiceUserContext>();
