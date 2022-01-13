@@ -177,7 +177,8 @@ namespace Airslip.Common.Repository.Implementations
                     CurrentVersion: lifecycle.CurrentModel
                 ),
                 FailedActionResultModel<TModel> failedAction => failedAction,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(repositoryActionResult), 
+                    "Unsupported result type")
             };
         }
 
@@ -249,7 +250,8 @@ namespace Airslip.Common.Repository.Implementations
                     PreviousVersion: lifecycle.PreviousModel
                 ),
                 FailedActionResultModel<TModel> failedAction => failedAction,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(repositoryActionResult), 
+                    "Unsupported result type")
             };
         }
 
