@@ -30,6 +30,40 @@ public class RepositoryTests
         delete.Should().BeOfType<FailedActionResultModel<MyModel>>();
         delete.ResultType.Should().Be(ResultType.NotFound);
     }
+    
+    [Fact]
+    public async Task Error_is_not_thrown_when_ids_do_not_match()
+    {
+        IServiceProvider provider = Helpers.BuildRepoProvider();
+
+        IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
+                                              ?? throw new NotImplementedException();
+
+        RepositoryActionResultModel<MyModel> update = await repo.Update("unknown-id", new MyModel()
+        {
+            Id = "not-my-id"
+        });
+
+        update.Should().BeOfType<FailedActionResultModel<MyModel>>();
+        update.ResultType.Should().Be(ResultType.FailedVerification);
+    }
+    
+    [Fact]
+    public async Task Error_is_not_thrown_when_id_not_found_for_update()
+    {
+        IServiceProvider provider = Helpers.BuildRepoProvider();
+
+        IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
+                                              ?? throw new NotImplementedException();
+
+        RepositoryActionResultModel<MyModel> update = await repo.Update("my-id", new MyModel()
+        {
+            Id = "my-id"
+        });
+
+        update.Should().BeOfType<FailedActionResultModel<MyModel>>();
+        update.ResultType.Should().Be(ResultType.NotFound);
+    }
         
     [Fact]
     public void Can_construct_repository_with_no_delivery_service()
