@@ -23,17 +23,14 @@ namespace Airslip.Common.Repository.Implementations
         where TModel : class, IModel
     {
         private readonly IContext _context;
-        // private readonly IModelValidator<TModel> _validator;
         private readonly IModelMapper<TModel> _mapper;
         private readonly IRepositoryLifecycle<TEntity, TModel> _repositoryLifecycle;
 
         public Repository(IContext context, 
-            // IModelValidator<TModel> validator, 
             IModelMapper<TModel> mapper, 
             IRepositoryLifecycle<TEntity, TModel> repositoryLifecycle)
         {
             _context = context;
-            // _validator = validator;
             _mapper = mapper;
             _repositoryLifecycle = repositoryLifecycle;
         }
@@ -81,7 +78,7 @@ namespace Airslip.Common.Repository.Implementations
             };
         }
 
-        private async Task<IResponse?> _executeValidation(
+        private static async Task<IResponse?> _executeValidation(
             Func<RepositoryAction<TEntity, TModel>, Task<ValidationResultModel>> validationFunction, 
             RepositoryAction<TEntity, TModel> repositoryAction)
         {
