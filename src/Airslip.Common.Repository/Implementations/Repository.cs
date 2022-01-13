@@ -113,6 +113,46 @@ namespace Airslip.Common.Repository.Implementations
 
             return null;
         }
+
+        private async Task<IResponse> _executeRepositoryAction
+            (RepositoryAction<TEntity, TModel> repositoryAction)
+        {
+            IResponse? validationResult = 
+                await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
+
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
+            
+            // Now we load the current entity version
+            if (repositoryAction.Id is not null)
+            {
+                repositoryAction.SetEntity(await _context
+                    .GetEntity<TEntity>(repositoryAction.Id));
+
+                validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
+                
+                if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
+                    return failedEntityValidation;
+            }
+
+            RepositoryLifecycleResult<TModel> lifecycle;
+            try
+            {
+                lifecycle =
+                    await _processLifecycle(repositoryAction);
+            }
+            catch (RepositoryLifecycleException exc)
+            {
+                // If not, return a not found message
+                return new FailedActionResultModel<TModel>
+                (
+                    exc.ErrorCode,
+                    ResultType.FailedVerification
+                );
+            }
+
+            return lifecycle;
+        }
         
         
         /// <summary>
@@ -127,42 +167,18 @@ namespace Airslip.Common.Repository.Implementations
             RepositoryAction<TEntity, TModel> repositoryAction = 
                 new(id, null, model, LifecycleStage.Update, userId);
             
-            // Validate the incoming model against the registered validator
-            IResponse? validationResult = await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
+            IResponse repositoryActionResult = await _executeRepositoryAction(repositoryAction);
 
-            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
-                return failedModelValidation;
-            
-            // Now we load the current entity version
-            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
-            
-            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
-
-            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
-                return failedEntityValidation;
-            
-            RepositoryLifecycleResult<TModel> lifecycle;
-            
-            try
+            return repositoryActionResult switch
             {
-                lifecycle =
-                    await _processLifecycle(repositoryAction);
-            }
-            catch (RepositoryLifecycleException exc)
-            {
-                return new FailedActionResultModel<TModel>
+                RepositoryLifecycleResult<TModel> lifecycle => new SuccessfulActionResultModel<TModel>
                 (
-                    exc.ErrorCode,
-                    ResultType.FailedVerification
-                );
-            }
-            
-            // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
-            (
-                PreviousVersion: lifecycle.PreviousModel,
-                CurrentVersion: lifecycle.CurrentModel
-            );
+                    PreviousVersion: lifecycle.PreviousModel,
+                    CurrentVersion: lifecycle.CurrentModel
+                ),
+                FailedActionResultModel<TModel> failedAction => failedAction,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         /// <summary>
@@ -223,42 +239,18 @@ namespace Airslip.Common.Repository.Implementations
         {
             RepositoryAction<TEntity, TModel> repositoryAction = 
                 new(id, null, null, LifecycleStage.Delete, userId);
-            
-            IResponse? validationResult = 
-                await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
 
-            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
-                return failedModelValidation;
-            
-            // Now we load the current entity version
-            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
-            
-            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
+            IResponse repositoryActionResult = await _executeRepositoryAction(repositoryAction);
 
-            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
-                return failedEntityValidation;
-
-            RepositoryLifecycleResult<TModel> lifecycle;
-            try
+            return repositoryActionResult switch
             {
-                lifecycle =
-                    await _processLifecycle(repositoryAction);
-            }
-            catch (RepositoryLifecycleException exc)
-            {
-                // If not, return a not found message
-                return new FailedActionResultModel<TModel>
+                RepositoryLifecycleResult<TModel> lifecycle => new SuccessfulActionResultModel<TModel>
                 (
-                    exc.ErrorCode,
-                    ResultType.FailedVerification
-                );
-            }
-
-            // Create a result containing old and new version, and return
-            return new SuccessfulActionResultModel<TModel>
-            (
-                PreviousVersion: lifecycle.PreviousModel
-            );
+                    PreviousVersion: lifecycle.PreviousModel
+                ),
+                FailedActionResultModel<TModel> failedAction => failedAction,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         /// <summary>
@@ -354,8 +346,7 @@ namespace Airslip.Common.Repository.Implementations
         }
     }
 
-    internal class RepositoryLifecycleResult<TModel> 
-        where TModel : class, IModel
+    internal class RepositoryLifecycleResult<TModel> : IResponse where TModel : class, IModel
     {
         public TModel? PreviousModel { get; set; }
         public TModel? CurrentModel { get; set; }
