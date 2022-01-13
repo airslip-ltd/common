@@ -1,8 +1,8 @@
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
-using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using System;
 using System.Collections.Generic;

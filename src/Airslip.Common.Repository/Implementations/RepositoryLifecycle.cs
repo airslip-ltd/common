@@ -1,6 +1,9 @@
+using Airslip.Common.Repository.Data;
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Interfaces;
+using Airslip.Common.Repository.Types.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,37 +17,86 @@ namespace Airslip.Common.Repository.Implementations
         private readonly IEnumerable<IEntityPreProcessEvent<TEntity>> _entityPreProcessEvents;
         private readonly IEnumerable<IEntityPostProcessEvent<TEntity>> _entityPostProcessEvents;
         private readonly IEnumerable<IModelPostProcessEvent<TModel>> _modelPostProcessEvents;
+        private readonly IEnumerable<IEntityPreValidateEvent<TEntity, TModel>> _entityPreValidateEvents;
+        private readonly IEnumerable<IModelPreValidateEvent<TEntity, TModel>> _modelPreValidateEvents;
 
         public RepositoryLifecycle(IEnumerable<IEntityPreProcessEvent<TEntity>> entityPreProcessEvents,
             IEnumerable<IEntityPostProcessEvent<TEntity>> entityPostProcessEvents,
-            IEnumerable<IModelPostProcessEvent<TModel>> modelPostProcessEvents)
+            IEnumerable<IModelPostProcessEvent<TModel>> modelPostProcessEvents, 
+            IEnumerable<IEntityPreValidateEvent<TEntity, TModel>> entityPreValidateEvents, 
+            IEnumerable<IModelPreValidateEvent<TEntity, TModel>> modelPreValidateEvents)
         {
             _entityPreProcessEvents = entityPreProcessEvents;
             _entityPostProcessEvents = entityPostProcessEvents;
             _modelPostProcessEvents = modelPostProcessEvents;
+            _entityPreValidateEvents = entityPreValidateEvents;
+            _modelPreValidateEvents = modelPreValidateEvents;
         }
         
-        public TEntity PreProcess(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
+        public TEntity PreProcess(RepositoryAction<TEntity,TModel> repositoryAction)
         {
-            return _entityPreProcessEvents.Where(o => o.AppliesTo.Contains(lifecycleStage))
-                .Aggregate(entity, (current, preProcessEvent) => preProcessEvent.Execute(current, lifecycleStage, userId));
+            if (repositoryAction.Entity == null)
+                throw new ArgumentException("Entity cannot be null", nameof(repositoryAction));
+
+            return _entityPreProcessEvents.Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage))
+                .Aggregate(repositoryAction.Entity, (current, preProcessEvent) => preProcessEvent
+                    .Execute(current, repositoryAction.LifecycleStage, repositoryAction.UserId));
         }
 
-        public TEntity PostProcess(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
+        public TEntity PostProcess(RepositoryAction<TEntity,TModel> repositoryAction)
         {
-            return _entityPostProcessEvents.Where(o => o.AppliesTo.Contains(lifecycleStage))
-                .Aggregate(entity, (current, postProcessEvent) => postProcessEvent.Execute(current, lifecycleStage, userId));
+            if (repositoryAction.Entity == null)
+                throw new ArgumentException("Entity cannot be null", nameof(repositoryAction));
+
+            return _entityPostProcessEvents.Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage))
+                .Aggregate(repositoryAction.Entity, (current, postProcessEvent) => postProcessEvent
+                    .Execute(current, repositoryAction.LifecycleStage, repositoryAction.UserId));
         }
 
-        public async Task<TModel> PostProcessModel(TModel model, LifecycleStage lifecycleStage)
+        public async Task<TModel> PostProcessModel(RepositoryAction<TEntity,TModel> repositoryAction)
         {
+            if (repositoryAction.Model == null)
+                throw new ArgumentException("Model cannot be null", nameof(repositoryAction));
+            
             foreach (IModelPostProcessEvent<TModel> postProcessEvent in _modelPostProcessEvents
-                         .Where(o => o.AppliesTo.Contains(lifecycleStage)))
+                         .Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage)))
             {
-                await postProcessEvent.Execute(model, lifecycleStage);
+                await postProcessEvent.Execute(repositoryAction.Model, repositoryAction.LifecycleStage);
             }
 
-            return model;
+            return repositoryAction.Model;
+        }
+
+        public Task<ValidationResultModel> PreValidateModel(RepositoryAction<TEntity, TModel> repositoryAction)
+        {
+            return Validate(_modelPreValidateEvents, repositoryAction);
+        }
+
+        public Task<ValidationResultModel> PreValidateEntity(RepositoryAction<TEntity, TModel> repositoryAction)
+        {
+            return Validate(_entityPreValidateEvents, repositoryAction);
+        }
+
+        private async Task<ValidationResultModel> Validate(IEnumerable<IValidationEvent<TEntity, TModel>> validationEvents, 
+            RepositoryAction<TEntity, TModel> repositoryAction)
+        {
+            ValidationResultModel result = new();
+
+            IEnumerable<IValidationEvent<TEntity, TModel>> validators = validationEvents
+                .Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage));
+
+            foreach (IValidationEvent<TEntity, TModel> validator in validators)
+            {
+                List<ValidationResultMessageModel> validationResult = await validator.Validate(repositoryAction);
+                
+                validationResult.ForEach(o =>
+                {
+                    (string fieldName, string message) = o;
+                    result.AddMessage(fieldName, message);
+                });
+            }
+            
+            return result;
         }
     }
 }

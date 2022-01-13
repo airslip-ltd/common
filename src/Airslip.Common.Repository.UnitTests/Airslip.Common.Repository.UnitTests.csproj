@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup>
+	  <Nullable>enable</Nullable>
+	</PropertyGroup>
+
 	<Import Project="..\test.common.props" />
 
 	<ItemGroup>
@@ -18,6 +22,7 @@
 
 	<ItemGroup>
       <ProjectReference Include="..\Airslip.Common.Repository\Airslip.Common.Repository.csproj" />
+      <ProjectReference Include="..\Airslip.Common.Services.FluentValidation\Airslip.Common.Services.FluentValidation.csproj" />
     </ItemGroup>
 
 </Project>

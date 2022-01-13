@@ -6,4 +6,14 @@ namespace Airslip.Common.Repository.Data
         public const string NotFound = "REP00002";
         public const string OwnershipCannotBeVerified = "REP00003";
     }
+
+    public static class ErrorMessages
+    {
+        public const string LifecycleEventDoesntApply = "Invalid execution of lifecycle event";
+        public const string IdFailedVerification = "Id failed verification check";
+        public const string EntityNotFound = "Entity not found";
+        public const string OwnershipNotVerified = "Ownership cannot be verified";
+        public const string EntityDeleted = "Entity Deleted";
+        public const string ModelOutdated = "Entity is newer than provided model.";
+    }
 }

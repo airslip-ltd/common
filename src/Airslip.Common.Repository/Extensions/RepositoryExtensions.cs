@@ -1,3 +1,5 @@
+using Airslip.Common.Repository.Data;
+using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
@@ -34,6 +36,26 @@ namespace Airslip.Common.Repository.Extensions
             if (entity.AirslipUserType != AirslipUserType.Standard && entity.EntityId != userService.EntityId) return false;
 
             return true;
+        }
+
+        public static List<ValidationResultMessageModel> CheckApplies<TEntity, TModel>(this RepositoryAction<TEntity, TModel> repositoryAction, 
+            IEnumerable<LifecycleStage> appliesTo) 
+            where TEntity : class, IEntity 
+            where TModel : class, IModel
+        {
+            List<ValidationResultMessageModel> result = new();
+            
+            if (!appliesTo.Contains(repositoryAction.LifecycleStage)) 
+                result.Add(new ValidationResultMessageModel(nameof(repositoryAction.LifecycleStage), 
+                    ErrorMessages.LifecycleEventDoesntApply));
+
+            return result;
+        }
+        
+        public static bool CheckApplies(this LifecycleStage lifecycleStage, 
+            IEnumerable<LifecycleStage> appliesTo) 
+        {
+            return appliesTo.Contains(lifecycleStage); 
         }
     }
 }

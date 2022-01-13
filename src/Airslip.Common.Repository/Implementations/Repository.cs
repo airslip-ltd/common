@@ -5,6 +5,7 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
+using Airslip.Common.Types.Interfaces;
 using System;
 using System.Threading.Tasks;
 
@@ -21,17 +22,17 @@ namespace Airslip.Common.Repository.Implementations
         where TModel : class, IModel
     {
         private readonly IContext _context;
-        private readonly IModelValidator<TModel> _validator;
+        // private readonly IModelValidator<TModel> _validator;
         private readonly IModelMapper<TModel> _mapper;
         private readonly IRepositoryLifecycle<TEntity, TModel> _repositoryLifecycle;
 
         public Repository(IContext context, 
-            IModelValidator<TModel> validator, 
+            // IModelValidator<TModel> validator, 
             IModelMapper<TModel> mapper, 
             IRepositoryLifecycle<TEntity, TModel> repositoryLifecycle)
         {
             _context = context;
-            _validator = validator;
+            // _validator = validator;
             _mapper = mapper;
             _repositoryLifecycle = repositoryLifecycle;
         }
@@ -46,27 +47,21 @@ namespace Airslip.Common.Repository.Implementations
         {
             // Could add some validation to see if the user is allowed to create this type of entity
             //  as part of a rule based system...?
+            RepositoryAction<TEntity, TModel> repositoryAction = 
+                new(null, null, model, LifecycleStage.Create, userId);
             
             // Validate the incoming model against the registered validator
-            ValidationResultModel validationResult = await _validator.ValidateAdd(model);
+            IResponse? validationResult = await _executeValidation(_repositoryLifecycle.PreValidateModel, 
+                repositoryAction);
 
-            // Return a new result model if validation has failed
-            if (!validationResult.IsValid)
-            {
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
-                    model,
-                    ValidationResult: validationResult
-                );
-            }
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
             
             RepositoryLifecycleResult<TModel> lifecycle;
             try
             {
                 lifecycle =
-                    await _processLifecycle(null, model, LifecycleStage.Create, userId);
+                    await _processLifecycle(repositoryAction);
             }
             catch (RepositoryLifecycleException exc)
             {
@@ -85,6 +80,28 @@ namespace Airslip.Common.Repository.Implementations
             };
         }
 
+        private async Task<IResponse?> _executeValidation(
+            Func<RepositoryAction<TEntity, TModel>, Task<ValidationResultModel>> validationFunction, 
+            RepositoryAction<TEntity, TModel> repositoryAction)
+        {
+            ValidationResultModel validationResult = await validationFunction(repositoryAction);
+            
+            // Return a new result model if validation has failed
+            if (!validationResult.IsValid)
+            {
+                return new FailedActionResultModel<TModel>
+                (
+                    ErrorCodes.ValidationFailed,
+                    ResultType.FailedValidation,
+                    repositoryAction.Model,
+                    ValidationResult: validationResult
+                );
+            }
+
+            return null;
+        }
+        
+        
         /// <summary>
         /// Updates an existing entry in the context
         /// </summary>
@@ -94,59 +111,32 @@ namespace Airslip.Common.Repository.Implementations
         /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
         public async Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model, string? userId = null)
         {
-            // Could add some validation to see if the user is allowed to create this type of entity
-            //  as part of a rule based system...?
-            
-            // Validate the Id supplied against that of the model, bit of a crude check but could prevent some simple tampering
-            if (!id.Equals(model.Id))
-            {
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedVerification,
-                    PreviousVersion: model
-                );
-            }
+            RepositoryAction<TEntity, TModel> repositoryAction = 
+                new(id, null, model, LifecycleStage.Update, userId);
             
             // Validate the incoming model against the registered validator
-            ValidationResultModel validationResult = await _validator.ValidateUpdate(model);
+            IResponse? validationResult = await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
 
-            // Return a new result model if validation has failed
-            if (!validationResult.IsValid)
-            {
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
-                    PreviousVersion: model,
-                    ValidationResult: validationResult
-                );
-            }
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
             
             // Now we load the current entity version
-            TEntity? currentEntity = await _context.GetEntity<TEntity>(id);
+            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
             
-            // Check to see if the entity was found within the context
-            if (currentEntity == null || currentEntity.EntityStatus == EntityStatus.Deleted)
-            {
-                // If not, return a not found message
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
-                );
-            }
+            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
 
+            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
+                return failedEntityValidation;
+            
             RepositoryLifecycleResult<TModel> lifecycle;
             
             try
             {
                 lifecycle =
-                    await _processLifecycle(currentEntity, model, LifecycleStage.Update, userId);
+                    await _processLifecycle(repositoryAction);
             }
             catch (RepositoryLifecycleException exc)
             {
-                // If not, return a not found message
                 return new FailedActionResultModel<TModel>
                 (
                     exc.ErrorCode,
@@ -173,43 +163,24 @@ namespace Airslip.Common.Repository.Implementations
         {
             // Could add some validation to see if the user is allowed to create this type of entity
             //  as part of a rule based system...?
-            
-            // Validate the Id supplied against that of the model, bit of a crude check but could prevent some simple tampering
-            if (!id.Equals(model.Id))
-            {
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedVerification,
-                    PreviousVersion: model
-                );
-            }
+            RepositoryAction<TEntity, TModel> repositoryAction = 
+                new(id, null, model, LifecycleStage.Update, userId);
             
             // Validate the incoming model against the registered validator
-            ValidationResultModel validationResult = await _validator.ValidateUpdate(model);
+            IResponse? validationResult = await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
 
-            // Return a new result model if validation has failed
-            if (!validationResult.IsValid)
-            {
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
-                    PreviousVersion: model,
-                    ValidationResult: validationResult
-                );
-            }
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
             
             // Now we load the current entity version
-            TEntity? upsertEntity = await _context.GetEntity<TEntity>(id);
-            LifecycleStage lifecycleStage = 
-                upsertEntity == null ? LifecycleStage.Create : LifecycleStage.Update;
-
+            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
+            repositoryAction.SetLifecycle(repositoryAction.Entity == null ? LifecycleStage.Create : LifecycleStage.Update);
+            
             RepositoryLifecycleResult<TModel> lifecycle;
             try
             {
                 lifecycle =
-                    await _processLifecycle(upsertEntity, model, lifecycleStage, userId);
+                    await _processLifecycle(repositoryAction);
             }
             catch (RepositoryLifecycleException exc)
             {
@@ -237,28 +208,28 @@ namespace Airslip.Common.Repository.Implementations
         /// <returns>A response model containing any validation results with previous version of the model if successfully deleted</returns>
         public async Task<RepositoryActionResultModel<TModel>> Delete(string id, string? userId = null)
         {
-            // Could add some validation to see if the user is allowed to delete this type of entity
-            //  as part of a rule based system...?
+            RepositoryAction<TEntity, TModel> repositoryAction = 
+                new(id, null, null, LifecycleStage.Delete, userId);
+            
+            IResponse? validationResult = 
+                await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
+
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
             
             // Now we load the current entity version
-            TEntity? currentEntity = await _context.GetEntity<TEntity>(id);
+            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
             
-            // Check to see if the entity was found within the context
-            if (currentEntity == null || currentEntity.EntityStatus == EntityStatus.Deleted)
-            {
-                // If not, return a not found message
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
-                );
-            }
+            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
+
+            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
+                return failedEntityValidation;
 
             RepositoryLifecycleResult<TModel> lifecycle;
             try
             {
                 lifecycle =
-                    await _processLifecycle(currentEntity, null, LifecycleStage.Delete, userId);
+                    await _processLifecycle(repositoryAction);
             }
             catch (RepositoryLifecycleException exc)
             {
@@ -286,84 +257,85 @@ namespace Airslip.Common.Repository.Implementations
         {
             // Could add some validation to see if the user is allowed to delete this type of entity
             //  as part of a rule based system...?
+            RepositoryAction<TEntity, TModel> repositoryAction = 
+                new(id, null, null, LifecycleStage.Get, null);
             
-            // Now we load the current entity version
-            TEntity? currentEntity = await _context.GetEntity<TEntity>(id);
+            IResponse? validationResult = 
+                await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
+
+            if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+                return failedModelValidation;
             
-            // Check to see if the entity was found within the context
-            if (currentEntity == null || currentEntity.EntityStatus == EntityStatus.Deleted)
-            {
-                // If not, return a not found message
-                return new FailedActionResultModel<TModel>
-                (
-                    ErrorCodes.NotFound,
-                    ResultType.NotFound
-                );
-            }
+            repositoryAction
+                .SetEntity(await _context.GetEntity<TEntity>(id));
             
-            // If we have a search formatter we can use it here to populate any additional data
-            currentEntity = _repositoryLifecycle.PostProcess(currentEntity, LifecycleStage.Get);
-            
-            // Map the entity
-            TModel newModel = _mapper.Create(currentEntity);
+            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
+
+            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
+                return failedEntityValidation;
             
             // If we have a search formatter we can use it here to populate any additional data
-            newModel = await _repositoryLifecycle.PostProcessModel(newModel, LifecycleStage.Get);
+            repositoryAction
+                .SetEntity(_repositoryLifecycle.PostProcess(repositoryAction));
+            repositoryAction
+                .SetModel(_mapper.Create(repositoryAction.Entity));
+            repositoryAction
+                .SetModel(await _repositoryLifecycle.PostProcessModel(repositoryAction));
             
             // Create a result containing old and new version, and return
             return new SuccessfulActionResultModel<TModel>
             (
-                newModel
+                repositoryAction.Model
             );
         }
 
-        private Task<RepositoryLifecycleResult<TModel>> _processLifecycle(TEntity? entity, TModel? model,
-            LifecycleStage lifecycleStage, string? userId)
+        private Task<RepositoryLifecycleResult<TModel>> _processLifecycle(RepositoryAction<TEntity, TModel> repositoryAction)
         {
             // Validate the request
-            if (entity == null && model == null) 
+            if (repositoryAction.Entity == null && repositoryAction.Model == null) 
                 throw new ArgumentException("Invalid parameter combination");
-            if (model == null && lifecycleStage != LifecycleStage.Delete) 
+            if (repositoryAction.Model == null && repositoryAction.LifecycleStage != LifecycleStage.Delete) 
                 throw new ArgumentException("Invalid parameter combination");
-            if (entity == null && lifecycleStage != LifecycleStage.Create) 
+            if (repositoryAction.Entity == null && repositoryAction.LifecycleStage != LifecycleStage.Create) 
                 throw new ArgumentException("Invalid parameter combination");
 
-            return _processLifecycleAsync(entity, model, lifecycleStage, userId);
+            return _processLifecycleAsync(repositoryAction);
         }
 
-        private async Task<RepositoryLifecycleResult<TModel>> _processLifecycleAsync(TEntity? entity, TModel? model,
-            LifecycleStage lifecycleStage, string? userId)
+        private async Task<RepositoryLifecycleResult<TModel>> _processLifecycleAsync
+            (RepositoryAction<TEntity, TModel> repositoryAction)
         {
             // Create a representation as it is today
-            TModel? previousModel = lifecycleStage == LifecycleStage.Create ? null : _mapper.Create(entity);
+            TModel? previousModel = repositoryAction.LifecycleStage == LifecycleStage.Create ? null : 
+                _mapper.Create(repositoryAction.Entity);
 
             // Update from the model
-            if (model != null)
+            if (repositoryAction.Model != null)
             {
-                entity = 
-                    lifecycleStage == LifecycleStage.Create ? 
-                        _mapper.Create<TEntity>(model) : 
-                        _mapper.Update(model, entity);
+                repositoryAction.SetEntity(repositoryAction.LifecycleStage == LifecycleStage.Create
+                        ? _mapper.Create<TEntity>(repositoryAction.Model)
+                        : _mapper.Update(repositoryAction.Model, repositoryAction.Entity));
             }
-            
+
             // Lifecycle
-            entity = _repositoryLifecycle.PreProcess(entity!, lifecycleStage, userId);
+            repositoryAction
+                .SetEntity(_repositoryLifecycle.PreProcess(repositoryAction));
             
             // Update in the context
-            await _context.UpsertEntity(entity);
+            await _context.UpsertEntity(repositoryAction.Entity!);
+            
+            repositoryAction
+                .SetEntity(_repositoryLifecycle.PostProcess(repositoryAction));
+            
+            repositoryAction
+                .SetModel(_mapper.Create(repositoryAction.Entity));
             
             // Lifecycle
-            entity = _repositoryLifecycle.PostProcess(entity, lifecycleStage, userId);
-            
-            // Build model based on created entity
-            TModel currentModel = _mapper.Create(entity);
-            
-            // Lifecycle
-            await _repositoryLifecycle.PostProcessModel(currentModel, lifecycleStage);
+            await _repositoryLifecycle.PostProcessModel(repositoryAction);
 
             return new RepositoryLifecycleResult<TModel>
             {
-                CurrentModel = currentModel,
+                CurrentModel = repositoryAction.Model,
                 PreviousModel = previousModel
             };
         }

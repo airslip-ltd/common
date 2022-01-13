@@ -1,7 +1,8 @@
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.Consent.Entities;
-using Airslip.Common.Services.Consent.Enums;
 using Airslip.Common.Services.Consent.Interfaces;
+using Airslip.Common.Services.Consent.Models;
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using Airslip.Common.Utilities.Extensions;
 using Serilog;

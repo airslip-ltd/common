@@ -1,13 +1,12 @@
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
-using Airslip.Common.Services.Consent.Enums;
-using Airslip.Common.Services.Consent.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using JetBrains.Annotations;
 using System;
 
-namespace Airslip.Common.Services.Consent.Implementations
+namespace Airslip.Common.Services.Consent.Models
 {
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class IncomingTransactionModel : IModelWithOwnership, IFromDataSource

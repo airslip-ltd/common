@@ -13,8 +13,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Airslip.Common.Repository.Types" Version="6.0.0" />
-		<PackageReference Include="Airslip.Common.Types" Version="6.0.0" />
+		<PackageReference Include="Airslip.Common.Repository.Types" Version="6.0.1" />
+		<PackageReference Include="Airslip.Common.Types" Version="6.0.1" />
 		<PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
 	</ItemGroup>
 	
