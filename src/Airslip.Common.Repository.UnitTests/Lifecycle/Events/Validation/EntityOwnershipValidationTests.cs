@@ -19,8 +19,8 @@ public class EntityOwnershipValidationTests
 {
     [Theory]
     [InlineData(LifecycleStage.Update, true, "my-entity-id", "my-user-id", AirslipUserType.Merchant, 0, null)]
-    [InlineData(LifecycleStage.Update, true, "not-my-entity-id", "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipNotVerified)]
-    [InlineData(LifecycleStage.Update, true, null, "my-user-id", AirslipUserType.Standard, 1, ErrorMessages.OwnershipNotVerified)]
+    [InlineData(LifecycleStage.Update, true, "not-my-entity-id", "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipCannotBeVerified)]
+    [InlineData(LifecycleStage.Update, true, null, "my-user-id", AirslipUserType.Standard, 1, ErrorMessages.OwnershipCannotBeVerified)]
     [InlineData(LifecycleStage.Update, true, "my-entity-id", "not-my-user-id", AirslipUserType.Merchant, 0, null)]
     [InlineData(LifecycleStage.Create, true, "my-entity-id", "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Get, true, "my-entity-id", "my-user-id", AirslipUserType.Merchant, 0, null)]
@@ -59,8 +59,8 @@ public class EntityOwnershipValidationTests
     }
     
     [Theory]
-    [InlineData(LifecycleStage.Update, true, "my-entity-id", "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipNotVerified)]
-    [InlineData(LifecycleStage.Update, true, null, "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipNotVerified)]
+    [InlineData(LifecycleStage.Update, true, "my-entity-id", "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipCannotBeVerified)]
+    [InlineData(LifecycleStage.Update, true, null, "my-user-id", AirslipUserType.Merchant, 1, ErrorMessages.OwnershipCannotBeVerified)]
     [InlineData(LifecycleStage.Update, true, null, "my-user-id", AirslipUserType.Standard, 0, null)]
     [InlineData(LifecycleStage.Create, true, null, "my-user-id", AirslipUserType.Standard, 1, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Get, true, null, "my-user-id", AirslipUserType.Standard, 0, null)]

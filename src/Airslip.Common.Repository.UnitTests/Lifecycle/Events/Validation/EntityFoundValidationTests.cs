@@ -15,7 +15,7 @@ namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events;
 public class EntityFoundValidationTests
 {
     [Theory]
-    [InlineData(LifecycleStage.Update, false, 1, ErrorMessages.EntityNotFound)]
+    [InlineData(LifecycleStage.Update, false, 1, ErrorMessages.NotFound)]
     [InlineData(LifecycleStage.Update, true, 0, null)]
     [InlineData(LifecycleStage.Create, false, 2, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Get, true, 0, null)]

@@ -87,13 +87,10 @@ namespace Airslip.Common.Repository.Implementations
 
             foreach (IValidationEvent<TEntity, TModel> validator in validators)
             {
-                List<ValidationResultMessageModel> validationResult = await validator.Validate(repositoryAction);
+                List<ValidationResultMessageModel> validationResult = await validator
+                    .Validate(repositoryAction);
                 
-                validationResult.ForEach(o =>
-                {
-                    (string fieldName, string message) = o;
-                    result.AddMessage(fieldName, message);
-                });
+                result.Results.AddRange(validationResult);
             }
             
             return result;

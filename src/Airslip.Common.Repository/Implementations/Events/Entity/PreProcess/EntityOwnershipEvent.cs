@@ -32,7 +32,7 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity.PreProcess
             
             if (_userService.AirslipUserType is null)
             {
-                throw new RepositoryLifecycleException(ErrorCodes.OwnershipCannotBeVerified, false);
+                throw new RepositoryLifecycleException(ErrorCodes.VerificationFailed, false);
             }
                 
             entityWithOwnership.AirslipUserType =

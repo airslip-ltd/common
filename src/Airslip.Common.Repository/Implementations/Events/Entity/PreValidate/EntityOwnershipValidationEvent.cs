@@ -34,7 +34,10 @@ public class EntityOwnershipValidationEvent<TEntity, TModel> : IEntityPreValidat
         if (!entityWithOwnership.CanView(_userService))
         {
             result.Add(new ValidationResultMessageModel(nameof(IEntityWithOwnership.EntityId), 
-                ErrorMessages.OwnershipNotVerified));
+                ErrorMessages.OwnershipCannotBeVerified)
+            {
+                ErrorCode = ErrorCodes.VerificationFailed
+            });
         }
 
         return Task.FromResult(result);

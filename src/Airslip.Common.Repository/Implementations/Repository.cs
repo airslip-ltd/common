@@ -7,6 +7,7 @@ using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Types.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Implementations
@@ -89,10 +90,25 @@ namespace Airslip.Common.Repository.Implementations
             // Return a new result model if validation has failed
             if (!validationResult.IsValid)
             {
+                string errorCode = ErrorCodes.ValidationFailed;
+                ResultType resultType = ResultType.FailedValidation;
+
+                // Prioritise certain error codes...
+                if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.NotFound))
+                {
+                    errorCode = ErrorCodes.NotFound;
+                    resultType = ResultType.NotFound;
+                }
+                if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.VerificationFailed))
+                {
+                    errorCode = ErrorCodes.VerificationFailed;
+                    resultType = ResultType.FailedVerification;
+                }
+                
                 return new FailedActionResultModel<TModel>
                 (
-                    ErrorCodes.ValidationFailed,
-                    ResultType.FailedValidation,
+                    errorCode,
+                    resultType,
                     repositoryAction.Model,
                     ValidationResult: validationResult
                 );
