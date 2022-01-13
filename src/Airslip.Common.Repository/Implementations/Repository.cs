@@ -77,83 +77,6 @@ public class Repository<TEntity, TModel> : IRepository<TEntity, TModel>
             CurrentVersion = lifecycle.CurrentModel
         };
     }
-
-    private static async Task<IResponse?> _executeValidation(
-        Func<RepositoryAction<TEntity, TModel>, Task<ValidationResultModel>> validationFunction, 
-        RepositoryAction<TEntity, TModel> repositoryAction)
-    {
-        ValidationResultModel validationResult = await validationFunction(repositoryAction);
-            
-        // Return a new result model if validation has failed
-        if (!validationResult.IsValid)
-        {
-            string errorCode = ErrorCodes.ValidationFailed;
-            ResultType resultType = ResultType.FailedValidation;
-
-            // Prioritise certain error codes...
-            if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.NotFound))
-            {
-                errorCode = ErrorCodes.NotFound;
-                resultType = ResultType.NotFound;
-            }
-            if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.VerificationFailed))
-            {
-                errorCode = ErrorCodes.VerificationFailed;
-                resultType = ResultType.FailedVerification;
-            }
-                
-            return new FailedActionResultModel<TModel>
-            (
-                errorCode,
-                resultType,
-                repositoryAction.Model,
-                ValidationResult: validationResult
-            );
-        }
-
-        return null;
-    }
-
-    private async Task<IResponse> _executeRepositoryAction
-        (RepositoryAction<TEntity, TModel> repositoryAction)
-    {
-        IResponse? validationResult = 
-            await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
-
-        if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
-            return failedModelValidation;
-            
-        // Now we load the current entity version
-        if (repositoryAction.Id is not null)
-        {
-            repositoryAction.SetEntity(await _context
-                .GetEntity<TEntity>(repositoryAction.Id));
-
-            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
-                
-            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
-                return failedEntityValidation;
-        }
-
-        RepositoryLifecycleResult<TModel> lifecycle;
-        try
-        {
-            lifecycle =
-                await _processLifecycle(repositoryAction);
-        }
-        catch (RepositoryLifecycleException exc)
-        {
-            // If not, return a not found message
-            return new FailedActionResultModel<TModel>
-            (
-                exc.ErrorCode,
-                ResultType.FailedVerification
-            );
-        }
-
-        return lifecycle;
-    }
-        
         
     /// <summary>
     /// Updates an existing entry in the context
@@ -164,22 +87,7 @@ public class Repository<TEntity, TModel> : IRepository<TEntity, TModel>
     /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
     public async Task<RepositoryActionResultModel<TModel>> Update(string id, TModel model, string? userId = null)
     {
-        RepositoryAction<TEntity, TModel> repositoryAction = 
-            new(id, null, model, LifecycleStage.Update, userId);
-            
-        IResponse repositoryActionResult = await _executeRepositoryAction(repositoryAction);
-
-        return repositoryActionResult switch
-        {
-            RepositoryLifecycleResult<TModel> lifecycle => new SuccessfulActionResultModel<TModel>
-            (
-                PreviousVersion: lifecycle.PreviousModel,
-                CurrentVersion: lifecycle.CurrentModel
-            ),
-            FailedActionResultModel<TModel> failedAction => failedAction,
-            _ => throw new ArgumentOutOfRangeException(nameof(repositoryActionResult), 
-                "Unsupported result type")
-        };
+        return await _upsert(id, model, userId, false);
     }
 
     /// <summary>
@@ -191,45 +99,9 @@ public class Repository<TEntity, TModel> : IRepository<TEntity, TModel>
     /// <returns>A response model containing any validation results with previous and current versions of the model if successfully updated</returns>
     public async Task<RepositoryActionResultModel<TModel>> Upsert(string id, TModel model, string? userId = null)
     {
-        // Could add some validation to see if the user is allowed to create this type of entity
-        //  as part of a rule based system...?
-        RepositoryAction<TEntity, TModel> repositoryAction = 
-            new(id, null, model, LifecycleStage.Update, userId);
-            
-        // Validate the incoming model against the registered validator
-        IResponse? validationResult = await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
-
-        if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
-            return failedModelValidation;
-            
-        // Now we load the current entity version
-        repositoryAction.SetEntity(await _context.GetEntity<TEntity>(id));
-        repositoryAction.SetLifecycle(repositoryAction.Entity == null ? LifecycleStage.Create : LifecycleStage.Update);
-            
-        RepositoryLifecycleResult<TModel> lifecycle;
-        try
-        {
-            lifecycle =
-                await _processLifecycle(repositoryAction);
-        }
-        catch (RepositoryLifecycleException exc)
-        {
-            // If not, return a not found message
-            return new FailedActionResultModel<TModel>
-            (
-                exc.ErrorCode,
-                ResultType.FailedVerification
-            );
-        }
-            
-        // Create a result containing old and new version, and return
-        return new SuccessfulActionResultModel<TModel>
-        (
-            PreviousVersion: lifecycle.PreviousModel,
-            CurrentVersion: lifecycle.CurrentModel
-        );
+        return await _upsert(id, model, userId, true);
     }
-
+    
     /// <summary>
     /// Marks an existing entry as deleted
     /// </summary>
@@ -345,6 +217,103 @@ public class Repository<TEntity, TModel> : IRepository<TEntity, TModel>
             CurrentModel = repositoryAction.Model,
             PreviousModel = previousModel
         };
+    }
+    
+    private async Task<RepositoryActionResultModel<TModel>> _upsert(string id, TModel model, string? userId = null, 
+        bool allowCreation = true)
+    {
+        // Could add some validation to see if the user is allowed to create this type of entity
+        //  as part of a rule based system...?
+        RepositoryAction<TEntity, TModel> repositoryAction = 
+            new(id, null, model, LifecycleStage.Update, userId);
+            
+        IResponse repositoryActionResult = await _executeRepositoryAction(repositoryAction, allowCreation);
+
+        return repositoryActionResult switch
+        {
+            RepositoryLifecycleResult<TModel> lifecycle => new SuccessfulActionResultModel<TModel>
+            (
+                PreviousVersion: lifecycle.PreviousModel,
+                CurrentVersion: lifecycle.CurrentModel
+            ),
+            FailedActionResultModel<TModel> failedAction => failedAction,
+            _ => throw new ArgumentOutOfRangeException(nameof(repositoryActionResult), 
+                "Unsupported result type")
+        };
+    }
+
+    private static async Task<IResponse?> _executeValidation(
+        Func<RepositoryAction<TEntity, TModel>, Task<ValidationResultModel>> validationFunction, 
+        RepositoryAction<TEntity, TModel> repositoryAction)
+    {
+        ValidationResultModel validationResult = await validationFunction(repositoryAction);
+            
+        // Return a new result model if validation has failed
+        if (validationResult.IsValid) return null;
+        
+        string errorCode = ErrorCodes.ValidationFailed;
+        ResultType resultType = ResultType.FailedValidation;
+
+        // Prioritise certain error codes...
+        if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.NotFound))
+        {
+            errorCode = ErrorCodes.NotFound;
+            resultType = ResultType.NotFound;
+        }
+        if (validationResult.Results.Any(o => o.ErrorCode is ErrorCodes.VerificationFailed))
+        {
+            errorCode = ErrorCodes.VerificationFailed;
+            resultType = ResultType.FailedVerification;
+        }
+                
+        return new FailedActionResultModel<TModel>
+        (
+            errorCode,
+            resultType,
+            repositoryAction.Model,
+            ValidationResult: validationResult
+        );
+    }
+
+    private async Task<IResponse> _executeRepositoryAction
+        (RepositoryAction<TEntity, TModel> repositoryAction, bool allowCreation = false)
+    {
+        IResponse? validationResult = 
+            await _executeValidation(_repositoryLifecycle.PreValidateModel, repositoryAction);
+
+        if (validationResult is FailedActionResultModel<TModel> failedModelValidation) 
+            return failedModelValidation;
+            
+        // Now we load the current entity version
+        if (repositoryAction.Id is not null)
+        {
+            repositoryAction.SetEntity(await _context.GetEntity<TEntity>(repositoryAction.Id));
+            if (allowCreation)
+                repositoryAction.SetLifecycle(repositoryAction.Entity == null ? LifecycleStage.Create : LifecycleStage.Update);
+            
+            validationResult = await _executeValidation(_repositoryLifecycle.PreValidateEntity, repositoryAction);
+                
+            if (validationResult is FailedActionResultModel<TModel> failedEntityValidation) 
+                return failedEntityValidation;
+        }
+
+        RepositoryLifecycleResult<TModel> lifecycle;
+        try
+        {
+            lifecycle =
+                await _processLifecycle(repositoryAction);
+        }
+        catch (RepositoryLifecycleException exc)
+        {
+            // If not, return a not found message
+            return new FailedActionResultModel<TModel>
+            (
+                exc.ErrorCode,
+                ResultType.FailedVerification
+            );
+        }
+
+        return lifecycle;
     }
 }
 
