@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Airslip.Common.Repository.Types.Models
 {
     public class ValidationResultModel
     {
-        public bool IsValid { get; private set; } = true; // Default to true
+        public bool IsValid => !Results.Any();
 
         public List<ValidationResultMessageModel> Results { get; } = new();
 
@@ -12,9 +13,6 @@ namespace Airslip.Common.Repository.Types.Models
         {
             Results
                 .Add(new ValidationResultMessageModel(fieldName, message));
-
-            // Assume error at this stage
-            IsValid = false;
         }
     }
 }
