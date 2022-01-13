@@ -9,53 +9,52 @@ using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Airslip.Common.Repository.Extensions
+namespace Airslip.Common.Repository.Extensions;
+
+public static class RepositoryExtensions
 {
-    public static class RepositoryExtensions
+    public static bool IsActive(this EntityStatus entityStatus) 
+        => entityStatus == EntityStatus.Active;
+        
+    public static ErrorResponses ToUnsuccessfulResponse<TModel>(
+        this RepositoryActionResultModel<TModel> result, string errorCode = "400") where TModel : class, IModel
     {
-        public static bool IsActive(this EntityStatus entityStatus) 
-            => entityStatus == EntityStatus.Active;
-        
-        public static ErrorResponses ToUnsuccessfulResponse<TModel>(
-            this RepositoryActionResultModel<TModel> result, string errorCode = "400") where TModel : class, IModel
-        {
-            ICollection<ErrorResponse> errors = result.ValidationResult!.Results
-                .Select(v => new ErrorResponse(errorCode, v.Message))
-                .ToList();
+        ICollection<ErrorResponse> errors = result.ValidationResult!.Results
+            .Select(v => new ErrorResponse(errorCode, v.Message))
+            .ToList();
 
-            return new ErrorResponses(errors);
-        }
+        return new ErrorResponses(errors);
+    }
 
-        public static bool CanView<TEntity>(this TEntity entity, IUserContext userService)
-            where TEntity: class, IEntityWithOwnership
-        {
-            if (userService.AirslipUserType is null) return false;
-            if (userService.UserId is null) return false;
-            if (entity.AirslipUserType != userService.AirslipUserType) return false;
-            if (entity.AirslipUserType == AirslipUserType.Standard && entity.UserId != userService.UserId) return false;
-            if (entity.AirslipUserType != AirslipUserType.Standard && entity.EntityId != userService.EntityId) return false;
+    public static bool CanView<TEntity>(this TEntity entity, IUserContext userService)
+        where TEntity: class, IEntityWithOwnership
+    {
+        if (userService.AirslipUserType is null) return false;
+        if (userService.UserId is null) return false;
+        if (entity.AirslipUserType != userService.AirslipUserType) return false;
+        if (entity.AirslipUserType == AirslipUserType.Standard && entity.UserId != userService.UserId) return false;
+        if (entity.AirslipUserType != AirslipUserType.Standard && entity.EntityId != userService.EntityId) return false;
 
-            return true;
-        }
+        return true;
+    }
 
-        public static List<ValidationResultMessageModel> CheckApplies<TEntity, TModel>(this RepositoryAction<TEntity, TModel> repositoryAction, 
-            IEnumerable<LifecycleStage> appliesTo) 
-            where TEntity : class, IEntity 
-            where TModel : class, IModel
-        {
-            List<ValidationResultMessageModel> result = new();
+    public static List<ValidationResultMessageModel> CheckApplies<TEntity, TModel>(this RepositoryAction<TEntity, TModel> repositoryAction, 
+        IEnumerable<LifecycleStage> appliesTo) 
+        where TEntity : class, IEntity 
+        where TModel : class, IModel
+    {
+        List<ValidationResultMessageModel> result = new();
             
-            if (!appliesTo.Contains(repositoryAction.LifecycleStage)) 
-                result.Add(new ValidationResultMessageModel(nameof(repositoryAction.LifecycleStage), 
-                    ErrorMessages.LifecycleEventDoesntApply));
+        if (!appliesTo.Contains(repositoryAction.LifecycleStage)) 
+            result.Add(new ValidationResultMessageModel(nameof(repositoryAction.LifecycleStage), 
+                ErrorMessages.LifecycleEventDoesntApply));
 
-            return result;
-        }
+        return result;
+    }
         
-        public static bool CheckApplies(this LifecycleStage lifecycleStage, 
-            IEnumerable<LifecycleStage> appliesTo) 
-        {
-            return appliesTo.Contains(lifecycleStage); 
-        }
+    public static bool CheckApplies(this LifecycleStage lifecycleStage, 
+        IEnumerable<LifecycleStage> appliesTo) 
+    {
+        return appliesTo.Contains(lifecycleStage); 
     }
 }

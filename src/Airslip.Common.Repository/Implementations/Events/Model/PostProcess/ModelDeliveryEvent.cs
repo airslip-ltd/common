@@ -5,31 +5,30 @@ using Airslip.Common.Repository.Types.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.Repository.Implementations.Events.Model.PostProcess
+namespace Airslip.Common.Repository.Implementations.Events.Model.PostProcess;
+
+public class ModelDeliveryEvent<TModel> : IModelPostProcessEvent<TModel> 
+    where TModel : class, IModel
 {
-    public class ModelDeliveryEvent<TModel> : IModelPostProcessEvent<TModel> 
-        where TModel : class, IModel
+    private readonly IEnumerable<IModelDeliveryService<TModel>> _deliveryServices;
+
+    public ModelDeliveryEvent(IEnumerable<IModelDeliveryService<TModel>> deliveryServices)
     {
-        private readonly IEnumerable<IModelDeliveryService<TModel>> _deliveryServices;
+        _deliveryServices = deliveryServices;
+    }
 
-        public ModelDeliveryEvent(IEnumerable<IModelDeliveryService<TModel>> deliveryServices)
-        {
-            _deliveryServices = deliveryServices;
-        }
+    public IEnumerable<LifecycleStage> AppliesTo { get; } = new[]
+        {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
 
-        public IEnumerable<LifecycleStage> AppliesTo { get; } = new[]
-            {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
-
-        public async Task<TModel> Execute(TModel model, LifecycleStage lifecycleStage)
-        {
-            if (!lifecycleStage.CheckApplies(AppliesTo)) return model;
+    public async Task<TModel> Execute(TModel model, LifecycleStage lifecycleStage)
+    {
+        if (!lifecycleStage.CheckApplies(AppliesTo)) return model;
             
-            foreach (IModelDeliveryService<TModel> modelDeliveryService in _deliveryServices)
-            {
-                await modelDeliveryService.Deliver(model);
-            }
-
-            return model;
+        foreach (IModelDeliveryService<TModel> modelDeliveryService in _deliveryServices)
+        {
+            await modelDeliveryService.Deliver(model);
         }
+
+        return model;
     }
 }

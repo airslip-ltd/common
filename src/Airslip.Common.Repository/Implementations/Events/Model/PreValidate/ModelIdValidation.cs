@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Implementations.Events.Model.PreValidate;
 
-
-
 public class ModelIdValidation<TEntity, TModel> : IModelPreValidateEvent<TEntity, TModel> 
     where TModel : class, IModel 
     where TEntity : class, IEntity

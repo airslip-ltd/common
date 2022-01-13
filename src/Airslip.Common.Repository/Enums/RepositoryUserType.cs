@@ -1,10 +1,9 @@
-namespace Airslip.Common.Repository.Enums
+namespace Airslip.Common.Repository.Enums;
+
+public enum RepositoryUserType
 {
-    public enum RepositoryUserType
-    {
-        TokenBased,
-        Null,
-        Manual,
-        Service
-    }
+    TokenBased,
+    Null,
+    Manual,
+    Service
 }
