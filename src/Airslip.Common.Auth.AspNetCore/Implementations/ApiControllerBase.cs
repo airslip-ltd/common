@@ -20,6 +20,7 @@ using System.Net;
 
 namespace Airslip.Common.Auth.AspNetCore.Implementations
 {
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public class ApiControllerBase : ControllerBase
     {
         protected readonly string BaseUri;
@@ -141,7 +142,18 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             };
         }
 
+        [Obsolete]
         protected IActionResult CommonResponseHandler<TExpectedType>(IResponse? response) 
+            where TExpectedType : class, IResponse
+        {
+            return response switch
+            {
+                null => BadRequest(),
+                _ => HandleResponse<TExpectedType>(response)
+            };
+        }
+        
+        protected IActionResult HandleResponse<TExpectedType>(IResponse response) 
             where TExpectedType : class, IResponse
         {
             return response switch
@@ -149,7 +161,6 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
                 TExpectedType r => Ok(r),
                 NotFoundResponse r => NotFound(r),
                 IFail r => BadRequest(r),
-                null => BadRequest(),
                 _ => throw new InvalidOperationException()
             };
         }
