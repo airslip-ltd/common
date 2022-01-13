@@ -40,17 +40,17 @@ public class EntityBasicAuditTests
         {
             case LifecycleStage.Update:
                 updatedEntity.AuditInformation.Should().NotBeNull();
-                updatedEntity.AuditInformation.CreatedByUserId.Should().Be(userContext.Object.UserId);
+                updatedEntity.AuditInformation!.CreatedByUserId.Should().Be(userContext.Object.UserId);
                 updatedEntity.AuditInformation.UpdatedByUserId.Should().Be(userContext.Object.UserId);
                 updatedEntity.AuditInformation.DateUpdated.Should().NotBeNull();
                 break;
             case LifecycleStage.Create:
                 updatedEntity.AuditInformation.Should().NotBeNull();
-                updatedEntity.AuditInformation.CreatedByUserId.Should().Be(userContext.Object.UserId);
+                updatedEntity.AuditInformation!.CreatedByUserId.Should().Be(userContext.Object.UserId);
                 break;
             case LifecycleStage.Delete:
                 updatedEntity.AuditInformation.Should().NotBeNull();
-                updatedEntity.AuditInformation.DeletedByUserId.Should().Be(userContext.Object.UserId);
+                updatedEntity.AuditInformation!.DeletedByUserId.Should().Be(userContext.Object.UserId);
                 updatedEntity.AuditInformation.DateDeleted.Should().NotBeNull();
                 break;
             case LifecycleStage.Get:

@@ -53,18 +53,23 @@ namespace Airslip.Common.Repository.Implementations
                     .Execute(current, repositoryAction.LifecycleStage, repositoryAction.UserId));
         }
 
-        public async Task<TModel> PostProcessModel(RepositoryAction<TEntity,TModel> repositoryAction)
+        public Task<TModel> PostProcessModel(RepositoryAction<TEntity,TModel> repositoryAction)
         {
             if (repositoryAction.Model == null)
                 throw new ArgumentException("Model cannot be null", nameof(repositoryAction));
             
+            return _postProcessModel(repositoryAction.Model, repositoryAction.LifecycleStage);
+        }
+        
+        private async Task<TModel> _postProcessModel(TModel model, LifecycleStage lifecycleStage)
+        {
             foreach (IModelPostProcessEvent<TModel> postProcessEvent in _modelPostProcessEvents
-                         .Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage)))
+                         .Where(o => o.AppliesTo.Contains(lifecycleStage)))
             {
-                await postProcessEvent.Execute(repositoryAction.Model, repositoryAction.LifecycleStage);
+                await postProcessEvent.Execute(model, lifecycleStage);
             }
 
-            return repositoryAction.Model;
+            return model;
         }
 
         public Task<ValidationResultModel> PreValidateModel(RepositoryAction<TEntity, TModel> repositoryAction)
@@ -77,7 +82,8 @@ namespace Airslip.Common.Repository.Implementations
             return Validate(_entityPreValidateEvents, repositoryAction);
         }
 
-        private async Task<ValidationResultModel> Validate(IEnumerable<IValidationEvent<TEntity, TModel>> validationEvents, 
+        private static async Task<ValidationResultModel> Validate(
+            IEnumerable<IValidationEvent<TEntity, TModel>> validationEvents, 
             RepositoryAction<TEntity, TModel> repositoryAction)
         {
             ValidationResultModel result = new();
