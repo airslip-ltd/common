@@ -27,7 +27,10 @@ public class EntityFoundValidation<TEntity, TModel> : IEntityPreValidateEvent<TE
         {
             // If not, return a not found message
             result.Add(new ValidationResultMessageModel(nameof(repositoryAction.Entity.Id), 
-                ErrorMessages.EntityNotFound));
+                ErrorMessages.NotFound)
+            {
+                ErrorCode = ErrorCodes.NotFound
+            });
         }
 
         return Task.FromResult(result);

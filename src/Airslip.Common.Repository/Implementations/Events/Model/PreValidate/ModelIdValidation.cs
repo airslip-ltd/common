@@ -28,7 +28,10 @@ public class ModelIdValidation<TEntity, TModel> : IModelPreValidateEvent<TEntity
             !repositoryAction.Id.Equals(repositoryAction.Model.Id))
         {
             result.Add(new ValidationResultMessageModel(nameof(repositoryAction.Id), 
-                ErrorMessages.IdFailedVerification));
+                ErrorMessages.IdFailedVerification)
+            {
+                ErrorCode = ErrorCodes.VerificationFailed
+            });
         }
 
         return Task.FromResult(result);

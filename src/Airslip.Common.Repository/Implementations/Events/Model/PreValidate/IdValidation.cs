@@ -24,7 +24,10 @@ public class IdRequiredValidation<TEntity, TModel> : IModelPreValidateEvent<TEnt
         if (repositoryAction.Id is null)
         {
             result.Add(new ValidationResultMessageModel(nameof(repositoryAction.Id), 
-                ErrorMessages.IdFailedVerification));
+                ErrorMessages.IdFailedVerification)
+            {
+                ErrorCode = ErrorCodes.VerificationFailed
+            });
         }
 
         return Task.FromResult(result);

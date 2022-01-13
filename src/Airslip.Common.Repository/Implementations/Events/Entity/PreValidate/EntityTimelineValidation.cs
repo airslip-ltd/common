@@ -29,7 +29,10 @@ public class EntityTimelineValidation<TEntity, TModel> : IEntityPreValidateEvent
         // Return false if entity is newer than model
         if (dataSourceEntity.TimeStamp >= dataSourceModel.TimeStamp)
             result.Add(new ValidationResultMessageModel(nameof(IFromDataSource.TimeStamp),
-                ErrorMessages.ModelOutdated));
+                ErrorMessages.ModelOutdated)
+            {
+                ErrorCode = ErrorCodes.ModelOutdated
+            });
 
         return Task.FromResult(result);
     }
