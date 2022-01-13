@@ -8,49 +8,48 @@ using Airslip.Common.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Repository.Implementations.Events.Entity.PreProcess
+namespace Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
+
+public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity> 
+    where TEntity : class, IEntity
 {
-    public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity> 
-        where TEntity : class, IEntity
+    private readonly IUserContext _userService;
+
+    public EntityBasicAuditEvent(IUserContext userService)
     {
-        private readonly IUserContext _userService;
-
-        public EntityBasicAuditEvent(IUserContext userService)
-        {
-            _userService = userService;
-        }
+        _userService = userService;
+    }
         
-        public IEnumerable<LifecycleStage> AppliesTo => new[]
-            {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
+    public IEnumerable<LifecycleStage> AppliesTo => new[]
+        {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
         
-        public TEntity Execute(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
-        {
-            if (!lifecycleStage.CheckApplies(AppliesTo)) return entity;
+    public TEntity Execute(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
+    {
+        if (!lifecycleStage.CheckApplies(AppliesTo)) return entity;
             
-            entity.AuditInformation ??= new BasicAuditInformation
-            {
-                Id = CommonFunctions.GetId(),
-                DateCreated = DateTime.UtcNow, // Defaults for new records
-                CreatedByUserId = userId ?? _userService.UserId
-            };
+        entity.AuditInformation ??= new BasicAuditInformation
+        {
+            Id = CommonFunctions.GetId(),
+            DateCreated = DateTime.UtcNow, // Defaults for new records
+            CreatedByUserId = userId ?? _userService.UserId
+        };
 
-            switch (lifecycleStage)
-            {
-                case LifecycleStage.Create:
-                    entity.AuditInformation.DateCreated = DateTime.UtcNow;
-                    entity.AuditInformation.CreatedByUserId = userId ?? _userService.UserId;
-                    break;
-                case LifecycleStage.Update:
-                    entity.AuditInformation.DateUpdated = DateTime.UtcNow;
-                    entity.AuditInformation.UpdatedByUserId = userId ?? _userService.UserId;
-                    break;
-                case LifecycleStage.Delete:
-                    entity.AuditInformation.DateDeleted = DateTime.UtcNow;
-                    entity.AuditInformation.DeletedByUserId = userId ?? _userService.UserId;
-                    break;
-            }
-
-            return entity;
+        switch (lifecycleStage)
+        {
+            case LifecycleStage.Create:
+                entity.AuditInformation.DateCreated = DateTime.UtcNow;
+                entity.AuditInformation.CreatedByUserId = userId ?? _userService.UserId;
+                break;
+            case LifecycleStage.Update:
+                entity.AuditInformation.DateUpdated = DateTime.UtcNow;
+                entity.AuditInformation.UpdatedByUserId = userId ?? _userService.UserId;
+                break;
+            case LifecycleStage.Delete:
+                entity.AuditInformation.DateDeleted = DateTime.UtcNow;
+                entity.AuditInformation.DeletedByUserId = userId ?? _userService.UserId;
+                break;
         }
+
+        return entity;
     }
 }

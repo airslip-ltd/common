@@ -1,10 +1,9 @@
-namespace Airslip.Common.Repository.Enums
+namespace Airslip.Common.Repository.Enums;
+
+public enum LifecycleStage
 {
-    public enum LifecycleStage
-    {
-        Create,
-        Update,
-        Delete,
-        Get
-    }
+    Create,
+    Update,
+    Delete,
+    Get
 }
