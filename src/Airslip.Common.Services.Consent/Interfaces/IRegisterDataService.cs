@@ -1,5 +1,6 @@
 using Airslip.Common.Repository.Types.Interfaces;
-using Airslip.Common.Services.Consent.Enums;
+using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.Consent.Interfaces

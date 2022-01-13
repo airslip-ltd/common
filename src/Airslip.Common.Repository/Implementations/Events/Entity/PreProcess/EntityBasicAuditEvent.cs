@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Extensions;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Entities;
 using Airslip.Common.Repository.Types.Interfaces;
@@ -7,7 +8,7 @@ using Airslip.Common.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace Airslip.Common.Repository.Implementations.Events.Entity
+namespace Airslip.Common.Repository.Implementations.Events.Entity.PreProcess
 {
     public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity> 
         where TEntity : class, IEntity
@@ -18,13 +19,19 @@ namespace Airslip.Common.Repository.Implementations.Events.Entity
         {
             _userService = userService;
         }
+        
         public IEnumerable<LifecycleStage> AppliesTo => new[]
             {LifecycleStage.Create, LifecycleStage.Delete, LifecycleStage.Update};
+        
         public TEntity Execute(TEntity entity, LifecycleStage lifecycleStage, string? userId = null)
         {
+            if (!lifecycleStage.CheckApplies(AppliesTo)) return entity;
+            
             entity.AuditInformation ??= new BasicAuditInformation
             {
-                Id = CommonFunctions.GetId()
+                Id = CommonFunctions.GetId(),
+                DateCreated = DateTime.UtcNow, // Defaults for new records
+                CreatedByUserId = userId ?? _userService.UserId
             };
 
             switch (lifecycleStage)
