@@ -13,12 +13,15 @@ namespace Airslip.Common.Auth.Functions.Implementations
     {
         private readonly IApiKeyRequestDataHandler _requestDataHandler;
         private readonly ITokenDecodeService<ApiKeyToken> _decodeService;
+        private readonly IApiAccessRights _apiAccessRights;
 
         public ApiRequestAuthService(IApiKeyRequestDataHandler requestDataHandler,
-            ITokenDecodeService<ApiKeyToken> decodeService)
+            ITokenDecodeService<ApiKeyToken> decodeService,
+            IApiAccessRights apiAccessRights)
         {
             _requestDataHandler = requestDataHandler;
             _decodeService = decodeService;
+            _apiAccessRights = apiAccessRights;
         }
 
         public Task<KeyAuthenticationResult> Handle(HttpRequestData requestData)
@@ -39,12 +42,12 @@ namespace Airslip.Common.Auth.Functions.Implementations
             ApiKeyToken token = _decodeService.GetCurrentToken();
             
             // Validate against what is allowed in
-            bool succeeded = ApiAccessRights
+            bool succeeded = _apiAccessRights
                 .AccessDefinitions
                 .Where(o => o.Named is null || o.Named.Equals(functionNamed))
                 .Any(o => o.ValidateAccess(token));
             
-            return succeeded ? KeyAuthenticationResult.Fail("Api Key authentication failed") : authenticationResult;
+            return succeeded ? authenticationResult : KeyAuthenticationResult.Fail("Api Key authentication failed");
         }
     }
 }

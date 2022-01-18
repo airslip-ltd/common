@@ -28,6 +28,8 @@ namespace Airslip.Common.Auth.Functions.Extensions
         public static ApiAccessOptions AddAirslipFunctionAuth(this IServiceCollection services, 
             IConfiguration configuration, string? withEnvironment = null)
         {
+            ApiAccessRights apiAccessRights = new();
+            
             services
                 .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
                 .AddScoped<IApiRequestAuthService, ApiRequestAuthService>()
@@ -39,12 +41,13 @@ namespace Airslip.Common.Auth.Functions.Extensions
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
                 .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
                 .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>()
-                .AddScoped<IUserContext, ApiKeyTokenUserService>();
-
+                .AddScoped<IUserContext, ApiKeyTokenUserService>()
+                .AddSingleton<IApiAccessRights>(apiAccessRights);
             AirslipSchemeOptions.ThisEnvironment = services.GetEnvironment();
-            ApiAccessRights.AddFromSettings(configuration);
 
-            return new ApiAccessOptions(services);
+            apiAccessRights.AddFromSettings(configuration);
+
+            return new ApiAccessOptions(services, apiAccessRights);
         }
       
         internal static bool ValidateAccess(this ApiAccessDefinition accessDefinition, ApiKeyToken token)

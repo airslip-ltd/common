@@ -2,19 +2,19 @@
     "EncryptionSettings": {
         "PassPhraseToken": "ILovePaperlessReceipts"
     },
+    "TokenEncryptionSettings": {
+        "UseEncryption": true,
+        "Passphrase": "Hello"
+    },
+    "EnvironmentSettings": {
+        "EnvironmentName": "Development"
+    },
     "ApiAccessSettings": {
         "AllowedTypes": [
             "InternalApi"
         ],
         "AllowedEntities": [
-            "customer-portal"
+            "MyFileEntity"
         ]
-    },
-    "TokenEncryptionSettings": {
-        "UseEncryption": false,
-        "Passphrase": "Hello"
-    },
-    "EnvironmentSettings": {
-        "EnvironmentName": "Development"
     }
 }

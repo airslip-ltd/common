@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Airslip.Common.Auth.Functions.Data;
 
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-public record ApiAccessOptions(IServiceCollection Services)
+public record ApiAccessOptions(IServiceCollection Services, ApiAccessRights ApiAccessRights)
 {
     /// <summary>
     /// Add access rights to match on a string based name, this would
@@ -50,11 +50,17 @@ public record ApiAccessOptions(IServiceCollection Services)
     /// generally be a name given to a particular application and provided in the EntityId field of
     /// the ApiKey</param>
     /// <returns>An ApiAccessOptions class for chaining</returns>
-    public ApiAccessOptions AddNamedAccessRights(string named, AirslipUserType allowedType, string allowedEntity)
+    public ApiAccessOptions AddNamedAccessRights(string named, AirslipUserType? allowedType, string? allowedEntity)
     {
+        List<AirslipUserType> allowedTypes = new();
+        if (allowedType != null) allowedTypes.Add(allowedType.Value);
+        
+        List<string> allowedEntities = new();
+        if (allowedEntity != null) allowedEntities.Add(allowedEntity);
+        
         return AddNamedAccessRights(named,
-            new List<AirslipUserType> {allowedType},
-            new List<string> {allowedEntity});
+            allowedTypes,
+            allowedEntities);
     }
 
     /// <summary>
@@ -77,8 +83,8 @@ public record ApiAccessOptions(IServiceCollection Services)
     /// </summary>
     /// <param name="named">The name of the function being executed</param>
     /// <param name="allowedEntity">The entity allowed for this named function - this would
-    /// generally be a name given to a particular application and provided in the EntityId field of
-    /// the ApiKey</param>
+    ///     generally be a name given to a particular application and provided in the EntityId field of
+    ///     the ApiKey</param>
     /// <returns>An ApiAccessOptions class for chaining</returns>
     public ApiAccessOptions AddNamedAccessRights(string named, string allowedEntity)
     {
