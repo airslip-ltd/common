@@ -71,7 +71,7 @@ public class ApiRequestAuthServiceTests
         authResult.AuthResult.Should().Be(accessExpected ? AuthResult.Success : AuthResult.Fail);
     }
 
-    private IServiceProvider _generateProvider(string settingsFile, string? functionName,
+    private static IServiceProvider _generateProvider(string settingsFile, string? functionName,
         AirslipUserType? airslipUserType, string? entity)
     {
         IConfiguration config = OptionsMock.InitialiseConfiguration("Airslip.Common.Auth.Functions.Tests", 
