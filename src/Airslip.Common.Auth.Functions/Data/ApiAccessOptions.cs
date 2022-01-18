@@ -8,6 +8,22 @@ namespace Airslip.Common.Auth.Functions.Data;
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public record ApiAccessOptions(IServiceCollection Services, ApiAccessRights ApiAccessRights)
 {
+            
+    /// <summary>
+    /// Add access rights for use across all http functions  
+    /// </summary>
+    /// <param name="allowedTypes">The types allowed for this api</param>
+    /// <param name="allowedEntities">The entities allowed for this api - this would
+    /// generally be a name given to a particular application and provided in the EntityId field of
+    /// the ApiKey</param>
+    /// <returns>An ApiAccessOptions class for chaining</returns>
+    public ApiAccessOptions AddGeneralAccessRights(List<AirslipUserType> allowedTypes,
+        List<string> allowedEntities)
+    {
+        ApiAccessRights.AddGeneralAccessRights(allowedTypes, allowedEntities);
+        return this;
+    }
+    
     /// <summary>
     /// Add access rights to match on a string based name, this would
     /// generally be used to match for function names
@@ -22,21 +38,6 @@ public record ApiAccessOptions(IServiceCollection Services, ApiAccessRights ApiA
         List<string> allowedEntities)
     {
         ApiAccessRights.AddNamedAccessRights(named, allowedTypes, allowedEntities);
-        return this;
-    }
-            
-    /// <summary>
-    /// Add access rights for use across all http functions  
-    /// </summary>
-    /// <param name="allowedTypes">The types allowed for this api</param>
-    /// <param name="allowedEntities">The entities allowed for this api - this would
-    /// generally be a name given to a particular application and provided in the EntityId field of
-    /// the ApiKey</param>
-    /// <returns>An ApiAccessOptions class for chaining</returns>
-    public ApiAccessOptions AddGeneralAccessRights(List<AirslipUserType> allowedTypes,
-        List<string> allowedEntities)
-    {
-        ApiAccessRights.AddGeneralAccessRights(allowedTypes, allowedEntities);
         return this;
     }
 
