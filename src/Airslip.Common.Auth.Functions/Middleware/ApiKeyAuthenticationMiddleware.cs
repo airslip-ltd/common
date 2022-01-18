@@ -23,7 +23,8 @@ public class ApiKeyAuthenticationMiddleware : IFunctionsWorkerMiddleware
                 .InstanceServices
                 .GetService<IApiRequestAuthService>() ?? throw new NotImplementedException();
 
-            KeyAuthenticationResult authenticationResult = await requestHandler.Handle(httpRequestData);
+            KeyAuthenticationResult authenticationResult = await requestHandler.Handle(context.FunctionDefinition.Name, 
+                httpRequestData);
 
             context.Items.Add("authresult", authenticationResult);
         }

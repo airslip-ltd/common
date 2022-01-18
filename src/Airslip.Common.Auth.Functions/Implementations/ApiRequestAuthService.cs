@@ -1,9 +1,10 @@
-using Airslip.Common.Auth.Functions.Configuration;
+using Airslip.Common.Auth.Functions.Data;
+using Airslip.Common.Auth.Functions.Extensions;
 using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Auth.Interfaces;
 using Airslip.Common.Auth.Models;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.Extensions.Options;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Auth.Functions.Implementations
@@ -12,20 +13,22 @@ namespace Airslip.Common.Auth.Functions.Implementations
     {
         private readonly IApiKeyRequestDataHandler _requestDataHandler;
         private readonly ITokenDecodeService<ApiKeyToken> _decodeService;
-        private readonly ApiAccessSettings _settings;
 
         public ApiRequestAuthService(IApiKeyRequestDataHandler requestDataHandler,
-            ITokenDecodeService<ApiKeyToken> decodeService,
-            IOptions<ApiAccessSettings> options)
+            ITokenDecodeService<ApiKeyToken> decodeService)
         {
             _requestDataHandler = requestDataHandler;
             _decodeService = decodeService;
-            _settings = options.Value;
         }
 
-        public async Task<KeyAuthenticationResult> Handle(HttpRequestData requestData)
+        public Task<KeyAuthenticationResult> Handle(HttpRequestData requestData)
         {
-            var authenticationResult = await _requestDataHandler.Handle(requestData);
+            return Handle(string.Empty, requestData);
+        }
+
+        public async Task<KeyAuthenticationResult> Handle(string functionNamed, HttpRequestData requestData)
+        {
+            KeyAuthenticationResult authenticationResult = await _requestDataHandler.Handle(requestData);
             
             if (authenticationResult.AuthResult != AuthResult.Success)
             {
@@ -33,22 +36,15 @@ namespace Airslip.Common.Auth.Functions.Implementations
             }
 
             // Get the token
-            var token = _decodeService.GetCurrentToken();
+            ApiKeyToken token = _decodeService.GetCurrentToken();
             
             // Validate against what is allowed in
-            if (_settings.AllowedTypes.Count > 0 && !_settings
-                .AllowedTypes.Contains(token.AirslipUserType))
-            {
-                return KeyAuthenticationResult.Fail("Invalid User Type supplied");
-            }
+            bool succeeded = ApiAccessRights
+                .AccessDefinitions
+                .Where(o => o.Named is null || o.Named.Equals(functionNamed))
+                .Any(o => o.ValidateAccess(token));
             
-            if (_settings.AllowedEntities.Count > 0 && !_settings
-                .AllowedEntities.Contains(token.EntityId))
-            {
-                return KeyAuthenticationResult.Fail("Invalid Entity supplied");
-            }
-
-            return authenticationResult;
+            return succeeded ? KeyAuthenticationResult.Fail("Api Key authentication failed") : authenticationResult;
         }
     }
 }

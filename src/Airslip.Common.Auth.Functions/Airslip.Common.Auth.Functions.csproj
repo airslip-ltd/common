@@ -16,6 +16,7 @@
 		<PackageReference Include="Microsoft.Azure.Functions.Worker" Version="1.6.0" />
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     </ItemGroup>
 	
 	<ItemGroup>
