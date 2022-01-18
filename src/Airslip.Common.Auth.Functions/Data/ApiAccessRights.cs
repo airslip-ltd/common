@@ -1,4 +1,5 @@
 using Airslip.Common.Auth.Functions.Configuration;
+using Airslip.Common.Auth.Functions.Interfaces;
 using Airslip.Common.Types.Enums;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Configuration;
@@ -7,12 +8,12 @@ using System.Collections.Generic;
 namespace Airslip.Common.Auth.Functions.Data;
 
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-public static class ApiAccessRights
+public class ApiAccessRights : IApiAccessRights
 {
-    internal static List<ApiAccessDefinition> AccessDefinitions { get; } = new();
+    public List<ApiAccessDefinition> AccessDefinitions { get; } = new();
 
     // Legacy support for existing settings...
-    internal static void AddFromSettings(IConfiguration configuration)
+    public void AddFromSettings(IConfiguration configuration)
     {
         IConfigurationSection? configurationSection = configuration
             .GetSection(nameof(ApiAccessSettings));
@@ -25,13 +26,13 @@ public static class ApiAccessRights
                 .Add(new ApiAccessDefinition(apiSettings.AllowedTypes, apiSettings.AllowedEntities));
     }
 
-    internal static void AddNamedAccessRights(string named, List<AirslipUserType> allowedTypes,
+    public void AddNamedAccessRights(string named, List<AirslipUserType> allowedTypes,
         List<string> allowedEntities)
     {
         AccessDefinitions.Add(new ApiAccessDefinition(allowedTypes, allowedEntities, named));
     }
 
-    internal static void AddGeneralAccessRights(List<AirslipUserType> allowedTypes, List<string> allowedEntities)
+    public void AddGeneralAccessRights(List<AirslipUserType> allowedTypes, List<string> allowedEntities)
     {
         AccessDefinitions.Add(new ApiAccessDefinition(allowedTypes, allowedEntities));
     }
