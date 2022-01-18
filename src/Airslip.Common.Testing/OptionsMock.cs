@@ -9,20 +9,24 @@ namespace Airslip.Common.Testing
 {
     public static class OptionsMock
     {
-        public static IConfiguration? InitialiseConfiguration(string projectName)
+        public static IConfiguration? InitialiseConfiguration(string projectName, 
+            string subFolder = "", 
+            string fileName = "appsettings.json")
         {
             string? basePath = GetBasePath(projectName);
             
             if(basePath is null)
                 return null;
+
+            if (subFolder != string.Empty) basePath = Path.Combine(basePath, subFolder);
             
             return new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile(fileName)
                 .AddEnvironmentVariables()
                 .Build();
         }
-        
+
         public static string? GetBasePath(string projectName)
         {
             string currentDirectory  = Directory.GetCurrentDirectory();
