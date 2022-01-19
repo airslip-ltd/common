@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Airslip.Common.Types.Enums;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.MerchantTransactions

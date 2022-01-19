@@ -1,3 +1,4 @@
+using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using AutoMapper;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace Airslip.Common.MerchantTransactions
                 }));
 
             return _generatedRetailerApiV1Client
-                .CreateTransactionAsync(entityId, airslipUserType, userId, transactionOut);
+                .CreateTransactionAsync(entityId, airslipUserType.ToString(), userId, transactionOut);
         }
     }
 }

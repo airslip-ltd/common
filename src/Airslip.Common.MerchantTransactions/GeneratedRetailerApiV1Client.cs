@@ -24,7 +24,7 @@ namespace Airslip.Common.MerchantTransactions
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, AirslipUserType airslipUserType, string userId, Transaction body);
+        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, Transaction body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -32,7 +32,7 @@ namespace Airslip.Common.MerchantTransactions
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, AirslipUserType airslipUserType, string userId, Transaction body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, Transaction body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Ping operation to ensure service is contactable
@@ -69,7 +69,7 @@ namespace Airslip.Common.MerchantTransactions
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class GeneratedRetailerApiV1Client : MerchantIntegrationApi, IGeneratedRetailerApiV1Client
     {
-        private string _baseUrl = "https://airslip-dev-integration-functions-internal-app.azurewebsites.net";
+        private string _baseUrl = "http://localhost:7071";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
@@ -105,7 +105,7 @@ namespace Airslip.Common.MerchantTransactions
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, AirslipUserType airslipUserType, string userId, Transaction body)
+        public virtual System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, Transaction body)
         {
             return CreateTransactionAsync(entityId, airslipUserType, userId, body, System.Threading.CancellationToken.None);
         }
@@ -116,7 +116,7 @@ namespace Airslip.Common.MerchantTransactions
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, AirslipUserType airslipUserType, string userId, Transaction body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, Transaction body, System.Threading.CancellationToken cancellationToken)
         {
             if (entityId == null)
                 throw new System.ArgumentNullException("entityId");
@@ -951,26 +951,6 @@ namespace Airslip.Common.MerchantTransactions
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum AirslipUserType
-    {
-
-        _0 = 0,
-
-        _1 = 1,
-
-        _2 = 2,
-
-        _3 = 3,
-
-        _4 = 4,
-
-        _98 = 98,
-
-        _99 = 99,
 
     }
 
