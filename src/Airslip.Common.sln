@@ -86,6 +86,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.Sql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.Services.Handoff", "Airslip.Common.Services.Handoff\Airslip.Common.Services.Handoff.csproj", "{021C4B7E-EE19-46FB-898C-46390295A488}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airslip.Common.MerchantTransactions.CodeGen", "Airslip.Common.MerchantTransactions.CodeGen\Airslip.Common.MerchantTransactions.CodeGen.csproj", "{40C887D9-BE21-439D-974F-81AF712F8DCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -244,6 +246,10 @@ Global
 		{021C4B7E-EE19-46FB-898C-46390295A488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{021C4B7E-EE19-46FB-898C-46390295A488}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{021C4B7E-EE19-46FB-898C-46390295A488}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40C887D9-BE21-439D-974F-81AF712F8DCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40C887D9-BE21-439D-974F-81AF712F8DCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40C887D9-BE21-439D-974F-81AF712F8DCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40C887D9-BE21-439D-974F-81AF712F8DCE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ namespace Airslip.Common.MerchantTransactions
 {
     public abstract class MerchantIntegrationApi : IMerchantIntegrationApi
     {
-        public string ApiKeyToken { get; private set; } = String.Empty;
+        private string ApiKeyToken { get; set; } = String.Empty;
 
         public void SetApiKeyToken(string token)
         {
@@ -18,7 +18,7 @@ namespace Airslip.Common.MerchantTransactions
         // Called by implementing swagger client classes
         protected Task<HttpRequestMessage> CreateHttpRequestMessageAsync(CancellationToken cancellationToken)
         {
-            var msg = new HttpRequestMessage();
+            HttpRequestMessage msg = new();
             msg.Headers.Add(AirslipSchemeOptions.ApiKeyHeaderField, ApiKeyToken);
             return Task.FromResult(msg);
         }

@@ -35,13 +35,16 @@ namespace Airslip.Common.MerchantTransactions
                     if (httpClientFactory == null)
                         throw new ArgumentException("httpClientFactory not found");
 
-                    HttpClient? httpClient = httpClientFactory
+                    HttpClient httpClient = httpClientFactory
                         .CreateClient(nameof(GeneratedRetailerApiV1Client));
 
-                    return new GeneratedRetailerApiV1Client(httpClient)
+                    GeneratedRetailerApiV1Client client = new(httpClient)
                     {
                         BaseUrl = merchantTransactionsSettings.ToBaseUri()
                     };
+                    client.SetApiKeyToken(merchantTransactionsSettings.ApiKey);
+                    
+                    return client;
                 })
                 .AddScoped<IMerchantIntegrationService, MerchantIntegrationService>()
                 .AddHttpClient<GeneratedRetailerApiV1Client>(nameof(GeneratedRetailerApiV1Client))
