@@ -12,34 +12,40 @@ namespace Airslip.Common.MerchantTransactions
 
         public MerchantIntegrationService(IGeneratedRetailerApiV1Client generatedRetailerApiV1Client, IMapper mapper)
         {
-            _generatedRetailerApiV1Client = generatedRetailerApiV1Client;
 
+            _generatedRetailerApiV1Client = generatedRetailerApiV1Client;
             _mapper = mapper;
         }
 
         public async Task<ICollection<TrackingDetails>> SendBulk<T>(
             IEnumerable<T> transactions,
-            string airslipApiKey,
+            string entityId,
+            AirslipUserType airslipUserType,
+            string userId, 
             string adapterSource) where T : class
         {
-            _generatedRetailerApiV1Client.SetApiKeyToken(airslipApiKey);
-
             List<TrackingDetails> trackingDetails = new();
 
             foreach (T transaction in transactions)
-                trackingDetails.Add(await _send(transaction, adapterSource));
+                trackingDetails.Add(await _send(transaction, entityId, airslipUserType, userId, adapterSource));
 
             return trackingDetails;
         }
 
-        public Task<TrackingDetails> Send<T>(T transaction, string airslipApiKey, string adapterSource) where T : class
+        public Task<TrackingDetails> Send<T>(T transaction,
+            string entityId,
+            AirslipUserType airslipUserType,
+            string userId, 
+            string adapterSource) where T : class
         {
-            _generatedRetailerApiV1Client.SetApiKeyToken(airslipApiKey);
-
-            return _send(transaction, adapterSource);
+            return _send(transaction, entityId, airslipUserType, userId, adapterSource);
         }
 
-        private Task<TrackingDetails> _send<T>(T transaction, string adapterSource) where T : class
+        private Task<TrackingDetails> _send<T>(T transaction, 
+            string entityId,
+            AirslipUserType airslipUserType,
+            string userId, 
+            string adapterSource) where T : class
         {
             Transaction transactionOut = _mapper.Map<Transaction>(
                 transaction,
@@ -49,7 +55,8 @@ namespace Airslip.Common.MerchantTransactions
                     destinationRequest.Source = adapterSource;
                 }));
 
-            return _generatedRetailerApiV1Client.CreateTransactionAsync(transactionOut);
+            return _generatedRetailerApiV1Client
+                .CreateTransactionAsync(entityId, airslipUserType, userId, transactionOut);
         }
     }
 }

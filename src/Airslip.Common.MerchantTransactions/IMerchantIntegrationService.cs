@@ -7,9 +7,15 @@ namespace Airslip.Common.MerchantTransactions
     {
         Task<ICollection<TrackingDetails>> SendBulk<T>(
             IEnumerable<T> transactions,
-            string airslipApiKey,
+            string entityId,
+            AirslipUserType airslipUserType,
+            string userId,
             string adapterSource) where T : class;
 
-        Task<TrackingDetails> Send<T>(T transaction, string airslipApiKey, string adapterSource) where T : class;
+        Task<TrackingDetails> Send<T>(T transaction,
+            string entityId,
+            AirslipUserType airslipUserType,
+            string userId, 
+            string adapterSource) where T : class;
     }
 }
