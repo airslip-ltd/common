@@ -22,6 +22,13 @@ namespace Airslip.Common.Types.Transaction
         /// <example>372931583dd44034a6118002c252bc38</example>
         //[Required]
         public string? TransactionNumber { get; init; }
+        
+        /// <summary>
+        /// The ID used to provide a refund image such as a QR code or barcode.
+        /// </summary>
+        /// <example>372931583dd44034a6118002c252bc38</example>
+        //[Required]
+        public string? RefundCode { get; init; }
 
         /// <summary>
         /// The date at which the transaction was created, in standard ISO 8601 format.
