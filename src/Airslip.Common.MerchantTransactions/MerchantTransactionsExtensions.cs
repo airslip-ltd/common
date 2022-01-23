@@ -18,9 +18,10 @@ namespace Airslip.Common.MerchantTransactions
         /// <param name="configuration">The primary configuration where relevant elements can be found</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static IServiceCollection AddMerchantTransactions(
+        public static IServiceCollection AddMerchantTransactions<TSource>(
             this IServiceCollection services,
             IConfiguration configuration)
+        where TSource : class
         {
             services
                 .Configure<PublicApiSettings>(configuration.GetSection(nameof(PublicApiSettings)))
@@ -46,7 +47,7 @@ namespace Airslip.Common.MerchantTransactions
                     
                     return client;
                 })
-                .AddScoped<IMerchantIntegrationService, MerchantIntegrationService>()
+                .AddScoped<IMerchantIntegrationService<TSource>, MerchantIntegrationService<TSource>>()
                 .AddHttpClient<GeneratedRetailerApiV1Client>(nameof(GeneratedRetailerApiV1Client))
                 .AddTransientHttpErrorPolicy(p =>
                     p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
