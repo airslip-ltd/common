@@ -1,43 +1,44 @@
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
-using AutoMapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.MerchantTransactions
 {
-    public class MerchantIntegrationService : IMerchantIntegrationService
+    public class MerchantIntegrationService<TSource> : IMerchantIntegrationService<TSource> 
+        where TSource : class
     {
         private readonly IGeneratedRetailerApiV1Client _generatedRetailerApiV1Client;
-        private readonly IMapper _mapper;
+        private readonly ITransactionMapper _transactionMapper;
 
-        public MerchantIntegrationService(IGeneratedRetailerApiV1Client generatedRetailerApiV1Client, IMapper mapper)
+        public MerchantIntegrationService(IGeneratedRetailerApiV1Client generatedRetailerApiV1Client, 
+            ITransactionMapper transactionMapper)
         {
 
             _generatedRetailerApiV1Client = generatedRetailerApiV1Client;
-            _mapper = mapper;
+            _transactionMapper = transactionMapper;
         }
 
-        public async Task<ICollection<TrackingDetails>> SendBulk<T>(
-            IEnumerable<T> transactions,
+        public async Task<ICollection<TrackingDetails>> SendBulk(
+            IEnumerable<TSource> transactions,
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource) where T : class
+            string adapterSource)
         {
             List<TrackingDetails> trackingDetails = new();
 
-            foreach (T transaction in transactions)
+            foreach (TSource transaction in transactions)
                 trackingDetails.Add(await _send(transaction, entityId, airslipUserType, userId, adapterSource));
 
             return trackingDetails;
         }
 
-        public Task<TrackingDetails> Send<T>(T transaction,
+        public Task<TrackingDetails> Send(TSource transaction,
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource) where T : class
+            string adapterSource)
         {
             return _send(transaction, entityId, airslipUserType, userId, adapterSource);
         }
@@ -48,16 +49,19 @@ namespace Airslip.Common.MerchantTransactions
             string userId, 
             string adapterSource) where T : class
         {
-            TransactionDetails transactionOut = _mapper.Map<TransactionDetails>(
-                transaction,
-                options => options.AfterMap((_, destinationRequest) =>
-                {
-                    destinationRequest.InternalId = CommonFunctions.GetId();
-                    destinationRequest.Source = adapterSource;
-                }));
+            TransactionDetails transactionOut = _transactionMapper.Create(
+                transaction);
+                
+            transactionOut.InternalId = CommonFunctions.GetId();
+            transactionOut.Source = adapterSource;
 
             return _generatedRetailerApiV1Client
                 .CreateTransactionAsync(entityId, airslipUserType.ToString(), userId, transactionOut);
         }
+    }
+
+    public interface ITransactionMapper
+    {
+        TransactionDetails Create<T>(T transaction) where T : class;
     }
 }
