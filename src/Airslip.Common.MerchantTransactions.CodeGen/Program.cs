@@ -3,7 +3,7 @@ using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.OperationNameGenerators;
 
-OpenApiDocument document = await OpenApiDocument.FromUrlAsync("http://localhost:7071/swagger.json");
+OpenApiDocument document = await OpenApiDocument.FromUrlAsync("http://localhost:7072/swagger.json");
 string fileName = "GeneratedRetailerApiV1Client";
             
 CSharpClientGeneratorSettings clientSettings = new()

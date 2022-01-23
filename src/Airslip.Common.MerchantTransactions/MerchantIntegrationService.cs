@@ -48,7 +48,7 @@ namespace Airslip.Common.MerchantTransactions
             string userId, 
             string adapterSource) where T : class
         {
-            Transaction transactionOut = _mapper.Map<Transaction>(
+            TransactionDetails transactionOut = _mapper.Map<TransactionDetails>(
                 transaction,
                 options => options.AfterMap((_, destinationRequest) =>
                 {
