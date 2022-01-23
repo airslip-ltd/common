@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.MerchantTransactions
+namespace Airslip.Common.MerchantTransactions.Interfaces
 {
     public interface IMerchantIntegrationService<TSource>
         where TSource : class

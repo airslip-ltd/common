@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Types.Configuration;
+﻿using Airslip.Common.MerchantTransactions.Interfaces;
+using Airslip.Common.Types.Configuration;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,7 @@ using Polly;
 using System;
 using System.Net.Http;
 
-namespace Airslip.Common.MerchantTransactions
+namespace Airslip.Common.MerchantTransactions.Implementations
 {
     public static class MerchantTransactionsExtensions
     {
