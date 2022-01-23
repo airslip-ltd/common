@@ -1,18 +1,19 @@
+using Airslip.Common.MerchantTransactions.Interfaces;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Airslip.Common.MerchantTransactions
+namespace Airslip.Common.MerchantTransactions.Implementations
 {
     public class MerchantIntegrationService<TSource> : IMerchantIntegrationService<TSource> 
         where TSource : class
     {
         private readonly IGeneratedRetailerApiV1Client _generatedRetailerApiV1Client;
-        private readonly ITransactionMapper _transactionMapper;
+        private readonly ITransactionMapper<TSource> _transactionMapper;
 
         public MerchantIntegrationService(IGeneratedRetailerApiV1Client generatedRetailerApiV1Client, 
-            ITransactionMapper transactionMapper)
+            ITransactionMapper<TSource> transactionMapper)
         {
 
             _generatedRetailerApiV1Client = generatedRetailerApiV1Client;
@@ -43,11 +44,11 @@ namespace Airslip.Common.MerchantTransactions
             return _send(transaction, entityId, airslipUserType, userId, adapterSource);
         }
 
-        private Task<TrackingDetails> _send<T>(T transaction, 
+        private Task<TrackingDetails> _send(TSource transaction, 
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource) where T : class
+            string adapterSource)
         {
             TransactionDetails transactionOut = _transactionMapper.Create(
                 transaction);
@@ -58,10 +59,5 @@ namespace Airslip.Common.MerchantTransactions
             return _generatedRetailerApiV1Client
                 .CreateTransactionAsync(entityId, airslipUserType.ToString(), userId, transactionOut);
         }
-    }
-
-    public interface ITransactionMapper
-    {
-        TransactionDetails Create<T>(T transaction) where T : class;
     }
 }
