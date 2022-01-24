@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using Airslip.Common.Types.Enums;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +18,7 @@ public class TransactionProduct
     public string? TransactionProductId { get; init; }
     public string? ParentTransactionProductId { get; init; }
     public string? ProductId { get; init; }
+    public ProductStatus ProductStatus { get; init; } = ProductStatus.Active;
     public string? Manufacturer { get; init; }
     public string? ModelNumber { get; init; }
     public string? ProductCode { get; init; }
