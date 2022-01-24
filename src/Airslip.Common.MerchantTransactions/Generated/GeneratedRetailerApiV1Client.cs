@@ -1054,6 +1054,9 @@ namespace Airslip.Common.MerchantTransactions
         [Newtonsoft.Json.JsonProperty("productId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProductId { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("productStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public TransactionProductProductStatus ProductStatus { get; set; } = Airslip.Common.MerchantTransactions.TransactionProductProductStatus._0;
+
         [Newtonsoft.Json.JsonProperty("manufacturer", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Manufacturer { get; set; }
 
@@ -1372,6 +1375,18 @@ namespace Airslip.Common.MerchantTransactions
             get { return _additionalProperties; }
             set { _additionalProperties = value; }
         }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum TransactionProductProductStatus
+    {
+
+        _0 = 0,
+
+        _1 = 1,
+
+        _2 = 2,
 
     }
 
