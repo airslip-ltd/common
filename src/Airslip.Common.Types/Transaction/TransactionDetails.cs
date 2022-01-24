@@ -138,7 +138,7 @@ public record TransactionDetails
     /// <summary>
     /// Further properties about the transaction. Details are used to generated a barcode.
     /// </summary>
-    public TransactionDetailRequest? TransactionDetail { get; init; }
+    public TransactionInformation? TransactionDetail { get; init; }
         
     /// <summary>
     /// A collection for the methods of payments.

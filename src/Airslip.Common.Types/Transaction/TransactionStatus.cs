@@ -7,5 +7,5 @@ public class TransactionStatus
     public string? Id { get; set; }
     public string? Name { get; set; }
     public ICollection<TransactionHistory>? History { get; set; }
-    public TransactionRefundSummary? Refund_info { get; set; }
+    public TransactionRefundSummary? RefundSummary { get; set; }
 }

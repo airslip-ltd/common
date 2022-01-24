@@ -1,6 +1,6 @@
 namespace Airslip.Common.Types.Transaction;
 
-public record TransactionDetailRequest
+public record TransactionInformation
 {
     /// <summary>
     /// The date at which the transaction was created, in standard ISO 8601 format.
