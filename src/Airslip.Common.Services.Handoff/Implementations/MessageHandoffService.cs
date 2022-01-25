@@ -44,7 +44,7 @@ public class MessageHandoffService : IMessageHandoffService
                 return;
             }
             
-            await messageHandoffWorker.Execute(message);
+            await messageHandoffWorker.Execute(message, handler.DataSource);
         }
         catch (Exception ee)
         {

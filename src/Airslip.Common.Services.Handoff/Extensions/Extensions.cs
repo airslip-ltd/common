@@ -1,19 +1,20 @@
 using Airslip.Common.Services.Handoff.Data;
 using Airslip.Common.Services.Handoff.Implementations;
 using Airslip.Common.Services.Handoff.Interfaces;
+using Airslip.Common.Types.Enums;
+using JetBrains.Annotations;
 
 namespace Airslip.Common.Services.Handoff.Extensions;
 
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public static class Extensions
 {
-    public static MessageHandoffOptions Register<THandoffProcessor>(this MessageHandoffOptions messageHandoff, string queueName)
+    public static MessageHandoffOptions Register<THandoffProcessor>
+        (this MessageHandoffOptions messageHandoff, string queueName, DataSources dataSource)
         where THandoffProcessor : IMessageHandoffWorker
     {
-        MessageHandoffService.Handlers.Add(new MessageHandoff
-        {
-            QueueName = queueName,
-            HandlerType =  typeof(THandoffProcessor)
-        });
+        MessageHandoffService.Handlers.Add(
+            new MessageHandoff(typeof(THandoffProcessor), queueName, dataSource));
 
         return messageHandoff;
     }
