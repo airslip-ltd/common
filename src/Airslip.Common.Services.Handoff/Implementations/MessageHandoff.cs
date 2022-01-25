@@ -1,10 +1,18 @@
+using Airslip.Common.Types.Enums;
 using System;
 
 namespace Airslip.Common.Services.Handoff.Implementations;
 
 public class MessageHandoff
 {
-    public Type HandlerType { get; set; }
+    public MessageHandoff(Type handlerType, string queueName, DataSources dataSource)
+    {
+        HandlerType = handlerType;
+        QueueName = queueName;
+        DataSource = dataSource;
+    }
 
-    public string QueueName { get; set; }
+    public Type HandlerType { get; init; }
+    public string QueueName { get; init; }
+    public DataSources DataSource { get; init; }
 }
