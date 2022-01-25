@@ -23,7 +23,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             _logger = logger;
         }
 
-        public async Task RegisterData(IncomingTransactionModel model, DataSources dataSource)
+        private async Task RegisterData(IncomingTransactionModel model, DataSources dataSource)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             }
         }
 
-        public Task RegisterData(string message, DataSources dataSource)
+        public Task Execute(string message, DataSources dataSource)
         {
             // Turn to object
             IncomingTransactionModel incomingTransactionModel = Json
