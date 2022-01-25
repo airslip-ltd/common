@@ -6,5 +6,11 @@ namespace Airslip.Common.Types.Enums;
 public enum DataSources
 {
     Yapily,
+    Api2Cart,
+    SwanRetail,
+    CustomerPortal,
+    Analytics,
+    QrMatching,
+    SmartReceipts,
     Unknown
 }
