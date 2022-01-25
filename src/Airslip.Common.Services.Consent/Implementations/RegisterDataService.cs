@@ -25,7 +25,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             _repository = repository;
         }
 
-        public async Task RegisterData(TModel model, DataSources dataSource)
+        private async Task RegisterData(TModel model, DataSources dataSource)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Airslip.Common.Services.Consent.Implementations
             }
         }
 
-        public Task RegisterData(string message, DataSources dataSource)
+        public Task Execute(string message, DataSources dataSource)
         {
             // Turn to object
             TModel bankTransaction = Json.Deserialize<TModel>(message);
