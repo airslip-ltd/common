@@ -84,5 +84,10 @@ namespace Airslip.Common.Utilities.Extensions
         {
             return Enum.TryParse(value, true, out parsedObject);
         }
+        
+        public static TEnum ParseIgnoreCase<TEnum>(this string value) where TEnum : struct
+        {
+            return Enum.Parse<TEnum>(value, true);
+        }
     }
 }
