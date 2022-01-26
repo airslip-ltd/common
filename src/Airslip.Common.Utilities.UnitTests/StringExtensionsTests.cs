@@ -24,11 +24,21 @@ namespace Airslip.Common.Utilities.UnitTests
         [Theory]
         [InlineData("shopify")]
         [InlineData("Shopify")]
-        public void Can_parse_enum_ignoring_case(string posProvider)
+        public void Can_try_parse_enum_ignoring_case(string posProvider)
         {
             bool canParse = posProvider.TryParseIgnoreCase(out PosProviders provider);
 
             canParse.Should().BeTrue();
+            Assert.True(provider == PosProviders.Shopify);
+        }
+        
+        [Theory]
+        [InlineData("shopify")]
+        [InlineData("Shopify")]
+        public void Can_parse_enum_ignoring_case(string posProvider)
+        {
+            PosProviders provider = posProvider.ParseIgnoreCase<PosProviders>();
+
             Assert.True(provider == PosProviders.Shopify);
         }
     }
