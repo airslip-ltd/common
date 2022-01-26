@@ -79,5 +79,10 @@ namespace Airslip.Common.Utilities.Extensions
 
             return text[..pos] + replace + text[(pos + search.Length)..];
         }
+        
+        public static bool TryParseIgnoreCase<TEnum>(this string value, out TEnum parsedObject) where TEnum : struct
+        {
+            return Enum.TryParse(value, true, out parsedObject);
+        }
     }
 }
