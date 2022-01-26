@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Utilities.Extensions;
+﻿using Airslip.Common.Types.Enums;
+using Airslip.Common.Utilities.Extensions;
 using FluentAssertions;
 using System.Text;
 using Xunit;
@@ -18,6 +19,17 @@ namespace Airslip.Common.Utilities.UnitTests
             string normalisedString = str.RemoveAccents();
             
             normalisedString.Should().Be(expectedString);
+        }
+        
+        [Theory]
+        [InlineData("shopify")]
+        [InlineData("Shopify")]
+        public void Can_parse_enum_ignoring_case(string posProvider)
+        {
+            bool canParse = posProvider.TryParseIgnoreCase(out PosProviders provider);
+
+            canParse.Should().BeTrue();
+            Assert.True(provider == PosProviders.Shopify);
         }
     }
 }
