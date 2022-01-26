@@ -17,7 +17,7 @@ namespace Airslip.Common.Utilities.Extensions
         public static TReturnType GetSettingByName<TReturnType>(this SettingCollection<TReturnType> settings, string name)
         {
             KeyValuePair<string, TReturnType>? result = settings.Settings?
-                .FirstOrDefault(o => o.Key.Equals(name));
+                .FirstOrDefault(o => o.Key.ToLower().Equals(name.ToLower()));
             
             if (result == null)
                 throw new ArgumentException($"{nameof(TReturnType)}:Settings:{name} " +
