@@ -32,6 +32,7 @@
         Shopware,
         ShopwareApi,
         Walmart,
-        WoocommerceApi
+        WoocommerceApi,
+        BigcommerceApi
     }
 }
