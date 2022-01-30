@@ -32,6 +32,14 @@ namespace Airslip.Common.Utilities.Extensions
                 (k, v) => new KeyValuePair<string, string>(k!, isBase64Encoded ? v.Replace(" ", "+") : v));
         }
         
+        public static string GetQueryString(this object obj) {
+            IEnumerable<string> properties = from p in obj.GetType().GetProperties()
+                where p.GetValue(obj, null) != null
+                select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
+
+            return string.Join("&", properties.ToArray());
+        }
+        
         public static KeyValuePair<string, string> Get(this IEnumerable<KeyValuePair<string, string>> source, string key)
         {
             return source.FirstOrDefault(pair => pair.Key == key);

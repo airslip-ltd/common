@@ -24,6 +24,13 @@ namespace Airslip.Common.Utilities.Extensions
                 stream.Position = 0;
             return Json.Deserialize<T>(payload);
         }
+        
+        public static T DeserializeFunctionStream<T>(this Stream requestBody) where T : class
+        {
+            StreamReader sr = new(requestBody);
+            string payload = sr.ReadToEnd();
+            return Json.Deserialize<T>(payload);
+        }
 
         public static async Task<T> DeserializeStream<T>(
             this Stream requestBody,
