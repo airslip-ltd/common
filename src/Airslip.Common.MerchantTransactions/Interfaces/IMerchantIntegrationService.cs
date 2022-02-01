@@ -1,4 +1,5 @@
-﻿using Airslip.Common.Types.Enums;
+﻿using Airslip.Common.MerchantTransactions.Generated;
+using Airslip.Common.Types.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,6 +19,16 @@ namespace Airslip.Common.MerchantTransactions.Interfaces
             string entityId,
             AirslipUserType airslipUserType,
             string userId,
+            string adapterSource);
+
+        Task<ICollection<TrackingDetails>> SendBulk(
+            IEnumerable<TSource> transactions,
+            string airslipApiKey,
+            string adapterSource);
+
+        Task<TrackingDetails> Send(
+            TSource transaction, 
+            string airslipApiKey, 
             string adapterSource);
     }
 }

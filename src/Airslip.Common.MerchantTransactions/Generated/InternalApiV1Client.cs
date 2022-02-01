@@ -15,12 +15,12 @@ using Airslip.Common.MerchantTransactions.Interfaces;
 #pragma warning disable 8073 // Disable "CS8073 The result of the expression is always 'false' since a value of type 'T' is never equal to 'null' of type 'T?'"
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 
-namespace Airslip.Common.MerchantTransactions
+namespace Airslip.Common.MerchantTransactions.Generated
 {
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IGeneratedRetailerApiV1Client : IMerchantIntegrationApi
+    public partial interface IInternalApiV1Client : IMerchantIntegrationApi
     {
         /// <summary>
         /// Create a transaction using your Api Key
@@ -70,13 +70,13 @@ namespace Airslip.Common.MerchantTransactions
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GeneratedRetailerApiV1Client : MerchantIntegrationApi, IGeneratedRetailerApiV1Client
+    public partial class InternalApiV1Client : MerchantIntegrationApi, IInternalApiV1Client
     {
-        private string _baseUrl = "http://localhost:7072";
+        private string _baseUrl = "https://airslip-dev-merchant-integrations-internal-app.azurewebsites.net";
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public GeneratedRetailerApiV1Client(System.Net.Http.HttpClient httpClient)
+        public InternalApiV1Client(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
@@ -1055,7 +1055,7 @@ namespace Airslip.Common.MerchantTransactions
         public string ProductId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("productStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public TransactionProductProductStatus ProductStatus { get; set; } = Airslip.Common.MerchantTransactions.TransactionProductProductStatus._0;
+        public TransactionProductProductStatus ProductStatus { get; set; } = Airslip.Common.MerchantTransactions.Generated.TransactionProductProductStatus._0;
 
         [Newtonsoft.Json.JsonProperty("manufacturer", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Manufacturer { get; set; }

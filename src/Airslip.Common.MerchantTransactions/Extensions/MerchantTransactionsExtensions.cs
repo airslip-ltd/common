@@ -1,4 +1,6 @@
-﻿using Airslip.Common.MerchantTransactions.Interfaces;
+﻿using Airslip.Common.MerchantTransactions.Generated;
+using Airslip.Common.MerchantTransactions.Implementations;
+using Airslip.Common.MerchantTransactions.Interfaces;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Utilities.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +10,7 @@ using Polly;
 using System;
 using System.Net.Http;
 
-namespace Airslip.Common.MerchantTransactions.Implementations
+namespace Airslip.Common.MerchantTransactions.Extensions
 {
     public static class MerchantTransactionsExtensions
     {
@@ -26,7 +28,7 @@ namespace Airslip.Common.MerchantTransactions.Implementations
         {
             services
                 .Configure<PublicApiSettings>(configuration.GetSection(nameof(PublicApiSettings)))
-                .AddScoped<IGeneratedRetailerApiV1Client>(provider =>
+                .AddScoped<IInternalApiV1Client>(provider =>
                 {
                     IOptions<PublicApiSettings> apiSettings = provider.GetService<IOptions<PublicApiSettings>>()!;
                     IHttpClientFactory? httpClientFactory = provider.GetService<IHttpClientFactory>();
@@ -38,18 +40,46 @@ namespace Airslip.Common.MerchantTransactions.Implementations
                         throw new ArgumentException("httpClientFactory not found");
 
                     HttpClient httpClient = httpClientFactory
-                        .CreateClient(nameof(GeneratedRetailerApiV1Client));
+                        .CreateClient(nameof(InternalApiV1Client));
 
-                    GeneratedRetailerApiV1Client client = new(httpClient)
+                    InternalApiV1Client client = new(httpClient)
                     {
                         BaseUrl = merchantTransactionsSettings.ToBaseUri()
                     };
                     client.SetApiKeyToken(merchantTransactionsSettings.ApiKey);
-                    
+
                     return client;
                 })
-                .AddScoped<IMerchantIntegrationService<TSource>, MerchantIntegrationService<TSource>>()
-                .AddHttpClient<GeneratedRetailerApiV1Client>(nameof(GeneratedRetailerApiV1Client))
+                .AddScoped<IExternalApiV1Client>(provider =>
+                {
+                    IOptions<PublicApiSettings> apiSettings = provider.GetService<IOptions<PublicApiSettings>>()!;
+                    IHttpClientFactory? httpClientFactory = provider.GetService<IHttpClientFactory>();
+
+                    PublicApiSetting merchantTransactionsSettings =
+                        apiSettings.Value.GetSettingByName("MerchantTransactions");
+
+                    if (httpClientFactory == null)
+                        throw new ArgumentException("httpClientFactory not found");
+
+                    HttpClient httpClient = httpClientFactory
+                        .CreateClient(nameof(ExternalApiV1Client));
+
+                    ExternalApiV1Client client = new(httpClient)
+                    {
+                        BaseUrl = merchantTransactionsSettings.ToBaseUri()
+                    };
+
+                    return client;
+                })
+                .AddScoped<IMerchantIntegrationService<TSource>, MerchantIntegrationService<TSource>>();
+            
+            services
+                .AddHttpClient<InternalApiV1Client>(nameof(InternalApiV1Client))
+                .AddTransientHttpErrorPolicy(p =>
+                    p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
+
+            services
+                .AddHttpClient<ExternalApiV1Client>(nameof(ExternalApiV1Client))
                 .AddTransientHttpErrorPolicy(p =>
                     p.WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))));
 
