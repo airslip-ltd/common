@@ -31,7 +31,6 @@
         Walmart,
         WoocommerceApi,
         BigcommerceApi,
-        [System.Runtime.Serialization.EnumMember(Value = @"3DCart")]
         _3DCart,
         AceShop,
         Creloaded,
