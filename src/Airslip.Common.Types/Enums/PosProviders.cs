@@ -12,8 +12,6 @@
         EposNow,
         Square,
         Vend,
-        Cart3D,
-        Cart3DApi,
         AmazonSP,
         Amazon,
         Demandware,
