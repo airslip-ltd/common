@@ -1,5 +1,6 @@
 using Airslip.Common.Services.Handoff.Interfaces;
 using Serilog;
+using Serilog.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ public class MessageHandoffService : IMessageHandoffService
 
     public async Task ProcessMessage(string triggerName, string message)
     {
+        IDisposable? logProperty = LogContext.PushProperty("CorrelationId", Guid.NewGuid().ToString());
         _logger.Information("Triggered {TriggerName}", triggerName);
 
         if (!Handlers.Any(o => o.QueueName.Equals(triggerName)))
@@ -52,5 +54,6 @@ public class MessageHandoffService : IMessageHandoffService
         }
         
         _logger.Information("Completed {TriggerName}", triggerName);
+        logProperty?.Dispose();
     }
 }
