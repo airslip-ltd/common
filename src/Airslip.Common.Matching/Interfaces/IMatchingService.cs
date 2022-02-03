@@ -1,9 +1,10 @@
-using System.Threading.Tasks;
+using Airslip.Common.Services.Handoff.Interfaces;
+using JetBrains.Annotations;
 
-namespace Airslip.Common.Matching.Interfaces
+namespace Airslip.Common.Matching.Interfaces;
+
+[UsedImplicitly]
+public interface IMatchingService : IMessageHandoffWorker
 {
-    public interface IMatchingService
-    {
-        Task TryMatch(string myQueueItem);
-    }
+        
 }
