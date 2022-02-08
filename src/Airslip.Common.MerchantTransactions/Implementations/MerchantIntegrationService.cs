@@ -25,6 +25,7 @@ namespace Airslip.Common.MerchantTransactions.Implementations
 
         public async Task<ICollection<TrackingDetails>> SendBulk(
             IEnumerable<TSource> transactions,
+            string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
@@ -33,18 +34,19 @@ namespace Airslip.Common.MerchantTransactions.Implementations
             List<TrackingDetails> trackingDetails = new();
 
             foreach (TSource transaction in transactions)
-                trackingDetails.Add(await _sendInternalApi(transaction, entityId, airslipUserType, userId, adapterSource));
+                trackingDetails.Add(await _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, adapterSource));
 
             return trackingDetails;
         }
 
         public Task<TrackingDetails> Send(TSource transaction,
+            string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
             string adapterSource)
         {
-            return _sendInternalApi(transaction, entityId, airslipUserType, userId, adapterSource);
+            return _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, adapterSource);
         }
 
         public async Task<ICollection<TrackingDetails>> SendBulk(IEnumerable<TSource> transactions, string airslipApiKey, string adapterSource)
@@ -63,6 +65,7 @@ namespace Airslip.Common.MerchantTransactions.Implementations
         }
 
         private Task<TrackingDetails> _sendInternalApi(TSource transaction, 
+            string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
@@ -75,7 +78,7 @@ namespace Airslip.Common.MerchantTransactions.Implementations
             transactionOut.Source = adapterSource;
 
             return _internalApiV1Client
-                .CreateTransactionAsync(entityId, airslipUserType.ToString(), userId, transactionOut);
+                .CreateTransactionAsync(accountId, entityId, airslipUserType.ToString(), userId, transactionOut);
         }
         
         private Task<TrackingDetails> _sendExternalApi(TSource transaction, string apiKeyToken, 
