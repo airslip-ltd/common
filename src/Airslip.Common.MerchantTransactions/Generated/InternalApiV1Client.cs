@@ -27,7 +27,7 @@ namespace Airslip.Common.MerchantTransactions.Generated
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, TransactionDetails body);
+        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string accountId, string entityId, string airslipUserType, string userId, TransactionDetails body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -35,7 +35,7 @@ namespace Airslip.Common.MerchantTransactions.Generated
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, TransactionDetails body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string accountId, string entityId, string airslipUserType, string userId, TransactionDetails body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Ping operation to ensure service is contactable
@@ -108,9 +108,9 @@ namespace Airslip.Common.MerchantTransactions.Generated
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, TransactionDetails body)
+        public virtual System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string accountId, string entityId, string airslipUserType, string userId, TransactionDetails body)
         {
-            return CreateTransactionAsync(entityId, airslipUserType, userId, body, System.Threading.CancellationToken.None);
+            return CreateTransactionAsync(accountId, entityId, airslipUserType, userId, body, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -119,8 +119,11 @@ namespace Airslip.Common.MerchantTransactions.Generated
         /// </summary>
         /// <returns>Details of tracking your transaction</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string entityId, string airslipUserType, string userId, TransactionDetails body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TrackingDetails> CreateTransactionAsync(string accountId, string entityId, string airslipUserType, string userId, TransactionDetails body, System.Threading.CancellationToken cancellationToken)
         {
+            if (accountId == null)
+                throw new System.ArgumentNullException("accountId");
+
             if (entityId == null)
                 throw new System.ArgumentNullException("entityId");
 
@@ -132,6 +135,7 @@ namespace Airslip.Common.MerchantTransactions.Generated
 
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/v1/transaction/create?");
+            urlBuilder_.Append(System.Uri.EscapeDataString("AccountId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(accountId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Append(System.Uri.EscapeDataString("EntityId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(entityId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Append(System.Uri.EscapeDataString("AirslipUserType") + "=").Append(System.Uri.EscapeDataString(ConvertToString(airslipUserType, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Append(System.Uri.EscapeDataString("UserId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(userId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");

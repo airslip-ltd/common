@@ -10,12 +10,14 @@ namespace Airslip.Common.MerchantTransactions.Interfaces
     {
         Task<ICollection<TrackingDetails>> SendBulk(
             IEnumerable<TSource> transactions,
+            string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId,
             string adapterSource);
 
         Task<TrackingDetails> Send(TSource transaction,
+            string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId,
