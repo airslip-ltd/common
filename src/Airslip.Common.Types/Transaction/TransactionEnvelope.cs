@@ -8,6 +8,7 @@ public record TransactionEnvelope
 {
     public TransactionDetails Transaction { get; set; } = new();
     public AirslipUserType AirslipUserType { get; set; }
+    public string AccountId { get; set; } = string.Empty;
     public string EntityId { get; set; } = string.Empty;
     public string? ApiKey { get; set; }
     public string TrackingId { get; set; } = string.Empty;
