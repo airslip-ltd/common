@@ -7,17 +7,19 @@ namespace Airslip.Common.Repository.Types.Interfaces
     /// <summary>
     /// A generic search definition for use when searching entities
     /// </summary>
-    /// <typeparam name="TEntity">The entity type we are searching</typeparam>
     /// <typeparam name="TModel">The model type we are returning</typeparam>
-    public interface IEntitySearch<TEntity, TModel>
-        where TEntity : class, IEntity
+    public interface IEntitySearch<TModel>
         where TModel : class, IModel
     {
         /// <summary>
         /// A query to get search results based on a set of search filters
         /// </summary>
-        /// <param name="searchFilters">A set of search filters</param>
+        /// <typeparam name="TEntity">The entity type we are searching</typeparam>
+        /// <param name="entitySearch">The search query model</param>
+        /// <param name="mandatoryFilters">Mandatory filters for defining data ownership</param>
         /// <returns>A list of formatted models</returns>
-        Task<List<TModel>> GetSearchResults(List<SearchFilterModel> searchFilters);
+        Task<EntitySearchResult<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearch, 
+            List<SearchFilterModel> mandatoryFilters)
+            where TEntity : class, IEntity;
     }
 }
