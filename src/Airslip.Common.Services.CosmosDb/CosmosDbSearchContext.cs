@@ -53,13 +53,13 @@ namespace Airslip.Common.Services.CosmosDb
 
             foreach (SearchFilterModel searchFilterModel in searchFilters)
             {
-                sb.Append($" AND f.{searchFilterModel.FieldName.ToCamelCase()} = @{searchFilterModel.FieldName}");
+                sb.Append($" AND f.{searchFilterModel.ColumnField.ToCamelCase()} = @{searchFilterModel.ColumnField}");
             }
 
             QueryDefinition query = new(sb.ToString());
            foreach (SearchFilterModel searchFilterModel in searchFilters)
             {
-                query = query.WithParameter($"@{searchFilterModel.FieldName}", searchFilterModel.FieldValue);
+                query = query.WithParameter($"@{searchFilterModel.ColumnField}", searchFilterModel.ColumnField);
             }    
                 
             using FeedIterator<TEntity> feedIterator = container.GetItemQueryIterator<TEntity>(
@@ -79,6 +79,16 @@ namespace Airslip.Common.Services.CosmosDb
             }
 
             return results;
+        }
+
+        public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

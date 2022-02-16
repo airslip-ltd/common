@@ -46,22 +46,22 @@ namespace Airslip.Common.Services.MongoDb
             List<FilterDefinition<TEntity>> filters = new();
             foreach (SearchFilterModel searchFilterModel in searchFilters)
             {
-                switch (searchFilterModel.FieldValue)
+                switch (searchFilterModel.Value)
                 {
                     case bool boolValue:
-                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, boolValue));
+                        filters.Add(filterBuilder.Eq(searchFilterModel.ColumnField, boolValue));
                         break;
                     case int intValue:
-                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, intValue));
+                        filters.Add(filterBuilder.Eq(searchFilterModel.ColumnField, intValue));
                         break;
                     case long lngValue:
-                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, lngValue));
+                        filters.Add(filterBuilder.Eq(searchFilterModel.ColumnField, lngValue));
                         break;
                     case AirslipUserType airslipUserType:
-                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, airslipUserType));
+                        filters.Add(filterBuilder.Eq(searchFilterModel.ColumnField, airslipUserType));
                         break;
                     default:
-                        filters.Add(filterBuilder.Eq(searchFilterModel.FieldName, searchFilterModel.FieldValue
+                        filters.Add(filterBuilder.Eq(searchFilterModel.ColumnField, searchFilterModel.Value
                             .ToString()));
                         break;
                 }
@@ -72,6 +72,16 @@ namespace Airslip.Common.Services.MongoDb
             return collection
                 .Find(filters.Count > 0 ? filterBuilder.And(filters) : FilterDefinition<TEntity>.Empty)
                 .ToListAsync();
+        }
+
+        public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
