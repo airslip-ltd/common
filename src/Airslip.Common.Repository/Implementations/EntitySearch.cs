@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Extensions;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
@@ -11,8 +12,7 @@ namespace Airslip.Common.Repository.Implementations;
 /// </summary>
 /// <typeparam name="TEntity">The entity type we will be searching for</typeparam>
 /// <typeparam name="TModel">The model type we will be returning</typeparam>
-public class EntitySearch<TEntity, TModel> : IEntitySearch<TEntity, TModel> 
-    where TEntity : class, IEntity 
+public class EntitySearch<TModel> : IEntitySearch<TModel> 
     where TModel : class, IModel
 {
     private readonly ISearchContext _context;
@@ -30,16 +30,24 @@ public class EntitySearch<TEntity, TModel> : IEntitySearch<TEntity, TModel>
     /// <summary>
     /// Singe function that takes a list of search filters and returns a list of formatted models
     /// </summary>
-    /// <param name="searchFilters">The search filters we wish to filter by</param>
+    /// <param name="entitySearchQueryModel">The query model sent from the user</param>
+    /// <param name="mandatoryFilters">Mandatory filters used for applying server side
+    /// filtering such as context sensitive user / entity</param>
     /// <returns>A list of formatted models</returns>
-    public async Task<List<TModel>> GetSearchResults(List<SearchFilterModel> searchFilters)
+    public async Task<EntitySearchResponse<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearchQueryModel, 
+        List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntity
     {
         // Get search results for our entities
-        List<TEntity> searchResults = await _context.SearchEntities<TEntity>(searchFilters);
-        List<TModel> results = new();
-            
+        EntitySearchResult<TEntity> searchResults = await _context
+            .SearchEntities<TEntity>(entitySearchQueryModel, mandatoryFilters);
+        
+        EntitySearchResponse<TModel> pagedResult = new()
+        {
+            Paging = entitySearchQueryModel.CalculatePagination(searchResults.RecordCount)
+        };
+
         // Format them into models
-        foreach (TEntity result in searchResults)
+        foreach (TEntity result in searchResults.Records)
         {
             // Create a new model using the mapper
             TModel newModel = _mapper.Create(result);
@@ -51,9 +59,9 @@ public class EntitySearch<TEntity, TModel> : IEntitySearch<TEntity, TModel>
             }
 
             // Add to the list
-            results.Add(newModel);
+            pagedResult.Results.Add(newModel);
         }
             
-        return results;
+        return pagedResult;
     }
 }
