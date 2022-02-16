@@ -14,10 +14,16 @@ namespace Airslip.Common.Repository.Types.Interfaces
         /// <summary>
         /// Returns a list of entities based on search criteria
         /// </summary>
-        /// <param name="searchFilters">Search filters to apply to the search</param>
+        /// <param name="entitySearch">The search query model</param>
+        /// <param name="mandatoryFilters">Mandatory filters for defining data ownership</param>
         /// <typeparam name="TEntity">The entity type</typeparam>
         /// <returns>A list of entities matching the search criteria</returns>
-        Task<List<TEntity>> SearchEntities<TEntity>(List<SearchFilterModel> searchFilters)
+        Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, 
+            List<SearchFilterModel> mandatoryFilters)
+            where TEntity : class, IEntityWithId;
+    
+        Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, 
+            List<SearchFilterModel> mandatoryFilters)
             where TEntity : class, IEntityWithId;
     }
 }
