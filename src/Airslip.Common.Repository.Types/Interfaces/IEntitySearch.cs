@@ -18,7 +18,7 @@ namespace Airslip.Common.Repository.Types.Interfaces
         /// <param name="entitySearch">The search query model</param>
         /// <param name="mandatoryFilters">Mandatory filters for defining data ownership</param>
         /// <returns>A list of formatted models</returns>
-        Task<EntitySearchResult<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearch, 
+        Task<EntitySearchResponse<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearch, 
             List<SearchFilterModel> mandatoryFilters)
             where TEntity : class, IEntity;
     }
