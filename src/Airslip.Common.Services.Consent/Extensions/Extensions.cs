@@ -50,8 +50,8 @@ namespace Airslip.Common.Services.Consent.Extensions
                 .AddScoped<IRegisterDataService<Transaction, IncomingTransactionModel>, RegisterTransactionService>()
                 .AddScoped<IProviderDiscoveryService, ProviderDiscoveryService>()
                 .AddScoped<IProviderConsentService, ProviderConsentService>()
-                .AddScoped<IBankService, BankService>()
-                .AddScoped<IAccountService, AccountService>()
+                // .AddScoped<IBankService, BankService>()
+                // .AddScoped<IAccountService, AccountService>()
                 .AddScoped<IEntitySearchFormatter<TransactionModel>, 
                     MerchantSearchFormatter<TransactionModel>>()
                 .AddScoped<IEntitySearchFormatter<TransactionSummaryModel>, 

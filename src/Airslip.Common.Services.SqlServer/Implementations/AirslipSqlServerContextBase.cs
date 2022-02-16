@@ -1,3 +1,4 @@
+using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Airslip.Common.Services.SqlServer.Extensions;
 
 namespace Airslip.Common.Services.SqlServer.Implementations;
 
@@ -75,31 +77,6 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return result;
     }
     
-    public async Task<List<TEntity>> SearchEntities<TEntity>(List<SearchFilterModel> searchFilters) where TEntity : class, IEntityWithId
-    {
-        IQueryable<TEntity> q = Set<TEntity>().AsQueryable();
-
-        foreach (SearchFilterModel searchFilterModel in searchFilters)
-        {
-            Expression<Func<TEntity, bool>> lambda = 
-                _equality<TEntity>(searchFilterModel.FieldName, searchFilterModel.FieldValue);
-            q = q.Where(lambda);   
-        }
-
-        return await q.ToListAsync();
-    }
-    
-    private static Expression<Func<T, bool>> _equality<T>(string propertyName, string value)
-    {
-        ParameterExpression parameter = Expression.Parameter(typeof(T), propertyName);
-        Expression property = Expression.Property(parameter, propertyName);
-        Expression target = Expression.Constant(value);
-        Expression containsMethod = Expression.Call(property, "Contains", null, target);
-        Expression<Func<T, bool>> lambda =
-            Expression.Lambda<Func<T, bool>>(containsMethod, parameter);
-        return lambda;
-    }
-    
     private static void _set<T, TProperty>(T instance, string propertyName, TProperty value)
     {
         ParameterExpression instanceExpression = Expression.Parameter(typeof(T), "p");
@@ -109,5 +86,35 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         Expression<Action<T, TProperty>> lambdaExpression = Expression.Lambda<Action<T, TProperty>>(assignmentExpression, instanceExpression, newValueExpression);
         Action<T, TProperty> setter = lambdaExpression.Compile();
         setter(instance, value);
+    }
+
+    public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) 
+        where TEntity : class, IEntityWithId
+    {
+        IQueryable<TEntity> query = Set<TEntity>().BuildQuery(entitySearch, mandatoryFilters);
+
+        int count = await query.CountAsync();
+
+        if (entitySearch.Page > 0)
+            query = query.Skip(entitySearch.Page * entitySearch.RecordsPerPage);
+        
+        if (entitySearch.RecordsPerPage > 0)
+            query = query.Take(entitySearch.RecordsPerPage);
+
+        foreach (EntitySearchSortModel sortModel in entitySearch.Sort)
+        {
+            query = sortModel.Sort == SortOrder.Asc ? query.OrderBy(sortModel.Field) : query.OrderByDescending(sortModel.Field);
+        }
+        
+        List<TEntity> list = await query
+            .ToListAsync();
+
+        return new EntitySearchResult<TEntity>(list, count);
+    }
+
+    public async Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+    {
+        return await Set<TEntity>().BuildQuery(entitySearch,  mandatoryFilters)
+            .CountAsync();
     }
 }
