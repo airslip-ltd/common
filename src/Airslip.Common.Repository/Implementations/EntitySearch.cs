@@ -30,20 +30,20 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
     /// <summary>
     /// Singe function that takes a list of search filters and returns a list of formatted models
     /// </summary>
-    /// <param name="entitySearchQueryModel">The query model sent from the user</param>
+    /// <param name="entitySearch">The query model sent from the user</param>
     /// <param name="mandatoryFilters">Mandatory filters used for applying server side
     /// filtering such as context sensitive user / entity</param>
     /// <returns>A list of formatted models</returns>
-    public async Task<EntitySearchResponse<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearchQueryModel, 
+    public async Task<EntitySearchResponse<TModel>> GetSearchResults<TEntity>(EntitySearchQueryModel entitySearch, 
         List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntity
     {
         // Get search results for our entities
         EntitySearchResult<TEntity> searchResults = await _context
-            .SearchEntities<TEntity>(entitySearchQueryModel, mandatoryFilters);
+            .SearchEntities<TEntity>(entitySearch, mandatoryFilters);
         
         EntitySearchResponse<TModel> pagedResult = new()
         {
-            Paging = entitySearchQueryModel.CalculatePagination(searchResults.RecordCount)
+            Paging = entitySearch.CalculatePagination(searchResults.RecordCount)
         };
 
         // Format them into models
