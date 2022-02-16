@@ -6,6 +6,7 @@ using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -56,5 +57,29 @@ public static class RepositoryExtensions
         IEnumerable<LifecycleStage> appliesTo) 
     {
         return appliesTo.Contains(lifecycleStage); 
+    }
+    
+    internal static EntitySearchPagingModel CalculatePagination(this EntitySearchQueryModel entitySearchQueryModel, int recordCount)
+    {
+        EntitySearchPagingModel result = new()
+        {
+            TotalRecords = recordCount,
+            Page = entitySearchQueryModel.Page,
+            RecordsPerPage = entitySearchQueryModel.RecordsPerPage
+        };
+
+        int totalPages = (int) Math.Ceiling(recordCount > 0
+            ? Convert.ToDouble(recordCount) / Convert.ToDouble(entitySearchQueryModel.RecordsPerPage)
+            : 1);
+
+        if (result.Page < totalPages)
+        {
+            result.Next = entitySearchQueryModel with
+            {
+                Page = result.Page
+            };
+        }
+
+        return result;
     }
 }
