@@ -3,6 +3,7 @@ using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Implementations;
@@ -40,7 +41,31 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
         // Get search results for our entities
         EntitySearchResult<TEntity> searchResults = await _context
             .SearchEntities<TEntity>(entitySearch, mandatoryFilters);
-        
+
+        return await _searchToResult(entitySearch, searchResults);
+    }
+
+    /// <summary>
+    /// Singe function that takes a list of search filters and returns a list of formatted models
+    /// </summary>
+    /// <param name="baseQuery">The base query to execute, should contain minimal filters as these are applied
+    /// based on user input</param>
+    /// <param name="entitySearch">The query model sent from the user</param>
+    /// <param name="mandatoryFilters">Mandatory filters used for applying server side
+    /// filtering such as context sensitive user / entity</param>
+    /// <returns>A list of formatted models</returns>
+    public async Task<EntitySearchResponse<TModel>> GetSearchResults<TEntity>(IQueryable<TEntity> baseQuery, EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntity
+    {
+        // Get search results for our entities
+        EntitySearchResult<TEntity> searchResults = await _context
+            .SearchEntities(baseQuery, entitySearch, mandatoryFilters);
+
+        return await _searchToResult(entitySearch, searchResults);
+    }
+
+    private async Task<EntitySearchResponse<TModel>> _searchToResult<TEntity>(EntitySearchQueryModel entitySearch, EntitySearchResult<TEntity> searchResults)
+        where TEntity : class, IEntity
+    {
         EntitySearchResponse<TModel> pagedResult = new()
         {
             Paging = entitySearch.CalculatePagination(searchResults.RecordCount)

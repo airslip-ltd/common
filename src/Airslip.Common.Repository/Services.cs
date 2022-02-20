@@ -15,7 +15,7 @@ namespace Airslip.Common.Repository;
 
 public static class Services
 {
-    public static void ConfigureServices(IServiceCollection serviceCollection, 
+    internal static void ConfigureServices(IServiceCollection serviceCollection, 
         RepositoryUserType repositoryUserType)
     {
         serviceCollection

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Pluralize.NET.Core;
 using Serilog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +83,11 @@ namespace Airslip.Common.Services.CosmosDb
         }
 
         public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
         {
             throw new System.NotImplementedException();
         }

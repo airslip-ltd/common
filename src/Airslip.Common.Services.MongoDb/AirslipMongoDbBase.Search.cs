@@ -7,6 +7,7 @@ using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.MongoDb
@@ -75,6 +76,11 @@ namespace Airslip.Common.Services.MongoDb
         }
 
         public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
         {
             throw new System.NotImplementedException();
         }
