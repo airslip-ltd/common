@@ -123,8 +123,12 @@ internal static class IQueryableExtensions
     internal static IQueryable<TEntity> BuildQuery<TEntity>(this DbSet<TEntity> set, EntitySearchQueryModel entitySearch, 
         List<SearchFilterModel> mandatoryFilters) where TEntity : class
     {
-        IQueryable<TEntity> q = set.AsQueryable();
-        
+        return set.AsQueryable().BuildQuery(entitySearch, mandatoryFilters);
+    }
+    
+    internal static IQueryable<TEntity> BuildQuery<TEntity>(this IQueryable<TEntity> q, EntitySearchQueryModel entitySearch, 
+        List<SearchFilterModel> mandatoryFilters) where TEntity : class
+    {
         Expression<Func<TEntity, bool>>? lambda = mandatoryFilters.BuildFilterQuery<TEntity>();
         if (lambda != null) q = q.Where(lambda);
         

@@ -93,6 +93,21 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
     {
         IQueryable<TEntity> query = Set<TEntity>().BuildQuery(entitySearch, mandatoryFilters);
 
+        return await _queryToSearchResult(query, entitySearch);
+    }
+
+    public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, 
+        EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+    {
+        IQueryable<TEntity> query = baseQuery.BuildQuery(entitySearch, mandatoryFilters);
+
+        return await _queryToSearchResult(query, entitySearch);
+    }
+
+    private async Task<EntitySearchResult<TEntity>> _queryToSearchResult<TEntity>(IQueryable<TEntity> query, 
+        EntitySearchQueryModel entitySearch)
+        where TEntity : class, IEntityWithId
+    {
         int count = await query.CountAsync();
 
         if (entitySearch.Page > 0)
