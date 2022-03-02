@@ -28,7 +28,7 @@ public static class RepositoryExtensions
     }
 
     public static bool CanView<TEntity>(this TEntity entity, IUserContext userService)
-        where TEntity: class, IEntityWithOwnership
+        where TEntity: class, IOwnership
     {
         if (userService.AirslipUserType is null) return false;
         if (userService.UserId is null) return false;
