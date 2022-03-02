@@ -7,12 +7,4 @@ namespace Airslip.Common.Repository.Types.Interfaces
     {
         string Id { get; set; }
     }
-    
-    /// <summary>
-    /// A simple interface defining the common data properties for basic auditing of changes to an entity object
-    /// </summary>
-    public interface IEntityNoId
-    {
-        
-    }
 }
