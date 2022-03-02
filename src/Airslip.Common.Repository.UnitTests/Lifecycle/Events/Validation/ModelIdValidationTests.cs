@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events;
+namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events.Validation;
 
 public class ModelIdValidationTests
 {
