@@ -6,6 +6,7 @@ using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.Implementations.Events.Entity.PreValidate;
@@ -20,6 +21,7 @@ public class EntityOwnershipValidationEvent<TEntity, TModel> : IEntityPreValidat
     {
         _userService = userService;
     }
+    
     public IEnumerable<LifecycleStage> AppliesTo => new[]
         {LifecycleStage.Update, LifecycleStage.Delete, LifecycleStage.Get};
 
@@ -30,8 +32,18 @@ public class EntityOwnershipValidationEvent<TEntity, TModel> : IEntityPreValidat
         
         if (repositoryAction.Entity is not IEntityWithOwnership entityWithOwnership) 
             return Task.FromResult(result);
-            
-        if (!entityWithOwnership.CanView(_userService))
+
+        List<IOwnership> owners = new()
+        {
+            entityWithOwnership
+        };
+
+        if (repositoryAction.Entity is IAdditionalOwners additionalOwners)
+        {
+            owners.AddRange(additionalOwners.AdditionalOwners);
+        }
+        
+        if (!owners.Any(o => o.CanView(_userService)))
         {
             result.Add(new ValidationResultMessageModel(nameof(IEntityWithOwnership.EntityId), 
                 ErrorMessages.OwnershipCannotBeVerified)
