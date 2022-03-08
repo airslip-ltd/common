@@ -1,5 +1,4 @@
-﻿using Airslip.Common.Repository.Data;
-using Airslip.Common.Repository.Enums;
+﻿using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.UnitTests.Common;

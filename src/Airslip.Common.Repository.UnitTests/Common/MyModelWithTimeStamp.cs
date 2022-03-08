@@ -3,7 +3,7 @@ using Airslip.Common.Repository.Types.Interfaces;
 
 namespace Airslip.Common.Repository.UnitTests.Common;
 
-public class MyModel : IModel
+public class MyModelWithTimeStamp : IModelWithTimeStamp, IModel
 {
     public string? Id { get; set; }
     public EntityStatus EntityStatus { get; set; }
