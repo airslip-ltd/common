@@ -14,10 +14,12 @@ public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity>
     where TEntity : class, IEntity
 {
     private readonly IUserContext _userService;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public EntityBasicAuditEvent(IUserContext userService)
+    public EntityBasicAuditEvent(IUserContext userService, IDateTimeProvider dateTimeProvider)
     {
         _userService = userService;
+        _dateTimeProvider = dateTimeProvider;
     }
         
     public IEnumerable<LifecycleStage> AppliesTo => new[]
@@ -30,22 +32,22 @@ public class EntityBasicAuditEvent<TEntity> : IEntityPreProcessEvent<TEntity>
         entity.AuditInformation ??= new BasicAuditInformation
         {
             Id = CommonFunctions.GetId(),
-            DateCreated = DateTime.UtcNow, // Defaults for new records
+            DateCreated = _dateTimeProvider.GetUtcNow(), // Defaults for new records
             CreatedByUserId = userId ?? _userService.UserId
         };
 
         switch (lifecycleStage)
         {
             case LifecycleStage.Create:
-                entity.AuditInformation.DateCreated = DateTime.UtcNow;
+                entity.AuditInformation.DateCreated = _dateTimeProvider.GetUtcNow();
                 entity.AuditInformation.CreatedByUserId = userId ?? _userService.UserId;
                 break;
             case LifecycleStage.Update:
-                entity.AuditInformation.DateUpdated = DateTime.UtcNow;
+                entity.AuditInformation.DateUpdated = _dateTimeProvider.GetUtcNow();
                 entity.AuditInformation.UpdatedByUserId = userId ?? _userService.UserId;
                 break;
             case LifecycleStage.Delete:
-                entity.AuditInformation.DateDeleted = DateTime.UtcNow;
+                entity.AuditInformation.DateDeleted = _dateTimeProvider.GetUtcNow();
                 entity.AuditInformation.DeletedByUserId = userId ?? _userService.UserId;
                 break;
         }

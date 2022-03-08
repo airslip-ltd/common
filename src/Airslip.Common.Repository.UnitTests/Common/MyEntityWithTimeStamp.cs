@@ -5,7 +5,7 @@ using Airslip.Common.Types.Enums;
 
 namespace Airslip.Common.Repository.UnitTests.Common;
 
-public class MyEntity : IEntityWithOwnership
+public class MyEntityWithTimeStamp : IEntityWithOwnership, IEntityWithTimeStamp
 {
     public string Id { get; set; } = string.Empty;
     public BasicAuditInformation? AuditInformation { get; set; }

@@ -1,5 +1,6 @@
 using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Extensions;
+using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Repository.UnitTests.Common;
@@ -8,13 +9,29 @@ using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Repository.UnitTests;
 
 public class Helpers
 {
-    public static IServiceProvider BuildRepoProvider(string? withEntityId = null, string? withUserId = null)
+    public class StoreInMemory<TModel> : IModelDeliveryService<TModel>
+        where TModel : class, IModel
+    {
+        public List<TModel> Models { get; } = new();
+
+        public Task Deliver(TModel model)
+        {
+            Models.Add(model);
+            return Task.CompletedTask;
+        }
+    }
+
+
+    public static IServiceProvider BuildRepoProvider(string? withEntityId = null, string? withUserId = null, 
+        long? withTimeStamp = null)
     {
         IServiceCollection services = new ServiceCollection();
 
@@ -23,8 +40,11 @@ public class Helpers
             {
                 Mock<IContext> mock = new();
                 mock
-                    .Setup(o => o.GetEntity<MyEntity>(It.IsAny<string>()))
+                    .Setup(o => o.GetEntity<MyEntity>("my-id"))
                     .ReturnsAsync(new MyEntity());
+                mock
+                    .Setup(o => o.GetEntity<MyEntityWithTimeStamp>("my-id"))
+                    .ReturnsAsync(new MyEntityWithTimeStamp());
                 return mock.Object;
             })
             .AddSingleton(_ =>
@@ -45,6 +65,15 @@ public class Helpers
                     .Setup(o => o.Create(It.IsAny<MyEntity>()))
                     .Returns(new MyModel());
                 mock
+                    .Setup(o => o.Create(It.IsAny<MyEntityWithTimeStamp>()))
+                    .Returns<MyEntityWithTimeStamp>((source) => new MyModel()
+                    {
+                        Id = source.Id,
+                        Name = source.Name,
+                        EntityStatus = source.EntityStatus,
+                        TimeStamp = source.TimeStamp
+                    });
+                mock
                     .Setup(o => o.Update(It.IsAny<MyModel>(), It.IsAny<MyEntity>()))
                     .Returns(new MyEntity());
                 return mock.Object;
@@ -57,8 +86,21 @@ public class Helpers
                 mockTokenDecodeService.Setup(service => service.UserId).Returns(withUserId);
                 mockTokenDecodeService.Setup(service => service.AirslipUserType).Returns(AirslipUserType.InternalApi);
                 return mockTokenDecodeService.Object;
-            });
-            
+            })
+            .AddScoped(typeof(IModelDeliveryService<>), typeof(StoreInMemory<>));
+
+        if (withTimeStamp != null)
+        {
+            ServiceDescriptor? serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IDateTimeProvider));
+            if (serviceDescriptor != null) 
+                services.Remove(serviceDescriptor);
+
+            Mock<IDateTimeProvider> dateTimeProvider = new();
+            dateTimeProvider.Setup(o => o.GetCurrentUnixTime()).Returns(withTimeStamp.Value);
+            dateTimeProvider.Setup(o => o.GetUtcNow()).Returns(DateTime.UtcNow);
+            services.AddSingleton(dateTimeProvider.Object);
+        }
+        
         return services.BuildServiceProvider();
     }
 }
