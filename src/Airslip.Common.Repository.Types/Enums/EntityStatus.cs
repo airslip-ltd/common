@@ -1,8 +1,7 @@
-namespace Airslip.Common.Repository.Types.Enums
+namespace Airslip.Common.Repository.Types.Enums;
+
+public enum EntityStatus
 {
-    public enum EntityStatus
-    {
-        Active = 1,
-        Deleted = 2
-    }
+    Active = 1,
+    Deleted = 2
 }
