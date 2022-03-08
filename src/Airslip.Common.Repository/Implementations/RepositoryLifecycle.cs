@@ -16,19 +16,22 @@ public class RepositoryLifecycle<TEntity, TModel> : IRepositoryLifecycle<TEntity
 {
     private readonly IEnumerable<IEntityPreProcessEvent<TEntity>> _entityPreProcessEvents;
     private readonly IEnumerable<IEntityPostProcessEvent<TEntity>> _entityPostProcessEvents;
-    private readonly IEnumerable<IModelPostProcessEvent<TModel>> _modelPostProcessEvents;
     private readonly IEnumerable<IEntityPreValidateEvent<TEntity, TModel>> _entityPreValidateEvents;
+    private readonly IEnumerable<IModelPostProcessEvent<TModel>> _modelPostProcessEvents;
+    private readonly IEnumerable<IModelPreProcessEvent<TModel>> _modelPreProcessEvents;
     private readonly IEnumerable<IModelPreValidateEvent<TEntity, TModel>> _modelPreValidateEvents;
 
     public RepositoryLifecycle(IEnumerable<IEntityPreProcessEvent<TEntity>> entityPreProcessEvents,
         IEnumerable<IEntityPostProcessEvent<TEntity>> entityPostProcessEvents,
-        IEnumerable<IModelPostProcessEvent<TModel>> modelPostProcessEvents, 
+        IEnumerable<IModelPostProcessEvent<TModel>> modelPostProcessEvents,
+        IEnumerable<IModelPreProcessEvent<TModel>> modelPreProcessEvents,
         IEnumerable<IEntityPreValidateEvent<TEntity, TModel>> entityPreValidateEvents, 
         IEnumerable<IModelPreValidateEvent<TEntity, TModel>> modelPreValidateEvents)
     {
         _entityPreProcessEvents = entityPreProcessEvents;
         _entityPostProcessEvents = entityPostProcessEvents;
         _modelPostProcessEvents = modelPostProcessEvents;
+        _modelPreProcessEvents = modelPreProcessEvents;
         _entityPreValidateEvents = entityPreValidateEvents;
         _modelPreValidateEvents = modelPreValidateEvents;
     }
@@ -53,20 +56,31 @@ public class RepositoryLifecycle<TEntity, TModel> : IRepositoryLifecycle<TEntity
                 .Execute(current, repositoryAction.LifecycleStage, repositoryAction.UserId));
     }
 
+    public Task<TModel> PreProcessModel(RepositoryAction<TEntity,TModel> repositoryAction)
+    {
+        if (repositoryAction.Model == null)
+            throw new ArgumentException("Model cannot be null", nameof(repositoryAction));
+        
+        return _processModel(repositoryAction.Model, repositoryAction.LifecycleStage,
+            _modelPreProcessEvents
+                .Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage)));
+    }
+
     public Task<TModel> PostProcessModel(RepositoryAction<TEntity,TModel> repositoryAction)
     {
         if (repositoryAction.Model == null)
             throw new ArgumentException("Model cannot be null", nameof(repositoryAction));
             
-        return _postProcessModel(repositoryAction.Model, repositoryAction.LifecycleStage);
+        return _processModel(repositoryAction.Model, repositoryAction.LifecycleStage,
+            _modelPostProcessEvents
+                .Where(o => o.AppliesTo.Contains(repositoryAction.LifecycleStage)));
     }
         
-    private async Task<TModel> _postProcessModel(TModel model, LifecycleStage lifecycleStage)
+    private async Task<TModel> _processModel(TModel model, LifecycleStage lifecycleStage, IEnumerable<IModelProcessEvent<TModel>> events)
     {
-        foreach (IModelPostProcessEvent<TModel> postProcessEvent in _modelPostProcessEvents
-                     .Where(o => o.AppliesTo.Contains(lifecycleStage)))
+        foreach (IModelProcessEvent<TModel> processEvent in events)
         {
-            await postProcessEvent.Execute(model, lifecycleStage);
+            await processEvent.Execute(model, lifecycleStage);
         }
 
         return model;

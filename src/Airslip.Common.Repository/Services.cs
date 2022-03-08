@@ -5,6 +5,7 @@ using Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
 using Airslip.Common.Repository.Implementations.Events.Entity.PreValidate;
 using Airslip.Common.Repository.Implementations.Events.Model;
 using Airslip.Common.Repository.Implementations.Events.Model.PostProcess;
+using Airslip.Common.Repository.Implementations.Events.Model.PreProcess;
 using Airslip.Common.Repository.Implementations.Events.Model.PreValidate;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Interfaces;
@@ -23,6 +24,7 @@ public static class Services
             .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
             .AddScoped(typeof(IModelPostProcessEvent<>), typeof(ModelDeliveryEvent<>))
             .AddScoped(typeof(IModelPostProcessEvent<>), typeof(ModelFormatEvent<>))
+            .AddScoped(typeof(IModelPreProcessEvent<>), typeof(ModelTimeStampEvent<>))
             .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityBasicAuditEvent<>))
             .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityOwnershipEvent<>))
             .AddScoped(typeof(IEntityPreProcessEvent<>), typeof(EntityStatusEvent<>))

@@ -1,13 +1,9 @@
-﻿using Airslip.Common.Repository.Data;
-using Airslip.Common.Repository.Enums;
+﻿using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.UnitTests.Common;
-using Airslip.Common.Types.Enums;
-using Airslip.Common.Types.Interfaces;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
 namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events.Updates;
