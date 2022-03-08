@@ -184,10 +184,6 @@ public class Repository<TEntity, TModel> : IRepository<TEntity, TModel>
     private async Task<RepositoryLifecycleResult<TModel>> _processLifecycleAsync
         (RepositoryAction<TEntity, TModel> repositoryAction)
     {
-        // Lifecycle: Pre process the model
-        repositoryAction
-            .SetModel(await _repositoryLifecycle.PreProcessModel(repositoryAction));
-        
         // Create a representation as it is today
         TModel? previousModel = repositoryAction.LifecycleStage == LifecycleStage.Create ? null : 
             _mapper.Create(repositoryAction.Entity);

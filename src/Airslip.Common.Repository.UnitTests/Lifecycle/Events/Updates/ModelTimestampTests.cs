@@ -1,46 +1,57 @@
 ﻿using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Implementations.Events.Model.PreProcess;
+using Airslip.Common.Repository.Implementations;
+using Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.UnitTests.Common;
 using FluentAssertions;
-using System.Threading.Tasks;
+using Moq;
+using System;
 using Xunit;
 
 namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events.Updates;
 
-public class ModelTimestampTests
+public class EntityTimeStampTests
 {
-    [Theory]
-    [InlineData(LifecycleStage.Update)]
-    [InlineData(LifecycleStage.Create)]
-    [InlineData(LifecycleStage.Delete)]
-    public async Task Update_acts_as_expected(
-        LifecycleStage lifecycleStage)
+    private const long withTimeStamp = 123456789;
+    private readonly Mock<IDateTimeProvider> dateTimeProvider;
+    public EntityTimeStampTests()
     {
-        IModelPreProcessEvent<MyModelWithTimeStamp> preProcessEvent =
-            new ModelTimeStampEvent<MyModelWithTimeStamp>();
-            
-        MyModelWithTimeStamp updatedEntity = await preProcessEvent
-            .Execute(new MyModelWithTimeStamp()
-            {
-                TimeStamp = 5
-            }, lifecycleStage);
-
-        updatedEntity.TimeStamp.Should().NotBe(5);
+        dateTimeProvider = new Mock<IDateTimeProvider>();
+        dateTimeProvider.Setup(o => o.GetCurrentUnixTime()).Returns(withTimeStamp);
+        dateTimeProvider.Setup(o => o.GetUtcNow()).Returns(DateTime.UtcNow);
     }
     
     [Theory]
     [InlineData(LifecycleStage.Update)]
     [InlineData(LifecycleStage.Create)]
     [InlineData(LifecycleStage.Delete)]
-    public async Task Update_acts_as_expected_when_interface_not_implemented(
+    public void Update_acts_as_expected(
         LifecycleStage lifecycleStage)
     {
-        IModelPreProcessEvent<MyModel> preProcessEvent =
-            new ModelTimeStampEvent<MyModel>();
+        IEntityPreProcessEvent<MyEntityWithTimeStamp> preProcessEvent =
+            new EntityTimeStampEvent<MyEntityWithTimeStamp>(dateTimeProvider.Object);
             
-        MyModel updatedEntity = await preProcessEvent
-            .Execute(new MyModel()
+        MyEntityWithTimeStamp updatedEntity = preProcessEvent
+            .Execute(new MyEntityWithTimeStamp()
+            {
+                TimeStamp = 5
+            }, lifecycleStage);
+
+        updatedEntity.TimeStamp.Should().Be(withTimeStamp);
+    }
+    
+    [Theory]
+    [InlineData(LifecycleStage.Update)]
+    [InlineData(LifecycleStage.Create)]
+    [InlineData(LifecycleStage.Delete)]
+    public void Update_acts_as_expected_when_interface_not_implemented(
+        LifecycleStage lifecycleStage)
+    {
+        IEntityPreProcessEvent<MyEntity> preProcessEvent =
+            new EntityTimeStampEvent<MyEntity>(dateTimeProvider.Object);
+            
+        MyEntity updatedEntity = preProcessEvent
+            .Execute(new MyEntity()
             {
                 TimeStamp = 5
             }, lifecycleStage);

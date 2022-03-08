@@ -1,5 +1,6 @@
 ﻿using Airslip.Common.Repository.Data;
 using Airslip.Common.Repository.Enums;
+using Airslip.Common.Repository.Implementations;
 using Airslip.Common.Repository.Implementations.Events.Entity.PreProcess;
 using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.UnitTests.Common;
@@ -27,7 +28,7 @@ public class EntityBasicAuditTests
         userContext.Setup(o => o.AirslipUserType).Returns(AirslipUserType.Standard);
 
         IEntityPreProcessEvent<MyEntity> preProcessEvent =
-            new EntityBasicAuditEvent<MyEntity>(userContext.Object);
+            new EntityBasicAuditEvent<MyEntity>(userContext.Object, new DateTimeProvider());
             
         RepositoryAction<MyEntity, MyModel> repositoryAction 
             = new(null, new MyEntity(), null, lifecycleStage, null);

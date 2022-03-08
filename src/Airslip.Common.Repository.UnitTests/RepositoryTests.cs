@@ -10,6 +10,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,17 +19,28 @@ namespace Airslip.Common.Repository.UnitTests;
 public class RepositoryTests
 {
     [Fact]
-    public async Task Error_is_not_thrown_when_deleting_with_null_model()
+    public async Task Timestamp_acts_as_expected_on_deleted_entity()
     {
-        IServiceProvider provider = Helpers.BuildRepoProvider();
+        const long expectedTimeStamp = 123456789;
+        
+        IServiceProvider provider = Helpers.BuildRepoProvider(withTimeStamp: expectedTimeStamp);
 
-        IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
+        IRepository<MyEntityWithTimeStamp, MyModel> repo = provider.GetService<IRepository<MyEntityWithTimeStamp, MyModel>>()
                                               ?? throw new NotImplementedException();
 
-        RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
+        RepositoryActionResultModel<MyModel> delete = await repo.Delete("my-id");
 
         delete.Should().BeOfType<SuccessfulActionResultModel<MyModel>>();
-        delete.ResultType.Should().Be(ResultType.FailedVerification);
+        delete.PreviousVersion.Should().NotBeNull();
+
+        IModelDeliveryService<MyModel>? deliveryService = provider.GetService<IModelDeliveryService<MyModel>>();
+        deliveryService.Should().NotBeNull();
+
+        if (deliveryService is not Helpers.StoreInMemory<MyModel> storage)
+            throw new System.Exception("Something went wrong");
+
+        storage.Models.Count.Should().Be(1);
+        storage.Models.First().TimeStamp.Should().Be(expectedTimeStamp);
     }
     
     [Fact]
@@ -70,9 +82,9 @@ public class RepositoryTests
         IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
                                               ?? throw new NotImplementedException();
 
-        RepositoryActionResultModel<MyModel> update = await repo.Update("my-id", new MyModel()
+        RepositoryActionResultModel<MyModel> update = await repo.Update("unknown-id", new MyModel()
         {
-            Id = "my-id"
+            Id = "unknown-id"
         });
 
         update.Should().BeOfType<FailedActionResultModel<MyModel>>();

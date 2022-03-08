@@ -11,7 +11,6 @@ public interface IRepositoryLifecycle<TEntity, TModel>
 {
     TEntity PreProcess(RepositoryAction<TEntity,TModel> repositoryAction);
     TEntity PostProcess(RepositoryAction<TEntity,TModel> repositoryAction);
-    Task<TModel> PreProcessModel(RepositoryAction<TEntity, TModel> repositoryAction);
     Task<TModel> PostProcessModel(RepositoryAction<TEntity,TModel> repositoryAction);
     Task<ValidationResultModel> PreValidateModel(RepositoryAction<TEntity,TModel> repositoryAction);
     Task<ValidationResultModel> PreValidateEntity(RepositoryAction<TEntity,TModel> repositoryAction);
