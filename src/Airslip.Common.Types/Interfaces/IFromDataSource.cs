@@ -1,7 +1,7 @@
 using Airslip.Common.Types.Enums;
 using JetBrains.Annotations;
 
-namespace Airslip.Common.Repository.Types.Interfaces;
+namespace Airslip.Common.Types.Interfaces;
 
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public interface IFromDataSource
