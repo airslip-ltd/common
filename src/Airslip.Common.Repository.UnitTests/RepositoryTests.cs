@@ -18,6 +18,20 @@ namespace Airslip.Common.Repository.UnitTests;
 public class RepositoryTests
 {
     [Fact]
+    public async Task Error_is_not_thrown_when_deleting_with_null_model()
+    {
+        IServiceProvider provider = Helpers.BuildRepoProvider();
+
+        IRepository<MyEntity, MyModel> repo = provider.GetService<IRepository<MyEntity, MyModel>>()
+                                              ?? throw new NotImplementedException();
+
+        RepositoryActionResultModel<MyModel> delete = await repo.Delete("unknown-id");
+
+        delete.Should().BeOfType<SuccessfulActionResultModel<MyModel>>();
+        delete.ResultType.Should().Be(ResultType.FailedVerification);
+    }
+    
+    [Fact]
     public async Task Error_is_not_thrown_when_unknown_resource_is_deleted()
     {
         IServiceProvider provider = Helpers.BuildRepoProvider();
