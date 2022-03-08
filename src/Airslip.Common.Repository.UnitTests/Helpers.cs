@@ -22,6 +22,9 @@ public class Helpers
             .AddSingleton(_ =>
             {
                 Mock<IContext> mock = new();
+                mock
+                    .Setup(o => o.GetEntity<MyEntity>(It.IsAny<string>()))
+                    .ReturnsAsync(new MyEntity());
                 return mock.Object;
             })
             .AddSingleton(_ =>
@@ -29,7 +32,7 @@ public class Helpers
                 Mock<IModelValidator<MyModel>> mock = new();
                 mock
                     .Setup(o => o.ValidateUpdate(It.IsAny<MyModel>()))
-                    .Returns(Task.FromResult(new ValidationResultModel()));
+                    .ReturnsAsync(new ValidationResultModel());
                 return mock.Object;
             })
             .AddSingleton(_ =>
