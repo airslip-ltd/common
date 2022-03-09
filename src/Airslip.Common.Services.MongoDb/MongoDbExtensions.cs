@@ -10,7 +10,7 @@ namespace Airslip.Common.Services.MongoDb
 {
     public static class MongoDbExtensions
     {
-        public static async Task<(IReadOnlyList<TDocument> data, int totalPages)> AggregateByPage<TDocument>(
+        public static async Task<(IReadOnlyList<TDocument> data, int totalCount)> AggregateByPage<TDocument>(
             this IMongoCollection<TDocument> collection,
             FilterDefinition<TDocument> filterDefinition,
             SortDefinition<TDocument> sortDefinition,
