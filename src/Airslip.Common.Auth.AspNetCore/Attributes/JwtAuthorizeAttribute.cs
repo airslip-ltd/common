@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Airslip.Common.Auth.AspNetCore.Attributes
@@ -13,8 +12,8 @@ namespace Airslip.Common.Auth.AspNetCore.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter
     {
-        public string ApplicationRoles { get; set; } = string.Empty;
-        public string UserRoles { get; set; } = string.Empty;
+        public string? ApplicationRoles { get; set; } = null;
+        public string? UserRoles { get; set; } = null;
         public AirslipUserType[] AirslipUserTypes { get; set; } = Array.Empty<AirslipUserType>();
         
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -23,8 +22,8 @@ namespace Airslip.Common.Auth.AspNetCore.Attributes
             {
                 StatusCode = StatusCodes.Status401Unauthorized
             };
-            string[] applicationRoles = ApplicationRoles.Split(",");
-            string[] userRoles = UserRoles.Split(",");
+            string[] applicationRoles = ApplicationRoles?.Split(",") ?? Array.Empty<string>();
+            string[] userRoles = UserRoles?.Split(",") ?? Array.Empty<string>();
             
             // skip authorization if action is decorated with [AllowAnonymous] attribute
             bool allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
