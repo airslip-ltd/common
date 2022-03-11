@@ -41,6 +41,13 @@ namespace Airslip.Common.Auth.AspNetCore.Middleware
                         httpContext.Items["UserToken"] = userToken;
                     }
                 }
+                
+                if (identity?.IsAuthenticated ?? false)
+                {
+                    UserToken userToken = tokenDecodeService.GetCurrentToken();
+                    httpContext.Items["UserToken"] = userToken;
+                }
+                
                 await _next(httpContext);
             }
             catch (Exception exception)
