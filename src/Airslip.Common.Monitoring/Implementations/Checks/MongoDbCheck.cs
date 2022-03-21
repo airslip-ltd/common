@@ -32,7 +32,7 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
 
                 while (await collectionNames.MoveNextAsync())
                 {
-                    _logger.Information("Found collections {CollectionNames}",string.Join(", ", collectionNames.Current));
+                    _logger.Debug("Found collections {CollectionNames}",string.Join(", ", collectionNames.Current));
                 }
             }
             catch (Exception? ee)
