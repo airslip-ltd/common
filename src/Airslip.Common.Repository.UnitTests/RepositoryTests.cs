@@ -1,14 +1,17 @@
 ﻿using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Extensions;
 using Airslip.Common.Repository.Implementations;
+using Airslip.Common.Repository.Interfaces;
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Repository.UnitTests.Common;
 using Airslip.Common.Types.Interfaces;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using Serilog;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -98,7 +101,8 @@ public class RepositoryTests
         Mock<IModelValidator<MyModel>> mockModelValidator = new();
         Mock<IModelMapper<MyModel>> mockModelMapper = new();
         Mock<IUserContext> mockTokenDecodeService = new();
-
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+        
         IServiceCollection serviceCollection = new ServiceCollection();
 
         serviceCollection.AddSingleton(mockModelValidator.Object);
@@ -106,7 +110,7 @@ public class RepositoryTests
         serviceCollection.AddSingleton(mockContext.Object);
         serviceCollection.AddSingleton(mockTokenDecodeService.Object);
         serviceCollection.AddSingleton(mockTokenDecodeService.Object);
-        serviceCollection.AddRepositories(RepositoryUserType.Manual);
+        serviceCollection.AddRepositories(configuration, RepositoryUserType.Manual);
             
         var provider = serviceCollection.BuildServiceProvider();
         var myRepo = provider.GetService<IRepository<MyEntity, MyModel>>();
@@ -121,6 +125,7 @@ public class RepositoryTests
         Mock<IModelValidator<MyModel>> mockModelValidator = new();
         Mock<IModelMapper<MyModel>> mockModelMapper = new();
         Mock<IUserContext> mockTokenDecodeService = new();
+        IConfiguration configuration = new ConfigurationBuilder().Build();
 
         IServiceCollection serviceCollection = new ServiceCollection();
 
@@ -131,10 +136,38 @@ public class RepositoryTests
         serviceCollection.AddSingleton(mockTokenDecodeService.Object);
         serviceCollection.AddSingleton(typeof(IModelDeliveryService<>), 
             typeof(NullModelDeliveryService<>));
-        serviceCollection.AddRepositories(RepositoryUserType.Manual);
+        serviceCollection.AddRepositories(configuration, RepositoryUserType.Manual);
             
         var provider = serviceCollection.BuildServiceProvider();
         var myRepo = provider.GetService<IRepository<MyEntity, MyModel>>();
+
+        myRepo.Should().NotBeNull();
+    }
+        
+    [Fact]
+    public void Can_construct_repository_logger_with_no_settings()
+    {
+        Mock<IContext> mockContext = new();
+        Mock<IModelValidator<MyModel>> mockModelValidator = new();
+        Mock<IModelMapper<MyModel>> mockModelMapper = new();
+        Mock<IUserContext> mockTokenDecodeService = new();
+        Mock<ILogger> logger = new();
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+
+        IServiceCollection serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddSingleton(logger.Object);
+        serviceCollection.AddSingleton(mockModelValidator.Object);
+        serviceCollection.AddSingleton(mockModelMapper.Object);
+        serviceCollection.AddSingleton(mockContext.Object);
+        serviceCollection.AddSingleton(mockTokenDecodeService.Object);
+        serviceCollection.AddSingleton(mockTokenDecodeService.Object);
+        serviceCollection.AddSingleton(typeof(IModelDeliveryService<>), 
+            typeof(NullModelDeliveryService<>));
+        serviceCollection.AddRepositories(configuration, RepositoryUserType.Manual);
+            
+        ServiceProvider provider = serviceCollection.BuildServiceProvider();
+        IRepositoryLogService? myRepo = provider.GetService<IRepositoryLogService>();
 
         myRepo.Should().NotBeNull();
     }

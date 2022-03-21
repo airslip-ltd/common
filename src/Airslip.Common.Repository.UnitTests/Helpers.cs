@@ -6,6 +6,7 @@ using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Repository.UnitTests.Common;
 using Airslip.Common.Types.Enums;
 using Airslip.Common.Types.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
@@ -34,7 +35,8 @@ public class Helpers
         long? withTimeStamp = null)
     {
         IServiceCollection services = new ServiceCollection();
-
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+        
         services
             .AddSingleton(_ =>
             {
@@ -78,7 +80,7 @@ public class Helpers
                     .Returns(new MyEntity());
                 return mock.Object;
             })
-            .AddRepositories(RepositoryUserType.Manual)
+            .AddRepositories(configuration, RepositoryUserType.Manual)
             .AddScoped(_ =>
             {
                 Mock<IUserContext> mockTokenDecodeService = new();
