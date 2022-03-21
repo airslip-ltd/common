@@ -37,7 +37,7 @@ namespace Airslip.Common.Services.CosmosDb
         {
             if (!LogMetrics) return;
             
-            _logger.Information("CosmosDb Analytics: {ActionName} item with id: {ResourceId} and name: {ResourceName}. Duration [{Duration}ms], Charge [{Charge:F}] ", 
+            _logger.Debug("CosmosDb Analytics: {ActionName} item with id: {ResourceId} and name: {ResourceName}. Duration [{Duration}ms], Charge [{Charge:F}] ", 
                 actionName, itemResponse.Resource.Id, GetContainerId<TEntity>(),
                 itemResponse.Diagnostics.GetClientElapsedTime().Milliseconds, itemResponse.RequestCharge);
         }

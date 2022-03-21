@@ -23,7 +23,7 @@ public class MessageHandoffService : IMessageHandoffService
     public async Task ProcessMessage(string triggerName, string message)
     {
         IDisposable? logProperty = LogContext.PushProperty("CorrelationId", Guid.NewGuid().ToString());
-        _logger.Information("Triggered {TriggerName}", triggerName);
+        _logger.Debug("Triggered {TriggerName}", triggerName);
 
         if (!Handlers.Any(o => o.QueueName.Equals(triggerName)))
         {
@@ -53,7 +53,7 @@ public class MessageHandoffService : IMessageHandoffService
             _logger.Fatal(ee, "Uncaught error in {TriggerName}", triggerName);                
         }
         
-        _logger.Information("Completed {TriggerName}", triggerName);
+        _logger.Debug("Completed {TriggerName}", triggerName);
         logProperty?.Dispose();
     }
 }

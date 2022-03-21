@@ -27,7 +27,7 @@ namespace Airslip.Common.Services.EventHub.Implementations
             if (attr == null)
             {
                 _supportsDelivery = false;
-                _logger.Information("Model delivery to event hub not supported for this type");
+                _logger.Debug("Model delivery to event hub not supported for this type");
             }
             else
             {
