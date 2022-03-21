@@ -1,26 +1,26 @@
 using Airslip.Common.Repository.Configuration;
-using Airslip.Common.Repository.Enums;
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Enums;
+using Airslip.Common.Repository.Types.Interfaces;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Diagnostics;
 
 namespace Airslip.Common.Repository.Implementations;
 
-public class RepositoryLogService : IRepositoryLogService
+public class RepositoryMetricService : IRepositoryMetricService
 {
     private readonly ILogger _logger;
     private readonly Stopwatch _stopwatch;
     private readonly RepositorySettings _settings;
 
-    public RepositoryLogService(ILogger logger, IOptions<RepositorySettings> options)
+    public RepositoryMetricService(ILogger logger, IOptions<RepositorySettings> options)
     {
         _logger = logger;
         _stopwatch = new Stopwatch();
         _settings = options.Value ?? new RepositorySettings();
     }
     
-    public void LogMetric(string activityName, string metricName, MetricType metricType)
+    public void LogMetric(string activityName, string metricName, RepositoryMetricType metricType)
     {
         if (!_settings.IncludeMetrics) return;
         _logger.Debug("{MetricTime}ms: {ActivityName} - {MetricName} - {MetricType}", _stopwatch.ElapsedMilliseconds, 

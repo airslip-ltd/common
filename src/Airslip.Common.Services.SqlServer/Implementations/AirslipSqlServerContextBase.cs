@@ -14,29 +14,37 @@ namespace Airslip.Common.Services.SqlServer.Implementations;
 
 public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, IContext
 {
-    protected AirslipSqlServerContextBase(DbContextOptions options)
+    private readonly IRepositoryMetricService _metricService;
+
+    protected AirslipSqlServerContextBase(DbContextOptions options, IRepositoryMetricService metricService)
         : base(options)
     {
-        
+        _metricService = metricService;
     }
 
     public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(AddEntity), RepositoryMetricType.Start);
         EntityEntry<TEntity> result = await Set<TEntity>().AddAsync(newEntity);
         await SaveChangesAsync();
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(AddEntity), RepositoryMetricType.Complete);
         return result.Entity;
     }
 
     public async Task<TEntity?> GetEntity<TEntity>(string id) where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(GetEntity), RepositoryMetricType.Start);
         TEntity? result = await Set<TEntity>().FindAsync(id);
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(GetEntity), RepositoryMetricType.Complete);
         return result;
     }
 
     public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpdateEntity), RepositoryMetricType.Start);
         EntityEntry<TEntity> updateResult = Update(updatedEntity);
         await SaveChangesAsync();
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpdateEntity), RepositoryMetricType.Complete);
         return updateResult.Entity;
     }
 
@@ -47,6 +55,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
 
     public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpsertEntity), RepositoryMetricType.Start);
         IQueryable<string> q = from table in Set<TEntity>().AsQueryable()
             where table.Id == newEntity.Id
             select table.Id;
@@ -61,6 +70,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         {
             result =  await UpdateEntity(newEntity);
         }
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpsertEntity), RepositoryMetricType.Complete);
         
         return result;
     }
@@ -91,24 +101,45 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
     public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) 
         where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Start);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(IQueryableExtensions.BuildQuery), RepositoryMetricType.Start);
         IQueryable<TEntity> query = Set<TEntity>().BuildQuery(entitySearch, mandatoryFilters);
-
-        return await _queryToSearchResult(query, entitySearch);
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(IQueryableExtensions.BuildQuery), RepositoryMetricType.Complete);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Start);
+        EntitySearchResult<TEntity> result = await _queryToSearchResult(query, entitySearch);;
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Complete);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Complete);
+        return result;
     }
 
     public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, 
         EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Start);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(IQueryableExtensions.BuildQuery), RepositoryMetricType.Start);
         IQueryable<TEntity> query = baseQuery.BuildQuery(entitySearch, mandatoryFilters);
-
-        return await _queryToSearchResult(query, entitySearch);
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(IQueryableExtensions.BuildQuery), RepositoryMetricType.Complete);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Start);
+        EntitySearchResult<TEntity> result = await _queryToSearchResult(query, entitySearch);;
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Complete);
+        
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Complete);
+        
+        return result;
     }
 
     private async Task<EntitySearchResult<TEntity>> _queryToSearchResult<TEntity>(IQueryable<TEntity> query, 
         EntitySearchQueryModel entitySearch)
         where TEntity : class, IEntityWithId
     {
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Record Count", RepositoryMetricType.Start);
         int count = await query.CountAsync();
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Record Count", RepositoryMetricType.Complete);
 
         if (entitySearch.Page > 0)
             query = query.Skip(entitySearch.Page * entitySearch.RecordsPerPage);
@@ -121,9 +152,11 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
             query = sortModel.Sort == SortOrder.Asc ? query.OrderBy(sortModel.Field) : query.OrderByDescending(sortModel.Field);
         }
         
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Running Query", RepositoryMetricType.Start);
         List<TEntity> list = await query
             .ToListAsync();
-
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Running Query", RepositoryMetricType.Complete);
+        
         return new EntitySearchResult<TEntity>(list, count);
     }
 

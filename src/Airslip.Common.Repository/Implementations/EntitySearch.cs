@@ -1,6 +1,5 @@
-using Airslip.Common.Repository.Enums;
 using Airslip.Common.Repository.Extensions;
-using Airslip.Common.Repository.Interfaces;
+using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using System.Collections.Generic;
@@ -18,12 +17,12 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
 {
     private readonly ISearchContext _context;
     private readonly IModelMapper<TModel> _mapper;
-    private readonly IRepositoryLogService _logService;
+    private readonly IRepositoryMetricService _logService;
     private readonly IEnumerable<IEntitySearchFormatter<TModel>> _searchFormatters;
         
     public EntitySearch(ISearchContext context, 
         IModelMapper<TModel> mapper,
-        IRepositoryLogService logService,
+        IRepositoryMetricService logService,
         IEnumerable<IEntitySearchFormatter<TModel>> searchFormatters)
     {
         _context = context;
@@ -45,10 +44,10 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
         _logService.StartClock();
         
         // Get search results for our entities
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", MetricType.Start);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", RepositoryMetricType.Start);
         EntitySearchResult<TEntity> searchResults = await _context
             .SearchEntities<TEntity>(entitySearch, mandatoryFilters);
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", MetricType.Complete);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", RepositoryMetricType.Complete);
 
         return await _searchToResult(entitySearch, searchResults);
     }
@@ -67,10 +66,10 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
         _logService.StartClock();
         
         // Get search results for our entities
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", MetricType.Start);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", RepositoryMetricType.Start);
         EntitySearchResult<TEntity> searchResults = await _context
             .SearchEntities(baseQuery, entitySearch, mandatoryFilters);
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", MetricType.Complete);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Querying Results", RepositoryMetricType.Complete);
         
         return await _searchToResult(entitySearch, searchResults);
     }
@@ -78,15 +77,15 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
     private async Task<EntitySearchResponse<TModel>> _searchToResult<TEntity>(EntitySearchQueryModel entitySearch, EntitySearchResult<TEntity> searchResults)
         where TEntity : class, IEntity
     {
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Calculating pagination", MetricType.Start);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Calculating pagination", RepositoryMetricType.Start);
         EntitySearchResponse<TModel> pagedResult = new()
         {
             Paging = entitySearch.CalculatePagination(searchResults.RecordCount)
         };
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Calculating pagination", MetricType.Complete);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Calculating pagination", RepositoryMetricType.Complete);
 
         // Format them into models
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Mapping entities", MetricType.Start);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Mapping entities", RepositoryMetricType.Start);
         foreach (TEntity result in searchResults.Records)
         {
             // Create a new model using the mapper
@@ -101,7 +100,7 @@ public class EntitySearch<TModel> : IEntitySearch<TModel>
             // Add to the list
             pagedResult.Results.Add(newModel);
         }
-        _logService.LogMetric(nameof(EntitySearch<TModel>),"Mapping entities", MetricType.Complete);
+        _logService.LogMetric(nameof(EntitySearch<TModel>),"Mapping entities", RepositoryMetricType.Complete);
         
         return pagedResult;
     }

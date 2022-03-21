@@ -34,7 +34,7 @@ public static class ServiceExtensions
         serviceCollection
             .AddSingleton<IDateTimeProvider, DateTimeProvider>()
             .Configure<RepositorySettings>(configuration.GetSection(nameof(RepositorySettings)))
-            .AddScoped<IRepositoryLogService, RepositoryLogService>()
+            .AddScoped<IRepositoryMetricService, RepositoryMetricService>()
             .AddScoped(typeof(IRepositoryLifecycle<,>), typeof(RepositoryLifecycle<,>))
             .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
             .AddScoped(typeof(IModelPostProcessEvent<>), typeof(ModelDeliveryEvent<>))
