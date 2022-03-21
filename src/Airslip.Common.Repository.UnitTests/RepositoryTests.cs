@@ -167,7 +167,7 @@ public class RepositoryTests
         serviceCollection.AddRepositories(configuration, RepositoryUserType.Manual);
             
         ServiceProvider provider = serviceCollection.BuildServiceProvider();
-        IRepositoryLogService? myRepo = provider.GetService<IRepositoryLogService>();
+        IRepositoryMetricService? myRepo = provider.GetService<IRepositoryMetricService>();
 
         myRepo.Should().NotBeNull();
     }
