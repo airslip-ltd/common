@@ -13,7 +13,7 @@ namespace Airslip.Common.Utilities.Extensions
 {
     public static class HttpExtensions
     {
-        public static async Task<HttpRequestResult<TResponse>> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
+        public static async Task<HttpActionResult> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
             Dictionary<string, string> headers, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
@@ -31,7 +31,7 @@ namespace Airslip.Common.Utilities.Extensions
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
         
-        public static async Task<HttpRequestResult<TResponse>> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
+        public static async Task<HttpActionResult> GetApiRequest<TResponse>(this HttpClient httpClient,  string url, 
             string apiKey, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
@@ -41,7 +41,7 @@ namespace Airslip.Common.Utilities.Extensions
             }, cancellationToken);
         }
         
-        public static async Task<HttpRequestResult<TResponse>> PatchApiRequest<TResponse>(this HttpClient httpClient,  string url, 
+        public static async Task<HttpActionResult> PatchApiRequest<TResponse>(this HttpClient httpClient,  string url, 
             Dictionary<string, string> headers, string requestContent, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
@@ -61,13 +61,13 @@ namespace Airslip.Common.Utilities.Extensions
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
 
-        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(this HttpClient httpClient,  string url, 
-            Dictionary<string, string> headers, TRequestType requestContent, CancellationToken cancellationToken)
+        public static async Task<HttpActionResult> ApiRequestWithBody<TResponse, TRequestType>(this HttpClient httpClient,  string url, 
+            Dictionary<string, string> headers, TRequestType requestContent, HttpMethod httpMethod, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
             HttpRequestMessage httpRequestMessage = new()
             {
-                Method = HttpMethod.Post,
+                Method = httpMethod,
                 RequestUri = new Uri(url),
                 Content = new StringContent(Json.Serialize(requestContent!), 
                     Encoding.UTF8, Json.MediaType)
@@ -81,31 +81,47 @@ namespace Airslip.Common.Utilities.Extensions
             return await _sendRequest<TResponse>(httpClient, httpRequestMessage, cancellationToken);
         }
         
-        public static async Task<HttpRequestResult<TResponse>> PostApiRequest<TResponse, TRequestType>(this HttpClient httpClient,  
-            string url, string apiKey, TRequestType requestContent, CancellationToken cancellationToken)
+        public static async Task<HttpActionResult> ApiRequestWithBody<TResponse, TRequestType>(this HttpClient httpClient,  
+            string url, string apiKey, TRequestType requestContent, HttpMethod httpMethod, CancellationToken cancellationToken)
             where TResponse : class, IResponse
         {
-            return await PostApiRequest<TResponse, TRequestType>(httpClient, url, new Dictionary<string, string>
+            return await ApiRequestWithBody<TResponse, TRequestType>(httpClient, url, new Dictionary<string, string>
             {
                 {"x-api-key", apiKey}
-            }, requestContent, cancellationToken);
+            }, requestContent, httpMethod, cancellationToken);
         }
 
-        private static async Task<HttpRequestResult<TResponse>> _sendRequest<TResponse>(HttpClient httpClient, 
+        private static async Task<HttpActionResult> _sendRequest<TResponse>(HttpClient httpClient, 
             HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken) 
             where TResponse : class, IResponse
         {
-            HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
-
-            string content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return new HttpRequestResult<TResponse>(response.IsSuccessStatusCode, response.StatusCode, content, 
-                    ValidContent(content) ? Json.Deserialize<TResponse>(content) : null);
-            }
+                HttpResponseMessage response = await httpClient.SendAsync(httpRequestMessage, cancellationToken);
 
-            return new HttpRequestResult<TResponse>(response.IsSuccessStatusCode, response.StatusCode, content);
+                string content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return new HttpActionResult(response.IsSuccessStatusCode, response.StatusCode, content,
+                        ValidContent(content) ? Json.Deserialize<TResponse>(content) : null);
+                }
+
+                return new HttpActionResult(response.IsSuccessStatusCode, response.StatusCode, content,
+                    string.IsNullOrWhiteSpace(content) ? null : _parseError(content));
+            }
+            catch (Exception ee)
+            {
+                return new (false, 
+                    HttpStatusCode.BadRequest, string.Empty,
+                    new ErrorResponse("UNHANDLED", ee.Message));
+            }
+        }
+
+        private static IResponse _parseError(string content)
+        {
+            if (content.Contains("errors")) return Json.Deserialize<ErrorResponses>(content);
+            return Json.Deserialize<ErrorResponse>(content);
         }
         
         public static async Task<IResponse> CommonResponseHandler<TExpectedType>(
