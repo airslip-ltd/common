@@ -84,7 +84,7 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             switch (response)
             {
                 case UnauthorisedResponse unauthorisedResponse:
-                    _logger.Error("Unauthorised error: {ErrorMessage}", unauthorisedResponse.Message);
+                    _logger.Warning("Unauthorised error: {ErrorMessage}", unauthorisedResponse.Message);
                     return new ObjectResult(response) { StatusCode = StatusCodes.Status401Unauthorized };
                 default:
                     return BadRequest(response);
@@ -96,18 +96,20 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             switch (failure)
             {
                 case ErrorResponse response:
-                    _logger.Error("Bad request error: {ErrorMessage}", response.Message);
+                    _logger.Warning("Bad request error: {ErrorMessage}", response.Message);
                     return new BadRequestObjectResult(new ApiErrorResponse(Token, response));
                 case ErrorResponses response:
-                    _logger.Error("Bad request errors: {ErrorMessages}",
+                    _logger.Warning("Bad request errors: {ErrorMessages}",
                         string.Join(",", response.Errors.Select(errorResponse => errorResponse.Message)));
                     return new BadRequestObjectResult(new ApiErrorResponse(Token, response.Errors));
                 case IFail response:
-                    _logger.Error("Fail errors: {ErrorMessages}", response.ErrorCode);
+                    _logger.Warning("Fail errors: {ErrorMessages}", response.ErrorCode);
                     return new BadRequestObjectResult(
                         new ApiErrorResponse(Token, new ErrorResponse(response.ErrorCode)));
                 default:
-                    throw new ArgumentException("Unknown response type.", nameof(failure));
+                    _logger.Error("Unknown response type: {ObjectName}", nameof(failure));
+                    return new BadRequestObjectResult(
+                        new ApiErrorResponse(Token, new InvalidResource(nameof(failure), "Unsupported object type")));
             }
         }
 
