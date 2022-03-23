@@ -8,16 +8,13 @@ using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Hateoas;
 using Airslip.Common.Types.Interfaces;
-using Airslip.Common.Utilities;
 using Airslip.Common.Utilities.Extensions;
-using JetBrains.Annotations;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -26,8 +23,8 @@ namespace Airslip.Common.Functions.Implementations
 {
     public class FunctionApiTools : IFunctionApiTools
     {
-        public readonly string BaseUri;
-        public readonly ILogger Logger;
+        private readonly string BaseUri;
+        private readonly ILogger Logger;
 
         public FunctionApiTools(IOptions<PublicApiSettings> publicApiOptions, ILogger logger)
         {
@@ -38,15 +35,16 @@ namespace Airslip.Common.Functions.Implementations
         public async Task<bool> CanAuthenticate(HttpRequestData req,
             FunctionContext executionContext)
         {
-            IApiRequestAuthService requestHandler = executionContext.InstanceServices
-                .GetService<IApiRequestAuthService>()!;
+            IApiRequestAuthService requestHandler = executionContext.InstanceServices.GetService<IApiRequestAuthService>() ?? throw new NotImplementedException();
             KeyAuthenticationResult authenticationResult = await requestHandler.Handle(req);
-            if (authenticationResult.AuthResult == AuthResult.Success) return true;
-            
-            Logger.Error("Authorisation unsuccessful {Message}", 
-                authenticationResult.Message);
-            
-            return false;
+            if (authenticationResult.AuthResult != AuthResult.Success)
+            {
+                Logger.Error("Authorisation unsuccessful {Message}", 
+                    authenticationResult.Message);
+                return false;
+            }
+
+            return true;
         }
         
         public async Task<HttpResponseData> OkResponse<T>(HttpRequestData req, T response) 
@@ -78,8 +76,8 @@ namespace Airslip.Common.Functions.Implementations
             HttpStatusCode statusCode)
             where T: class, IResponse
         {
-            var responseData = req.CreateResponse(statusCode);
-            await responseData.WriteAsJsonAsync(response);
+            HttpResponseData responseData = req.CreateResponse();
+            await responseData.WriteAsJsonAsync(response, statusCode);
             return responseData;
         }
         
@@ -90,40 +88,19 @@ namespace Airslip.Common.Functions.Implementations
             {
                 case ErrorResponse response:
                     Logger.Error("Bad request error: {ErrorMessage}", response.Message);
-                    return await _generateResponse(req, new ApiErrorResponse(response), HttpStatusCode.BadRequest);
+                    return await _generateResponse(req, response, HttpStatusCode.BadRequest);
                 case ErrorResponses response:
                     Logger.Error("Bad request errors: {ErrorMessages}",
                         string.Join(",", response.Errors.Select(errorResponse => errorResponse.Message)));
-                    return await _generateResponse(req, new ApiErrorResponse(response.Errors), HttpStatusCode.BadRequest);
+                    return await _generateResponse(req, response, HttpStatusCode.BadRequest);
                 case IFail response:
                     Logger.Error("Fail errors: {ErrorMessages}", response.ErrorCode);
-                    return await _generateResponse(req, new ApiErrorResponse(new ErrorResponse(response.ErrorCode)), HttpStatusCode.BadRequest);
+                    return await _generateResponse(req, new ErrorResponse(response.ErrorCode), HttpStatusCode.BadRequest);
                 default:
                     throw new ArgumentException("Unknown response type.", nameof(failure));
             }
         }
 
-        [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-        public class ApiErrorResponse : IFail
-        {
-            public long Timestamp { get; }
-            public string CorrelationId { get; } = CommonFunctions.GetId();
-            public IEnumerable<ErrorResponse> Errors { get; }
-
-            public ApiErrorResponse(ErrorResponse error)
-                : this(new[] { error })
-            {
-            }
-
-            public ApiErrorResponse(IEnumerable<ErrorResponse> errors)
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                Errors = errors;
-            }
-
-            public string ErrorCode { get; } = "ApiError";
-        }
-        
         public Task<HttpResponseData> RepositoryActionToResult<TModel>(HttpRequestData req, RepositoryActionResultModel<TModel> theResult) 
             where TModel : class, IModel
         {
