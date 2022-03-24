@@ -1,27 +1,30 @@
 using Airslip.Common.Repository.Types.Constants;
 using Airslip.Common.Repository.Types.Models;
+using Airslip.Common.Services.SqlServer.Interfaces;
+using Airslip.Common.Utilities.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Airslip.Common.Services.SqlServer.Extensions;
+namespace Airslip.Common.Services.SqlServer.Implementations;
 
-internal static class IQueryableExtensions 
+public class QueryBuilder : IQueryBuilder
 {
-    internal static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string propertyName)
+    public IOrderedQueryable<T> OrderBy<T>(IQueryable<T> source, string propertyName)
     {
         return source.OrderBy(ToLambda<T>(propertyName));
     }
 
-    internal static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string propertyName)
+    public IOrderedQueryable<T> OrderByDescending<T>(IQueryable<T> source, string propertyName)
     {
         return source.OrderByDescending(ToLambda<T>(propertyName));
     }
 
-    private static Expression<Func<T, object>> ToLambda<T>(string propertyName)
+    public Expression<Func<T, object>> ToLambda<T>(string propertyName)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T));
         MemberExpression property = Expression.Property(parameter, propertyName);
@@ -30,8 +33,8 @@ internal static class IQueryableExtensions
         return Expression.Lambda<Func<T, object>>(propAsObject, parameter);            
     }
 
-    private static Expression<Func<T, bool>> AndAlso<T>(
-        this Expression<Func<T, bool>> expr1,
+    public Expression<Func<T, bool>> AndAlso<T>(
+        Expression<Func<T, bool>> expr1,
         Expression<Func<T, bool>> expr2)
     {
         // need to detect whether they use the same
@@ -50,8 +53,8 @@ internal static class IQueryableExtensions
                 Expression.Invoke(expr2, param)), param);
     }
 
-    private static Expression<Func<T, bool>> OrElse<T>(
-        this Expression<Func<T, bool>> expr1,
+    public Expression<Func<T, bool>> OrElse<T>(
+        Expression<Func<T, bool>> expr1,
         Expression<Func<T, bool>> expr2)
     {
         // need to detect whether they use the same
@@ -70,11 +73,11 @@ internal static class IQueryableExtensions
                 Expression.Invoke(expr2, param)), param);
     }
 
-    private static Expression<Func<TEntity, bool>> CreateLambdaExpression<TEntity>(this SearchFilterModel filterModel)
+    public Expression<Func<TEntity, bool>> CreateLambdaExpression<TEntity>(SearchFilterModel filterModel)
     {
         ParameterExpression arg = Expression.Parameter(typeof(TEntity), "p");
         PropertyInfo? property = typeof(TEntity).GetProperty(filterModel.ColumnField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-        dynamic compareValue = Expression.Constant(GetTypedValue(filterModel.Value, property!.PropertyType));
+        dynamic compareValue = Expression.Constant(GetTypedValue(filterModel.Value, property!.PropertyType, filterModel.OperatorValue));
         MemberExpression member = Expression.MakeMemberAccess(arg, property);
         
         Expression comparison;
@@ -113,32 +116,45 @@ internal static class IQueryableExtensions
         return Expression.Lambda<Func<TEntity, bool>>(comparison, arg);
     }
 
-    private static dynamic GetTypedValue(dynamic value, Type targetType)
+    public dynamic GetTypedValue(dynamic value, Type targetType, string operatorValue)
     {
+        if (operatorValue.InList(Operators.OPERATOR_AFTER, Operators.OPERATOR_BEFORE,
+                Operators.OPERATOR_ON_OR_AFTER, Operators.OPERATOR_ON_OR_BEFORE))
+        {
+            // Treat as a date...
+            
+            // Format from the front end is always yyyy-MM-dd
+            string rawDate = Convert.ChangeType(value, typeof(string));
+            CultureInfo cultureInfo = new CultureInfo("en-GB");
+            DateTime date = DateTime.ParseExact(rawDate, "yyyy-MM-dd", cultureInfo);
+
+
+        }
+        
         return targetType.IsEnum ? 
             Enum.Parse(targetType, (string) value) : 
             Convert.ChangeType(value, targetType);
     }
     
-    internal static IQueryable<TEntity> BuildQuery<TEntity>(this DbSet<TEntity> set, EntitySearchQueryModel entitySearch, 
+    public IQueryable<TEntity> BuildQuery<TEntity>(DbSet<TEntity> set, EntitySearchQueryModel entitySearch, 
         List<SearchFilterModel> mandatoryFilters) where TEntity : class
     {
-        return set.AsQueryable().BuildQuery(entitySearch, mandatoryFilters);
+        return BuildQuery(set.AsQueryable(), entitySearch, mandatoryFilters);
     }
     
-    internal static IQueryable<TEntity> BuildQuery<TEntity>(this IQueryable<TEntity> q, EntitySearchQueryModel entitySearch, 
+    public IQueryable<TEntity> BuildQuery<TEntity>(IQueryable<TEntity> q, EntitySearchQueryModel entitySearch, 
         List<SearchFilterModel> mandatoryFilters) where TEntity : class
     {
-        Expression<Func<TEntity, bool>>? lambda = mandatoryFilters.BuildFilterQuery<TEntity>();
+        Expression<Func<TEntity, bool>>? lambda = BuildFilterQuery<TEntity>(mandatoryFilters);
         if (lambda != null) q = q.Where(lambda);
         
-        lambda = entitySearch.Search?.Items.BuildFilterQuery<TEntity>(entitySearch.Search.LinkOperator);
+        lambda = BuildFilterQuery<TEntity>(entitySearch.Search?.Items, entitySearch.Search.LinkOperator);
         if (lambda != null) q = q.Where(lambda);
         
         return q;
     }
 
-    private static Expression<Func<TEntity, bool>>? BuildFilterQuery<TEntity>(this List<SearchFilterModel> filters, 
+    public Expression<Func<TEntity, bool>>? BuildFilterQuery<TEntity>(List<SearchFilterModel> filters, 
         string linkOperator = Operators.LINK_OPERATOR_AND)
     {
         Expression<Func<TEntity, bool>>? lambda = null;
@@ -159,7 +175,7 @@ internal static class IQueryableExtensions
 
         foreach (SearchFilterModel searchFilterModel in filters.Where(o => o.Value != null))
         {
-            Expression<Func<TEntity, bool>> thisExpression = searchFilterModel.CreateLambdaExpression<TEntity>();
+            Expression<Func<TEntity, bool>> thisExpression = CreateLambdaExpression<TEntity>(searchFilterModel);
             lambda = lambda == null ? 
                 thisExpression : 
                 predicate(lambda, thisExpression);
