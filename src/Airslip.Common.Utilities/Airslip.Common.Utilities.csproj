@@ -20,7 +20,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Airslip.Common.Types" Version="6.0.6" />
+		<PackageReference Include="Airslip.Common.Types" Version="6.1.2" />
 	</ItemGroup>
 
 </Project>
