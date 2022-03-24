@@ -96,17 +96,21 @@ public class QueryBuilder : IQueryBuilder
                     compareValue);
                 break;
             case Operators.OPERATOR_GREATER_THAN_EQUALS:
+            case Operators.OPERATOR_ON_OR_AFTER:
                 comparison = Expression.GreaterThanOrEqual(
                     member,
                     compareValue);
                 break;
             case Operators.OPERATOR_LESS_THAN_EQUALS:
+            case Operators.OPERATOR_ON_OR_BEFORE:
                 comparison = Expression.LessThanOrEqual(member, compareValue);
                 break;
             case Operators.OPERATOR_GREATER_THAN:
+            case Operators.OPERATOR_AFTER:
                 comparison = Expression.LessThan(member, compareValue);
                 break;
             case Operators.OPERATOR_LESS_THAN:
+            case Operators.OPERATOR_BEFORE:
                 comparison = Expression.GreaterThan(member, compareValue);
                 break;
             default:
@@ -121,14 +125,11 @@ public class QueryBuilder : IQueryBuilder
         if (operatorValue.InList(Operators.OPERATOR_AFTER, Operators.OPERATOR_BEFORE,
                 Operators.OPERATOR_ON_OR_AFTER, Operators.OPERATOR_ON_OR_BEFORE))
         {
-            // Treat as a date...
-            
-            // Format from the front end is always yyyy-MM-dd
             string rawDate = Convert.ChangeType(value, typeof(string));
-            CultureInfo cultureInfo = new CultureInfo("en-GB");
+            CultureInfo cultureInfo = new("en-GB");
             DateTime date = DateTime.ParseExact(rawDate, "yyyy-MM-dd", cultureInfo);
 
-
+            value = targetType == typeof(long) ? date.ToUnixTimeMilliseconds() : date;
         }
         
         return targetType.IsEnum ? 
