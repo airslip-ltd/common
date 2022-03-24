@@ -14,23 +14,23 @@ namespace Airslip.Common.MerchantTransactions.Interfaces
             string entityId,
             AirslipUserType airslipUserType,
             string userId,
-            string adapterSource);
+            PosProviders provider);
 
         Task<TrackingDetails> Send(TSource transaction,
             string accountId,
             string entityId,
             AirslipUserType airslipUserType,
             string userId,
-            string adapterSource);
+            PosProviders provider);
 
         Task<ICollection<TrackingDetails>> SendBulk(
             IEnumerable<TSource> transactions,
             string airslipApiKey,
-            string adapterSource);
+            PosProviders provider);
 
         Task<TrackingDetails> Send(
             TSource transaction, 
             string airslipApiKey, 
-            string adapterSource);
+            PosProviders provider);
     }
 }

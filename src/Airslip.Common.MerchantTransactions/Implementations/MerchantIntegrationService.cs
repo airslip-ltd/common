@@ -29,12 +29,12 @@ namespace Airslip.Common.MerchantTransactions.Implementations
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource)
+            PosProviders provider)
         {
             List<TrackingDetails> trackingDetails = new();
 
             foreach (TSource transaction in transactions)
-                trackingDetails.Add(await _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, adapterSource));
+                trackingDetails.Add(await _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, provider));
 
             return trackingDetails;
         }
@@ -44,24 +44,25 @@ namespace Airslip.Common.MerchantTransactions.Implementations
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource)
+            PosProviders provider)
         {
-            return _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, adapterSource);
+            return _sendInternalApi(transaction, accountId, entityId, airslipUserType, userId, provider);
         }
 
-        public async Task<ICollection<TrackingDetails>> SendBulk(IEnumerable<TSource> transactions, string airslipApiKey, string adapterSource)
+        public async Task<ICollection<TrackingDetails>> SendBulk(IEnumerable<TSource> transactions, 
+            string airslipApiKey, PosProviders provider)
         {
             List<TrackingDetails> trackingDetails = new();
 
             foreach (TSource transaction in transactions)
-                trackingDetails.Add(await _sendExternalApi(transaction, airslipApiKey, adapterSource));
+                trackingDetails.Add(await _sendExternalApi(transaction, airslipApiKey, provider));
 
             return trackingDetails;
         }
 
-        public Task<TrackingDetails> Send(TSource transaction, string airslipApiKey, string adapterSource)
+        public Task<TrackingDetails> Send(TSource transaction, string airslipApiKey, PosProviders provider)
         {
-            return _sendExternalApi(transaction, airslipApiKey, adapterSource);
+            return _sendExternalApi(transaction, airslipApiKey, provider);
         }
 
         private Task<TrackingDetails> _sendInternalApi(TSource transaction, 
@@ -69,26 +70,26 @@ namespace Airslip.Common.MerchantTransactions.Implementations
             string entityId,
             AirslipUserType airslipUserType,
             string userId, 
-            string adapterSource)
+            PosProviders provider)
         {
-            TransactionDetails transactionOut = _transactionMapper.Create(
-                transaction);
+            TransactionDetails transactionOut = _transactionMapper
+                .Create(transaction, provider);
                 
             transactionOut.InternalId = CommonFunctions.GetId();
-            transactionOut.Source = adapterSource;
+            transactionOut.Source = provider.ToString();
 
             return _internalApiV1Client
                 .CreateTransactionAsync(accountId, entityId, airslipUserType.ToString(), userId, transactionOut);
         }
         
         private Task<TrackingDetails> _sendExternalApi(TSource transaction, string apiKeyToken, 
-            string adapterSource)
+            PosProviders provider)
         {
             TransactionDetails transactionOut = _transactionMapper.Create(
-                transaction);
+                transaction, provider);
                 
             transactionOut.InternalId = CommonFunctions.GetId();
-            transactionOut.Source = adapterSource;
+            transactionOut.Source = provider.ToString();
 
             _externalApiV1Client.SetApiKeyToken(apiKeyToken);
             return _externalApiV1Client.CreateTransactionAsync(transactionOut);
