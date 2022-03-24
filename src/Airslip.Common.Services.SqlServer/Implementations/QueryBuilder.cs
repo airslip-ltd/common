@@ -107,11 +107,11 @@ public class QueryBuilder : IQueryBuilder
                 break;
             case Operators.OPERATOR_GREATER_THAN:
             case Operators.OPERATOR_AFTER:
-                comparison = Expression.LessThan(member, compareValue);
+                comparison = Expression.GreaterThan(member, compareValue);
                 break;
             case Operators.OPERATOR_LESS_THAN:
             case Operators.OPERATOR_BEFORE:
-                comparison = Expression.GreaterThan(member, compareValue);
+                comparison = Expression.LessThan(member, compareValue);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
