@@ -7,6 +7,7 @@ using Airslip.Common.Types.Configuration;
 using Airslip.Common.Types.Failures;
 using Airslip.Common.Types.Hateoas;
 using Airslip.Common.Types.Interfaces;
+using Airslip.Common.Types.Responses;
 using Airslip.Common.Utilities.Extensions;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -43,13 +44,13 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
                 @base.AddHateoasLinks<T>(BaseUri);
                 @base.AddChildHateoasLinks(@base, BaseUri);
             }
-            
-            return response is ISuccess
-                ? new ObjectResult(response)
-                {
-                    StatusCode = (int) HttpStatusCode.OK
-                }
-                : BadRequest(response);
+            return response switch
+            {
+                DownloadResponse downloadResponse => File(downloadResponse.FileContent, 
+                    downloadResponse.MediaType, downloadResponse.FileName), 
+                ISuccess _ => new ObjectResult(response) { StatusCode = (int) HttpStatusCode.OK },
+                _ => BadRequest(response)
+            };
         }
 
         protected IActionResult Created(IResponse response)
