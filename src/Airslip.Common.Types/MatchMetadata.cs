@@ -1,3 +1,3 @@
-namespace Airslip.Common.Types.Transaction;
+namespace Airslip.Common.Types;
 
 public record MatchMetadata(string PropertyName, string PropertyValue);

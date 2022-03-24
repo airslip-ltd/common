@@ -52,7 +52,7 @@ namespace Airslip.Common.Services.Consent.Implementations
                 {"callbackUrl", callbackUrl ?? providerDetails.CallbackUrl}
             });
             
-            HttpRequestResult<AccountAuthorisationResponse> apiCallResponse = await _httpClient
+            HttpActionResult apiCallResponse = await _httpClient
                 .GetApiRequest<AccountAuthorisationResponse>(url, providerDetails.ApiKey, cancellationToken);
             
             return apiCallResponse.Response;
@@ -74,7 +74,7 @@ namespace Airslip.Common.Services.Consent.Implementations
                 {"bankId", bankId}
             });
             
-            HttpRequestResult<AccountAuthorisedResponse> apiCallResponse = await _httpClient
+            HttpActionResult apiCallResponse = await _httpClient
                 .GetApiRequest<AccountAuthorisedResponse>(url, providerDetails.ApiKey, cancellationToken);
             
             return apiCallResponse.Response;
