@@ -17,7 +17,10 @@ CSharpClientGeneratorSettings clientSettings = new()
     OperationNameGenerator = new SingleClientFromOperationIdOperationNameGenerator(),
     ClientBaseClass = "MerchantIntegrationApi",
     ClientBaseInterface = "IMerchantIntegrationApi",
-    UseHttpRequestMessageCreationMethod = true
+    UseHttpRequestMessageCreationMethod = true,
+    AdditionalNamespaceUsages = new []{ "Airslip.Common.MerchantTransactions.Interfaces", "Airslip.Common.MerchantTransactions.Implementations" },
+    GenerateDtoTypes = true,
+    GenerateExceptionClasses = true
 };
 
 CSharpClientGenerator clientGenerator = new(document, clientSettings);
@@ -39,10 +42,11 @@ if (!File.Exists(path))
 await using StreamWriter tw = new(path);
 await tw.WriteLineAsync(code);
 
-
 document = await OpenApiDocument.FromUrlAsync("https://airslip-dev-merchant-integrations-api-app.azurewebsites.net/swagger.json");
 fileName = "ExternalApiV1Client";
 clientSettings.ClassName = fileName;
+clientSettings.GenerateDtoTypes = false;
+clientSettings.GenerateExceptionClasses = false;
 
 CSharpClientGenerator clientGenerator2 = new(document, clientSettings);
 code = clientGenerator2.GenerateFile();
