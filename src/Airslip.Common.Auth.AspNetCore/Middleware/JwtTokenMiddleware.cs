@@ -53,6 +53,7 @@ namespace Airslip.Common.Auth.AspNetCore.Middleware
                 _logger.Error(exception, "An unhandled authentication error occurred");
             }
                 
+            await _next(httpContext);
         }
     }
 }
