@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -56,11 +57,17 @@ namespace Airslip.Common.Middleware
             {
                 _logger.Error(exception, "An unhandled error occurred");
 
-                errorResponse = new ObjectResult(new
+                ErrorResponses errorResponses = ErrorResponses.Empty;
+                
+                errorResponses.Errors.Add(new ErrorResponse(
+                    "UNHANDLED_ERROR",
+                    exception.Message,
+                    new Dictionary<string, object> {{"timestamp", DateTimeOffset.UtcNow.ToString("s")}}));
+                
+                errorResponse = new ObjectResult(errorResponses)
                 {
-                    timestamp = DateTimeOffset.UtcNow.ToString("s"),
-                    errorMessage = exception.Message
-                });
+                    StatusCode = (int) HttpStatusCode.InternalServerError
+                };
             }
 
             context.Response.ContentType = Json.MediaType;
