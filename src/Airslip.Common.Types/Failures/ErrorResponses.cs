@@ -1,9 +1,10 @@
 ﻿using Airslip.Common.Types.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Airslip.Common.Types.Failures
 {
-    public class ErrorResponses : IResponse
+    public class ErrorResponses : IFail
     {
         public static readonly ErrorResponses Empty = new();
 
@@ -18,5 +19,7 @@ namespace Airslip.Common.Types.Failures
         {
             Errors = errors;
         }
+
+        public string ErrorCode => Errors.FirstOrDefault()?.ErrorCode ?? "UNHANDLED_EXCEPTION";
     }
 }
