@@ -47,13 +47,12 @@ namespace Airslip.Common.Auth.AspNetCore.Middleware
                     UserToken userToken = tokenDecodeService.GetCurrentToken();
                     httpContext.Items["UserToken"] = userToken;
                 }
-                
-                await _next(httpContext);
             }
             catch (Exception exception)
             {
                 _logger.Error(exception, "An unhandled authentication error occurred");
             }
+                
         }
     }
 }
