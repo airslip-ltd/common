@@ -150,10 +150,19 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         if (entitySearch.RecordsPerPage > 0)
             query = query.Take(entitySearch.RecordsPerPage);
 
+        IOrderedQueryable<TEntity>? orderBy = null;
         foreach (EntitySearchSortModel sortModel in entitySearch.Sort)
         {
-            query = sortModel.Sort == SortOrder.Asc ? QueryBuilder.OrderBy(query, sortModel.Field) : QueryBuilder.OrderByDescending(query, sortModel.Field);
+            if (orderBy == null)
+                orderBy = sortModel.Sort == SortOrder.Asc
+                    ? QueryBuilder.OrderBy(query, sortModel.Field)
+                    : QueryBuilder.OrderByDescending(query, sortModel.Field);
+            else
+                orderBy = sortModel.Sort == SortOrder.Asc
+                    ? QueryBuilder.ThenBy(orderBy, sortModel.Field)
+                    : QueryBuilder.ThenByDescending(orderBy, sortModel.Field);
         }
+        query = orderBy ?? query;
         
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Running Query", RepositoryMetricType.Start);
         List<TEntity> list = await query

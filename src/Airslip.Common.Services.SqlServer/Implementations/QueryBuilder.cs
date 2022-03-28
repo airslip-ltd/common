@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Types.Constants;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Services.SqlServer.Interfaces;
 using Airslip.Common.Utilities.Extensions;
@@ -22,6 +23,15 @@ public class QueryBuilder : IQueryBuilder
     public IOrderedQueryable<T> OrderByDescending<T>(IQueryable<T> source, string propertyName)
     {
         return source.OrderByDescending(ToLambda<T>(propertyName));
+    }
+    public IOrderedQueryable<T> ThenBy<T>(IOrderedQueryable<T> source, string propertyName)
+    {
+        return source.ThenBy(ToLambda<T>(propertyName));
+    }
+
+    public IOrderedQueryable<T> ThenByDescending<T>(IOrderedQueryable<T> source, string propertyName)
+    {
+        return source.ThenByDescending(ToLambda<T>(propertyName));
     }
 
     public Expression<Func<T, object>> ToLambda<T>(string propertyName)

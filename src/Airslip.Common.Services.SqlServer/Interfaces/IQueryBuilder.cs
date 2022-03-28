@@ -1,4 +1,5 @@
 using Airslip.Common.Repository.Types.Constants;
+using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -33,4 +34,6 @@ public interface IQueryBuilder
 
     Expression<Func<TEntity, bool>>? BuildFilterQuery<TEntity>(List<SearchFilterModel> filters, 
         string linkOperator = Operators.LINK_OPERATOR_AND);
+    IOrderedQueryable<TEntity> ThenBy<TEntity>(IOrderedQueryable<TEntity> source, string propertyName);
+    IOrderedQueryable<TEntity> ThenByDescending<TEntity>(IOrderedQueryable<TEntity> source, string propertyName);
 }
