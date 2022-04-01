@@ -1,6 +1,6 @@
 using Airslip.Common.Matching.Data;
+using Airslip.Common.Types;
 using Airslip.Common.Types.Interfaces;
-using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Response

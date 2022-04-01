@@ -1,6 +1,6 @@
 using Airslip.Common.Matching.Enum;
+using Airslip.Common.MerchantTransactions.Generated;
 using Airslip.Common.Types.Interfaces;
-using Airslip.Common.Types.Transaction;
 
 namespace Airslip.Common.Matching.Response
 {

@@ -1,7 +1,7 @@
 using Airslip.Common.Matching.Data;
 using Airslip.Common.Matching.Enum;
+using Airslip.Common.Types;
 using Airslip.Common.Types.Enums;
-using Airslip.Common.Types.Transaction;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Models

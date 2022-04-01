@@ -1,5 +1,5 @@
 using Airslip.Common.Repository.Types.Interfaces;
-using Airslip.Common.Types.Transaction;
+using Airslip.Common.Types;
 using System.Collections.Generic;
 
 namespace Airslip.Common.Matching.Interfaces
