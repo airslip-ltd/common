@@ -15,7 +15,7 @@ public class EntityStatusValidation<TEntity, TModel> : IEntityPreValidateEvent<T
     where TModel : class, IModel
 {
     public IEnumerable<LifecycleStage> AppliesTo => new[]
-        {LifecycleStage.Update, LifecycleStage.Get, LifecycleStage.Delete};
+        { LifecycleStage.Get };
 
     public Task<List<ValidationResultMessageModel>> Validate(RepositoryAction<TEntity, TModel> repositoryAction)
     {
