@@ -25,7 +25,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         QueryBuilder = queryBuilder;
     }
 
-    public async Task<TEntity> AddEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
+    public virtual async Task<TEntity> AddEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(AddEntity), RepositoryMetricType.Start);
         EntityEntry<TEntity> result = await Set<TEntity>().AddAsync(newEntity);
@@ -34,7 +34,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return result.Entity;
     }
 
-    public async Task<TEntity?> GetEntity<TEntity>(string id) where TEntity : class, IEntityWithId
+    public virtual async Task<TEntity?> GetEntity<TEntity>(string id) where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(GetEntity), RepositoryMetricType.Start);
         TEntity? result = await Set<TEntity>().FindAsync(id);
@@ -42,7 +42,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return result;
     }
 
-    public async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
+    public virtual async Task<TEntity> UpdateEntity<TEntity>(TEntity updatedEntity) where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpdateEntity), RepositoryMetricType.Start);
         EntityEntry<TEntity> updateResult = Update(updatedEntity);
@@ -51,12 +51,12 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return updateResult.Entity;
     }
 
-    public IQueryable<TEntity> QueryableOf<TEntity>() where TEntity : class
+    public virtual IQueryable<TEntity> QueryableOf<TEntity>() where TEntity : class
     {
         return Set<TEntity>().AsQueryable();
     }
 
-    public async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
+    public virtual async Task<TEntity> UpsertEntity<TEntity>(TEntity newEntity) where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(UpsertEntity), RepositoryMetricType.Start);
         IQueryable<string> q = from table in Set<TEntity>().AsQueryable()
@@ -78,7 +78,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return result;
     }
 
-    public async Task<TEntity> Update<TEntity>(string id, string field, string value) where TEntity : class, IEntityWithId
+    public virtual async Task<TEntity> Update<TEntity>(string id, string field, string value) where TEntity : class, IEntityWithId
     {
         TEntity? result = await Set<TEntity>().FindAsync(id);
 
@@ -101,7 +101,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         setter(instance, value);
     }
 
-    public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) 
+    public virtual async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) 
         where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Start);
@@ -118,7 +118,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return result;
     }
 
-    public async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, 
+    public virtual async Task<EntitySearchResult<TEntity>> SearchEntities<TEntity>(IQueryable<TEntity> baseQuery, 
         EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Start);
@@ -172,7 +172,7 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         return new EntitySearchResult<TEntity>(list, count);
     }
 
-    public async Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
+    public virtual async Task<int> RecordCount<TEntity>(EntitySearchQueryModel entitySearch, List<SearchFilterModel> mandatoryFilters) where TEntity : class, IEntityWithId
     {
         return await QueryBuilder.BuildQuery(Set<TEntity>(), entitySearch,  mandatoryFilters)
             .CountAsync();
