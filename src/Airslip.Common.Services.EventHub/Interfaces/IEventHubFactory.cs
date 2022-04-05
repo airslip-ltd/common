@@ -1,4 +1,4 @@
-namespace Airslip.Common.Matching.Interfaces
+namespace Airslip.Common.Services.EventHub.Interfaces
 {
     public interface IEventHubFactory
     {
