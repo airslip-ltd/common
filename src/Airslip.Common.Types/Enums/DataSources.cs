@@ -12,5 +12,6 @@ public enum DataSources
     Analytics,
     QrMatching,
     SmartReceipts,
+    MockData,
     Unknown
 }
