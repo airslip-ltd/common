@@ -16,7 +16,7 @@ public record BankingBankModel : IModel, IFromDataSource
     public string TradingName { get; set; } = string.Empty;
     public string AccountName { get; set; } = string.Empty;
     public EnvironmentType EnvironmentType { get; set; }
-    public ICollection<string> CountryCodes { get; set; } = new List<string> {"GB"};
+    public ICollection<string> CountryCodes { get; set; } = new List<string>();
     public DataSources DataSource { get; set; }
     public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }
