@@ -1,6 +1,7 @@
 ﻿using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using Airslip.Integrations.Banking.Types.Enums;
 using JetBrains.Annotations;
@@ -9,7 +10,7 @@ using System;
 namespace Airslip.Integrations.Banking.Types.Models;
 
 [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
-public record BankingAccountModel : IModelWithOwnership
+public record BankingAccountModel : IModelWithOwnership, IFromDataSource
 {
     public string? Id { get; set; }
     public EntityStatus EntityStatus { get; set; }
@@ -30,5 +31,6 @@ public record BankingAccountModel : IModelWithOwnership
 
     public string BankingBankId { get; set; } = string.Empty;
     public BankingAccountStatus AccountStatus { get; set; } = BankingAccountStatus.Active;
+    public DataSources DataSource { get; set; }
     public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }

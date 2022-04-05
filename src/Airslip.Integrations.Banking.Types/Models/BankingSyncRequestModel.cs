@@ -1,13 +1,14 @@
 using Airslip.Common.Repository.Types.Enums;
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities.Extensions;
 using Airslip.Integrations.Banking.Types.Enums;
 using System;
 
 namespace Airslip.Integrations.Banking.Types.Models;
 
-public class BankingSyncRequestModel : IModelWithOwnership
+public class BankingSyncRequestModel : IModelWithOwnership, IFromDataSource
 {
     public string? Id { get; set; }
     public EntityStatus EntityStatus { get; set; }
@@ -22,5 +23,6 @@ public class BankingSyncRequestModel : IModelWithOwnership
     public BankingSyncStatus SyncStatus { get; set; }
     public int RecordCount { get; set; }
     public string? TracingId { get; set; }
+    public DataSources DataSource { get; set; }
     public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }
