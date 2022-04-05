@@ -30,5 +30,5 @@ public record BankingAccountModel : IModelWithOwnership
 
     public string BankingBankId { get; set; } = string.Empty;
     public BankingAccountStatus AccountStatus { get; set; } = BankingAccountStatus.Active;
-    public long TimeStamp { get; init; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+    public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }

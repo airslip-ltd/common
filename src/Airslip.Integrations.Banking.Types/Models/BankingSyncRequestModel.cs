@@ -22,5 +22,5 @@ public class BankingSyncRequestModel : IModelWithOwnership
     public BankingSyncStatus SyncStatus { get; set; }
     public int RecordCount { get; set; }
     public string? TracingId { get; set; }
-    public long TimeStamp { get; private set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+    public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }

@@ -28,5 +28,5 @@ public record BankingTransactionModel : IModelWithOwnership
     public string BankingAccountId { get; set; } = string.Empty;
     public string BankingBankId { get; set; } = string.Empty;
     public string BankingSyncRequestId { get; set; } = string.Empty;
-    public long TimeStamp { get; init; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+    public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }

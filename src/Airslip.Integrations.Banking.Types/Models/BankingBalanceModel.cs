@@ -18,10 +18,10 @@ public record BankingBalanceModel : IModelWithOwnership
     public AirslipUserType AirslipUserType { get; set; }
     
     public string AccountId { get; set; } = string.Empty;
-    public BankingBalanceStatus BalanceStatus { get; init; }
-    public long Balance { get; init; }
-    public string? Currency { get; init; }
+    public BankingBalanceStatus BalanceStatus { get; set; }
+    public long Balance { get; set; }
+    public string? Currency { get; set; }
     
     public string BankingAccountId { get; set; } = string.Empty;
-    public long TimeStamp { get; init; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+    public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
 }
