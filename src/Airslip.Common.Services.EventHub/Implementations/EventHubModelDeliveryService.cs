@@ -1,6 +1,7 @@
 using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Services.EventHub.Attributes;
 using Airslip.Common.Services.EventHub.Extensions;
+using Airslip.Common.Services.EventHub.Interfaces;
 using Airslip.Common.Types.Configuration;
 using Airslip.Common.Utilities;
 using Azure.Messaging.EventHubs;
@@ -16,10 +17,10 @@ namespace Airslip.Common.Services.EventHub.Implementations
         where TType : class, IModel
     {
         private readonly ILogger _logger;
-        private readonly EventHubProducerClient? _producerClient = null;
-        private bool _supportsDelivery = true;
+        private readonly IEventDeliveryService<TType>? _deliveryService;
+        private readonly bool _supportsDelivery = true;
         
-        public EventHubModelDeliveryService(IOptions<EventHubSettings> options, ILogger logger)
+        public EventHubModelDeliveryService(IEventHubFactory eventHubFactory, ILogger logger)
         {
             _logger = logger;
             EventHubModelAttribute? attr = EventHubExtensions.GetAttributeByType<EventHubModelAttribute, TType>();
@@ -31,32 +32,18 @@ namespace Airslip.Common.Services.EventHub.Implementations
             }
             else
             {
-                EventHubSettings eventHubSettings = options.Value;
-                _producerClient = new EventHubProducerClient(eventHubSettings.ConnectionString, 
-                    attr.EventHubName);
+                _deliveryService = eventHubFactory.CreateInstance<TType>(attr.EventHubName);
             }
         }
         
         public async Task Deliver(TType model)
         {
             if (!_supportsDelivery) return;
-            
-            // Create a batch of events 
-            using EventDataBatch eventBatch = await _producerClient!.CreateBatchAsync();
-
-            // Convert envelope to a string
-            string message = Json.Serialize(model);
-            
-            if (!eventBatch.TryAdd(new EventData(message)))
-            {
-                // if it is too large for the batch
-                throw new ArgumentException("Event is too large for the batch and cannot be sent.");
-            }
 
             try
             {
-                // Use the producer client to send the batch of events to the event hub
-                await _producerClient.SendAsync(eventBatch);
+                if (_deliveryService != null) 
+                    await _deliveryService.DeliverEvents(model);
             }
             catch (Exception e)
             {
