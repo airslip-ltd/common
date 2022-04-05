@@ -1,4 +1,4 @@
-name: Repository Types - Pack and Publish
+name: Integration Banking - Pack and Publish
 
 on: 
   workflow_dispatch:
