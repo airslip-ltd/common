@@ -1,3 +1,4 @@
+using Airslip.Common.Types.Enums;
 using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.Handoff.Interfaces;
@@ -5,4 +6,6 @@ namespace Airslip.Common.Services.Handoff.Interfaces;
 public interface IMessageHandoffService
 {
     Task ProcessMessage(string triggerName, string message);
+    Task ProcessMessage<TImplementation>(string triggerName, string message, DataSources dataSource)
+        where TImplementation : IMessageHandoffWorker;
 }

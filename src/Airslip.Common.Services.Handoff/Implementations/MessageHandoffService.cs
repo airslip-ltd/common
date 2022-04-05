@@ -1,4 +1,6 @@
 using Airslip.Common.Services.Handoff.Interfaces;
+using Airslip.Common.Types.Enums;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Context;
 using System;
@@ -47,6 +49,34 @@ public class MessageHandoffService : IMessageHandoffService
             }
             
             await messageHandoffWorker.Execute(message, handler.DataSource);
+        }
+        catch (Exception ee)
+        {
+            _logger.Fatal(ee, "Uncaught error in {TriggerName}", triggerName);                
+        }
+        
+        _logger.Debug("Completed {TriggerName}", triggerName);
+        logProperty?.Dispose();
+    }
+
+    public async Task ProcessMessage<TImplementation>(string triggerName, string message, DataSources dataSource) 
+        where TImplementation : IMessageHandoffWorker
+    {
+        IDisposable? logProperty = LogContext.PushProperty("CorrelationId", Guid.NewGuid().ToString());
+        _logger.Debug("Triggered {TriggerName}", triggerName);
+
+        try {
+            TImplementation? worker = _provider
+                .GetService<TImplementation>();
+
+            if (worker is not IMessageHandoffWorker messageHandoffWorker)
+            {
+                _logger.Fatal("Worker not found for {TriggerName}", 
+                    triggerName);
+                return;
+            }
+            
+            await messageHandoffWorker.Execute(message, dataSource);
         }
         catch (Exception ee)
         {
