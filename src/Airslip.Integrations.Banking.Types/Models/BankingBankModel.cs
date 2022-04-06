@@ -19,4 +19,5 @@ public record BankingBankModel : IModel, IFromDataSource
     public ICollection<string> CountryCodes { get; set; } = new List<string>();
     public DataSources DataSource { get; set; }
     public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
+    public int Priority { get; set; }
 }
