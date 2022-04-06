@@ -32,6 +32,18 @@ namespace Airslip.Common.Utilities.Extensions
                 (k, v) => new KeyValuePair<string, string>(k!, isBase64Encoded ? v.Replace(" ", "+") : v));
         }
         
+        public static Dictionary<string, string> QueryStringToDictionary(this string queryString, bool isBase64Encoded = false)
+        {
+            int i = queryString.IndexOf("?", StringComparison.Ordinal);
+            string queryWithoutBaseUrl = i != -1 ? queryString[i..] : queryString;
+            
+            NameValueCollection nvc = HttpUtility.ParseQueryString(queryWithoutBaseUrl);
+
+            return !nvc.HasKeys() 
+                ? new Dictionary<string, string>() 
+                : nvc.AllKeys.ToDictionary(k => k!, k => isBase64Encoded ? nvc[k]?.Replace(" ", "+")! : nvc[k]!);
+        }
+        
         public static string GetQueryString(this object obj) {
             IEnumerable<string> properties = from p in obj.GetType().GetProperties()
                 where p.GetValue(obj, null) != null
