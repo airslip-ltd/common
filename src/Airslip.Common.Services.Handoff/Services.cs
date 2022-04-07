@@ -8,7 +8,8 @@ namespace Airslip.Common.Services.Handoff;
 
 public static class Services
 {
-    public static IServiceCollection UseMessageHandoff(this IServiceCollection services, Action<MessageHandoffOptions> initialise)
+    public static IServiceCollection UseMessageHandoff(this IServiceCollection services, 
+        Action<MessageHandoffOptions> initialise)
     {
         MessageHandoffOptions messageHandoff = new();
         services.AddScoped<IMessageHandoffService, MessageHandoffService>();

@@ -1,5 +1,6 @@
 using Airslip.Common.Services.EventHub.Interfaces;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Interfaces;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System.Collections.Concurrent;
@@ -18,7 +19,8 @@ namespace Airslip.Common.Services.EventHub.Implementations
             _options = options;
         }
         
-        public IEventDeliveryService<TType> CreateInstance<TType>(string eventHubName)
+        public IEventDeliveryService<TType> CreateInstance<TType>(string eventHubName) 
+            where TType : class, IFromDataSource
         {
             string typeName = typeof(TType).FullName ?? string.Empty;
             

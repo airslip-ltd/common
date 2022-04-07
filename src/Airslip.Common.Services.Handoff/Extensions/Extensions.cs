@@ -10,11 +10,11 @@ namespace Airslip.Common.Services.Handoff.Extensions;
 public static class Extensions
 {
     public static MessageHandoffOptions Register<THandoffProcessor>
-        (this MessageHandoffOptions messageHandoff, string queueName, DataSources dataSource)
+        (this MessageHandoffOptions messageHandoff, string queueName)
         where THandoffProcessor : IMessageHandoffWorker
     {
         MessageHandoffService.Handlers.Add(
-            new MessageHandoff(typeof(THandoffProcessor), queueName, dataSource));
+            new MessageHandoff(typeof(THandoffProcessor), queueName));
 
         return messageHandoff;
     }

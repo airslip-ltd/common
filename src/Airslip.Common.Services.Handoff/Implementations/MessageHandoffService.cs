@@ -48,7 +48,7 @@ public class MessageHandoffService : IMessageHandoffService
                 return;
             }
             
-            await messageHandoffWorker.Execute(message, handler.DataSource);
+            await messageHandoffWorker.Execute(message);
         }
         catch (Exception ee)
         {
@@ -59,7 +59,7 @@ public class MessageHandoffService : IMessageHandoffService
         logProperty?.Dispose();
     }
 
-    public async Task ProcessMessage<TImplementation>(string triggerName, string message, DataSources dataSource) 
+    public async Task ProcessMessage<TImplementation>(string triggerName, string message) 
         where TImplementation : IMessageHandoffWorker
     {
         IDisposable? logProperty = LogContext.PushProperty("CorrelationId", Guid.NewGuid().ToString());
@@ -76,7 +76,7 @@ public class MessageHandoffService : IMessageHandoffService
                 return;
             }
             
-            await messageHandoffWorker.Execute(message, dataSource);
+            await messageHandoffWorker.Execute(message);
         }
         catch (Exception ee)
         {
