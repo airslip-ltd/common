@@ -1,10 +1,8 @@
-using Airslip.Common.Metrics.Enums;
+using Airslip.Common.Metrics.Implementations;
 
 namespace Airslip.Common.Metrics.Interfaces;
 
 public interface IMetricService
 {
-    void LogMetric(string metricName, MetricType metricType);
-    void StartActivity(string activityName);
-    void StopActivity();
+    MetricLogger StartActivity(string activityName);
 }
