@@ -6,10 +6,11 @@ namespace Airslip.Common.Services.EventHub.Extensions
 {
     public static class EventHubExtensions
     {
-        public static IServiceCollection AddEventHubModelDelivery(this IServiceCollection services,  
+        public static IServiceCollection AddEventHubs(this IServiceCollection services,  
             IConfiguration configuration)
         {
-            return Services.ConfigureServices(services, configuration);
+            return Services
+                .ConfigureServices(services, configuration);
         }
         
         public static TAtt? GetAttributeByType<TAtt, TType>() where TAtt : Attribute

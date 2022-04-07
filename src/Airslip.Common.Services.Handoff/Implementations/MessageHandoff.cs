@@ -5,14 +5,12 @@ namespace Airslip.Common.Services.Handoff.Implementations;
 
 public class MessageHandoff
 {
-    public MessageHandoff(Type handlerType, string queueName, DataSources dataSource)
+    public MessageHandoff(Type handlerType, string queueName)
     {
         HandlerType = handlerType;
         QueueName = queueName;
-        DataSource = dataSource;
     }
 
     public Type HandlerType { get; init; }
     public string QueueName { get; init; }
-    public DataSources DataSource { get; init; }
 }

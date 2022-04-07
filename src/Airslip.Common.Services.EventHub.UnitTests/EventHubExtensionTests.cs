@@ -1,5 +1,6 @@
 using Airslip.Common.Services.EventHub.Attributes;
 using Airslip.Common.Services.EventHub.Extensions;
+using Airslip.Common.Types.Enums;
 using FluentAssertions;
 using JetBrains.Annotations;
 using Xunit;
@@ -26,7 +27,7 @@ namespace Airslip.Common.Services.EventHub.UnitTests
             theAttribute.Should().BeNull();
         }
 
-        [EventHubModel(eventHubName)]
+        [EventHubModel(eventHubName, DataSources.Yapily)]
         [UsedImplicitly]
         private class MyTypeWithAttribute
         {

@@ -1,6 +1,9 @@
 using Airslip.Common.Services.EventHub.Interfaces;
 using Airslip.Common.Types.Configuration;
+using Airslip.Common.Types.Enums;
+using Airslip.Common.Types.Interfaces;
 using Airslip.Common.Utilities;
+using Airslip.Common.Utilities.Extensions;
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Producer;
 using Microsoft.Extensions.Options;
@@ -12,7 +15,8 @@ using System.Threading.Tasks;
 
 namespace Airslip.Common.Services.EventHub.Implementations;
 
-public class EventHubDeliveryService<TType> : IEventDeliveryService<TType>
+public class EventHubDeliveryService<TType> : IEventDeliveryService<TType> 
+    where TType : class, IFromDataSource
 {
     private readonly ILogger _logger;
     private readonly EventHubProducerClient _producerClient;   
@@ -25,7 +29,7 @@ public class EventHubDeliveryService<TType> : IEventDeliveryService<TType>
             eventHubName);
     }
         
-    public async Task DeliverEvents(ICollection<TType> events)
+    public async Task DeliverEvents(ICollection<TType> events, DataSources dataSource)
     {
         // Create a batch of events
         try
@@ -34,7 +38,8 @@ public class EventHubDeliveryService<TType> : IEventDeliveryService<TType>
                 data => _producerClient.SendAsync(data),
                 model => new EventData(Json.Serialize(model)),
                 events, 
-                10);
+                10, 
+                dataSource);
         }
         catch (Exception eee)
         {
@@ -42,23 +47,25 @@ public class EventHubDeliveryService<TType> : IEventDeliveryService<TType>
         }
     }
 
-    public async Task DeliverEvents(TType thisEvent)
+    public async Task DeliverEvents(TType thisEvent, DataSources dataSource)
     {
-        await DeliverEvents(new[] { thisEvent });
+        await DeliverEvents(new[] { thisEvent }, dataSource);
     }
 
-    private static async Task _executeChunked<TExecuteType, TListType>(
-        Func<IEnumerable<TExecuteType>, Task> executeMe, 
-        Func<TListType, TExecuteType> createMe,
-        ICollection<TListType> myCollection, 
-        int chunkSize) 
+    private static async Task _executeChunked<TExecuteType>(Func<IEnumerable<TExecuteType>, Task> executeMe,
+        Func<TType, TExecuteType> createMe,
+        ICollection<TType> myCollection,
+        int chunkSize, DataSources dataSource) 
     {
         // Create a batch of events
         List<TExecuteType> batchList = new();
         int batchCount = 0;
             
-        foreach (TListType model in myCollection)
+        foreach (TType model in myCollection)
         {
+            model.DataSource = dataSource;
+            model.TimeStamp = DateTime.UtcNow.ToUnixTimeMilliseconds();
+            
             // Convert envelope to a string
             batchList.Add(createMe(model));
             batchCount += 1;
