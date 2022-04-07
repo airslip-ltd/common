@@ -16,14 +16,14 @@ namespace Airslip.Common.Repository.UnitTests.Lifecycle.Events.Validation;
 public class EntityStatusValidationTests
 {
     [Theory]
-    [InlineData(LifecycleStage.Update, true, EntityStatus.Deleted, 1, ErrorMessages.EntityDeleted)]
-    [InlineData(LifecycleStage.Update, true, EntityStatus.Active, 0, null)]
-    [InlineData(LifecycleStage.Update, false, EntityStatus.Deleted, 0, null)]
+    [InlineData(LifecycleStage.Update, true, EntityStatus.Deleted, 2, ErrorMessages.LifecycleEventDoesntApply)]
+    [InlineData(LifecycleStage.Update, true, EntityStatus.Active, 1, ErrorMessages.LifecycleEventDoesntApply)]
+    [InlineData(LifecycleStage.Update, false, EntityStatus.Deleted, 1, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Create, false, EntityStatus.Active, 1, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Get, true, EntityStatus.Deleted, 1, ErrorMessages.EntityDeleted)]
-    [InlineData(LifecycleStage.Delete, true, EntityStatus.Deleted, 1, ErrorMessages.EntityDeleted)]
+    [InlineData(LifecycleStage.Delete, true, EntityStatus.Deleted, 2, ErrorMessages.LifecycleEventDoesntApply)]
     [InlineData(LifecycleStage.Get, true, EntityStatus.Active, 0, null)]
-    [InlineData(LifecycleStage.Delete, true, EntityStatus.Active, 0, null)]
+    [InlineData(LifecycleStage.Delete, true, EntityStatus.Active, 1, ErrorMessages.LifecycleEventDoesntApply)]
     public async Task Validation_acts_as_expected(
         LifecycleStage lifecycleStage, 
         bool createEntity,
