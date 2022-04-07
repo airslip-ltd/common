@@ -8,7 +8,7 @@ namespace Airslip.Common.Metrics
 {
     public static class Services
     {
-        public static IServiceCollection AddMetrics(IServiceCollection serviceCollection,  
+        public static IServiceCollection AddMetrics(this IServiceCollection serviceCollection,  
             IConfiguration configuration)
         {
             return serviceCollection
