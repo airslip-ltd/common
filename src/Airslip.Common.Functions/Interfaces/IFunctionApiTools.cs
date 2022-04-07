@@ -20,6 +20,9 @@ namespace Airslip.Common.Functions.Interfaces
 
         Task<HttpResponseData> Unauthorised<T>(HttpRequestData req, T response)
             where T: class, IResponse;
+            
+        Task<HttpResponseData> Conflict<T>(HttpRequestData req, T response)
+                    where T : class, IResponse
 
         Task<HttpResponseData> BadRequest<T>(HttpRequestData req, T failure)
             where T: class, IResponse;
