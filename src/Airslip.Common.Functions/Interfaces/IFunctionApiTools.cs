@@ -22,7 +22,7 @@ namespace Airslip.Common.Functions.Interfaces
             where T: class, IResponse;
             
         Task<HttpResponseData> Conflict<T>(HttpRequestData req, T response)
-                    where T : class, IResponse
+                    where T : class, IResponse;
 
         Task<HttpResponseData> BadRequest<T>(HttpRequestData req, T failure)
             where T: class, IResponse;
