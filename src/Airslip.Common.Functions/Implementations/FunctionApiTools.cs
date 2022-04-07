@@ -76,7 +76,7 @@ namespace Airslip.Common.Functions.Implementations
             where T : class, IResponse
         {
             if (response is ConflictResponse conflictResponse)
-                Logger.Warning("Bad request error: {ErrorMessage}", conflictResponse.Message);
+                Logger.Warning("Conflict: {ErrorMessage}", conflictResponse.Message);
             return await _generateResponse(req, response, HttpStatusCode.Conflict);
         }
 
