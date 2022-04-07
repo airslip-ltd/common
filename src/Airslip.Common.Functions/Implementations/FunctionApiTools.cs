@@ -39,16 +39,16 @@ namespace Airslip.Common.Functions.Implementations
             KeyAuthenticationResult authenticationResult = await requestHandler.Handle(req);
             if (authenticationResult.AuthResult != AuthResult.Success)
             {
-                Logger.Error("Authorisation unsuccessful {Message}", 
+                Logger.Error("Authorisation unsuccessful {Message}",
                     authenticationResult.Message);
                 return false;
             }
 
             return true;
         }
-        
-        public async Task<HttpResponseData> OkResponse<T>(HttpRequestData req, T response) 
-            where T: class, IResponse
+
+        public async Task<HttpResponseData> OkResponse<T>(HttpRequestData req, T response)
+            where T : class, IResponse
         {
             if (response is LinkResourceBase @base)
             {
@@ -56,33 +56,41 @@ namespace Airslip.Common.Functions.Implementations
                 @base.AddChildHateoasLinks(@base, BaseUri);
             }
 
-            return await _generateResponse(req, response, 
+            return await _generateResponse(req, response,
                 response is ISuccess ? HttpStatusCode.OK : HttpStatusCode.BadRequest);
         }
-        
+
         public async Task<HttpResponseData> NotFound<T>(HttpRequestData req, T response)
-            where T: class, IResponse
+            where T : class, IResponse
         {
             return await _generateResponse(req, response, HttpStatusCode.NotFound);
         }
 
         public async Task<HttpResponseData> Unauthorised<T>(HttpRequestData req, T response)
-            where T: class, IResponse
+            where T : class, IResponse
         {
             return await _generateResponse(req, response, HttpStatusCode.Unauthorized);
         }
 
-        private async Task<HttpResponseData> _generateResponse<T>(HttpRequestData req, T response, 
+        public async Task<HttpResponseData> Conflict<T>(HttpRequestData req, T response)
+            where T : class, IResponse
+        {
+            if (response is ConflictResponse conflictResponse)
+                Logger.Warning("Bad request error: {ErrorMessage}", conflictResponse.Message);
+            return await _generateResponse(req, response, HttpStatusCode.Conflict);
+        }
+
+        private async Task<HttpResponseData> _generateResponse<T>(HttpRequestData req, T response,
             HttpStatusCode statusCode)
-            where T: class, IResponse
+            where T : class, IResponse
         {
             HttpResponseData responseData = req.CreateResponse();
             await responseData.WriteAsJsonAsync(response, statusCode);
             return responseData;
         }
-        
+
         public async Task<HttpResponseData> BadRequest<T>(HttpRequestData req, T failure)
-            where T: class, IResponse
+            where T : class, IResponse
         {
             switch (failure)
             {
@@ -101,7 +109,7 @@ namespace Airslip.Common.Functions.Implementations
             }
         }
 
-        public Task<HttpResponseData> RepositoryActionToResult<TModel>(HttpRequestData req, RepositoryActionResultModel<TModel> theResult) 
+        public Task<HttpResponseData> RepositoryActionToResult<TModel>(HttpRequestData req, RepositoryActionResultModel<TModel> theResult)
             where TModel : class, IModel
         {
             return theResult.ResultType switch
@@ -112,13 +120,14 @@ namespace Airslip.Common.Functions.Implementations
             };
         }
 
-        public Task<HttpResponseData> CommonResponseHandler<TExpectedType>(HttpRequestData req, IResponse response) 
+        public Task<HttpResponseData> CommonResponseHandler<TExpectedType>(HttpRequestData req, IResponse response)
             where TExpectedType : class, IResponse
         {
             return response switch
             {
                 TExpectedType r => OkResponse(req, r),
                 NotFoundResponse r => NotFound(req, r),
+                ConflictResponse r => Conflict(req, r),
                 IFail r => BadRequest(req, r),
                 _ => throw new InvalidOperationException()
             };
