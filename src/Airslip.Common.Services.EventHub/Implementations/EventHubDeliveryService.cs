@@ -64,7 +64,7 @@ public class EventHubDeliveryService<TType> : IEventDeliveryService<TType>
         foreach (TType model in myCollection)
         {
             model.DataSource = dataSource;
-            model.TimeStamp = DateTime.UtcNow.ToUnixTimeMilliseconds();
+            model.TimeStamp = model.TimeStamp == 0 ? DateTime.UtcNow.ToUnixTimeMilliseconds() : model.TimeStamp;
             
             // Convert envelope to a string
             batchList.Add(createMe(model));
