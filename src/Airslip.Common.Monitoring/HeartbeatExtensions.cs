@@ -6,16 +6,21 @@ namespace Airslip.Common.Monitoring
 {
     public static class HealthCheckExtensions
     {
-        public static IServiceCollection UseHealthChecks(this IServiceCollection services)
+        public static IServiceCollection UseMonitoring(this IServiceCollection services)
         {
-            services.AddSingleton<IHealthCheckService, HealthCheckService>();
+            services
+                .AddApplicationInsightsTelemetry()
+                .AddSingleton<IHealthCheckService, HealthCheckService>();
+            
             return services;
         }
         
         public static IServiceCollection AddHealthCheck<TCheck>(this IServiceCollection services) 
             where TCheck: class, IHealthCheck
         {
-            services.AddSingleton<IHealthCheck, TCheck>();
+            services
+                .AddSingleton<IHealthCheck, TCheck>();
+            
             return services;
         }
     }

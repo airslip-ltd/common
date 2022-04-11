@@ -35,10 +35,10 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
             if (_settings.MerchantTransactions != null) apiToCheck.Add(_settings.MerchantTransactions);
             if (_settings.Identity != null) apiToCheck.Add(_settings.Identity);
 
-            foreach (var api in apiToCheck)
+            foreach (PublicApiSetting api in apiToCheck)
             {
                 // Make an assumption the API has had the heartbeat endpoint added
-                var uri = $"{api.BaseUri}/{api.UriSuffix ?? ""}/v1/heartbeat/ping";
+                string uri = $"{api.BaseUri}/{api.UriSuffix ?? ""}/v1/heartbeat/ping";
                 try
                 {
                     HttpRequestMessage message = new(HttpMethod.Get, uri);
