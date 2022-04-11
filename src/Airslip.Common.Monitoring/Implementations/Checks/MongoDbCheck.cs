@@ -26,9 +26,9 @@ namespace Airslip.Common.Monitoring.Implementations.Checks
 
             try
             {
-                var client = new MongoClient(_settings.ConnectionString);
-                var database = client.GetDatabase(_settings.DatabaseName);
-                var collectionNames = await database.ListCollectionNamesAsync();
+                MongoClient client = new MongoClient(_settings.ConnectionString);
+                IMongoDatabase? database = client.GetDatabase(_settings.DatabaseName);
+                IAsyncCursor<string>? collectionNames = await database.ListCollectionNamesAsync();
 
                 while (await collectionNames.MoveNextAsync())
                 {

@@ -21,13 +21,13 @@ namespace Airslip.Common.Monitoring.Implementations
         
         public async Task<HealthCheckResponse> CheckServices()
         {
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             HealthCheckResponse result = new();
             
-            foreach (var healthCheck in _healthChecks)
+            foreach (IHealthCheck healthCheck in _healthChecks)
             {
                 sw.Restart();
-                var healthCheckResult = await healthCheck.Execute();
+                HealthCheckResults healthCheckResult = await healthCheck.Execute();
 
                 if (healthCheckResult.Results.Any(o => !o.Ok))
                 {
