@@ -3,6 +3,7 @@
     public enum EnvironmentType
     {
         Live,
-        Sandbox
+        Sandbox,
+        Demo
     }
 }
