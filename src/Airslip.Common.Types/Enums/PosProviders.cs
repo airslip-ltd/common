@@ -8,8 +8,7 @@ public enum PosProviders
     Shopify,
     Stripe,
     SumUp,
-    IZettle,
-    PayPalZettle,
+    Zettle,
     EposNow,
     Square,
     Vend,
@@ -61,5 +60,14 @@ public enum PosProviders
     Zencart137,
     Toast,
     ShopKeep,
-    Clover
+    Clover,
+    UberEats,
+    Deliveroo,
+    JustEat,
+    Shift4,
+    Adyen,
+    NcrAloha,
+    Revel,
+    OracleMicros,
+    Upserve
 }
