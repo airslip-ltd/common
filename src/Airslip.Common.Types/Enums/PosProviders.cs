@@ -24,6 +24,7 @@ public enum PosProviders
     Ecwid,
     Neto,
     LightSpeed,
+    LSrSeries,
     Prestashop,
     Squarespace,
     Shopware,
