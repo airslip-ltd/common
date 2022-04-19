@@ -20,4 +20,6 @@ public record BankingBankModel : IModel, IFromDataSource
     public DataSources DataSource { get; set; }
     public long TimeStamp { get; set; } = DateTime.UtcNow.ToUnixTimeMilliseconds();
     public int Priority { get; set; }
+    public string? Icon { get; set; }
+    public string? Logo { get; set; }
 }
