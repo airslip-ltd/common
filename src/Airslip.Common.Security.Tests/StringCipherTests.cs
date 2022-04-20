@@ -37,11 +37,11 @@ public class StringCipherTests
     public void Can_encrypt_and_decrypt_string_value_using_hex_conversion()
     {
         string str = "{\"userType\":2,\"entityId\":\"entity-id\"}";
-        string encryptedString = StringCipher.Encrypt(str, PassPhrase, ConversionType.Hex);
+        string encryptedString = StringCipher.Encrypt(str, PassPhrase,  conversionType: ConversionType.Hex);
         Regex alphanumericRegex = new("^[a-zA-Z0-9]*$");
         bool onlyContainsAlphanumericValues = alphanumericRegex.IsMatch(encryptedString);
         onlyContainsAlphanumericValues.Should().BeTrue();
-        string decryptedString = StringCipher.Decrypt(encryptedString, PassPhrase, ConversionType.Hex);
+        string decryptedString = StringCipher.Decrypt(encryptedString, PassPhrase, conversionType: ConversionType.Hex);
         decryptedString.Should().Be(str);
     }
         
@@ -49,14 +49,14 @@ public class StringCipherTests
     public void Can_encrypt_and_decrypt_string_value_for_url_using_hex_conversion()
     {
         string str = "{\"userType\":2,\"entityId\":\"entity-id\"}";
-        string encryptedString = StringCipher.EncryptForUrl(str, PassPhrase, ConversionType.Hex);
+        string encryptedString = StringCipher.EncryptForUrl(str, PassPhrase, conversionType: ConversionType.Hex);
         Regex alphanumericRegex = new("^[a-zA-Z0-9]*$");
         bool onlyContainsAlphanumericValues = alphanumericRegex.IsMatch(encryptedString);
         onlyContainsAlphanumericValues.Should().BeTrue();
         // Happens automatically during API request
         string urlDecodedEncryptedString = HttpUtility.UrlDecode(encryptedString);
             
-        string decryptedString = StringCipher.Decrypt(urlDecodedEncryptedString, PassPhrase, ConversionType.Hex);
+        string decryptedString = StringCipher.Decrypt(urlDecodedEncryptedString, PassPhrase, conversionType: ConversionType.Hex);
         decryptedString.Should().Be(str);
     }
 }

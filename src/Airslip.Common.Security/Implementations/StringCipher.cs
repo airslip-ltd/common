@@ -12,7 +12,7 @@ public static class StringCipher
     private const int KeySize = 128;
     private const int KeySizeBytes = KeySize / 8;
 
-    public static string Encrypt(string plainText, string passPhrase, ConversionType conversionType = ConversionType.Base64, int iterations = 1000)
+    public static string Encrypt(string plainText, string passPhrase, int iterations = 1000, ConversionType conversionType = ConversionType.Base64)
     {
         byte[] keyBytes;
         byte[] saltBytes = GenerateRandomBytes();
@@ -47,13 +47,13 @@ public static class StringCipher
         };
     }
 
-    public static string EncryptForUrl(string plainText, string passPhrase, ConversionType conversionType = ConversionType.Base64, int iterations = 1000)
+    public static string EncryptForUrl(string plainText, string passPhrase, int iterations = 1000, ConversionType conversionType = ConversionType.Base64)
     {
-        string cipherText = Encrypt(plainText, passPhrase, conversionType, iterations);
+        string cipherText = Encrypt(plainText, passPhrase, iterations, conversionType);
         return HttpUtility.UrlEncode(cipherText);
     }
 
-    public static string Decrypt(string cipherText, string passPhrase, ConversionType conversionType = ConversionType.Base64, int iterations = 1000)
+    public static string Decrypt(string cipherText, string passPhrase, int iterations = 1000, ConversionType conversionType = ConversionType.Base64)
     {
         byte[] cipherTextBytesWithIv = conversionType switch
         {
