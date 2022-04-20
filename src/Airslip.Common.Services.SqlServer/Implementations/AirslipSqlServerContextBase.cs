@@ -110,9 +110,9 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         IQueryable<TEntity> query = QueryBuilder.BuildQuery(Set<TEntity>(), entitySearch, mandatoryFilters);
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryBuilder.BuildQuery), RepositoryMetricType.Complete);
         
-        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Start);
-        EntitySearchResult<TEntity> result = await _queryToSearchResult(query, entitySearch);;
-        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Complete);
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryToSearchResult), RepositoryMetricType.Start);
+        EntitySearchResult<TEntity> result = await QueryToSearchResult(query, entitySearch);;
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryToSearchResult), RepositoryMetricType.Complete);
         
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Complete);
         return result;
@@ -127,28 +127,22 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
         IQueryable<TEntity> query = QueryBuilder.BuildQuery(baseQuery, entitySearch, mandatoryFilters);
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryBuilder.BuildQuery), RepositoryMetricType.Complete);
         
-        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Start);
-        EntitySearchResult<TEntity> result = await _queryToSearchResult(query, entitySearch);;
-        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(_queryToSearchResult), RepositoryMetricType.Complete);
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryToSearchResult), RepositoryMetricType.Start);
+        EntitySearchResult<TEntity> result = await QueryToSearchResult(query, entitySearch);;
+        _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(QueryToSearchResult), RepositoryMetricType.Complete);
         
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), nameof(SearchEntities), RepositoryMetricType.Complete);
         
         return result;
     }
 
-    private async Task<EntitySearchResult<TEntity>> _queryToSearchResult<TEntity>(IQueryable<TEntity> query, 
+    protected virtual async Task<EntitySearchResult<TEntity>> QueryToSearchResult<TEntity>(IQueryable<TEntity> query, 
         EntitySearchQueryModel entitySearch)
         where TEntity : class, IEntityWithId
     {
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Record Count", RepositoryMetricType.Start);
         int count = await query.CountAsync();
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Record Count", RepositoryMetricType.Complete);
-
-        if (entitySearch.Page > 0)
-            query = query.Skip(entitySearch.Page * entitySearch.RecordsPerPage);
-        
-        if (entitySearch.RecordsPerPage > 0)
-            query = query.Take(entitySearch.RecordsPerPage);
 
         IOrderedQueryable<TEntity>? orderBy = null;
         foreach (EntitySearchSortModel sortModel in entitySearch.Sort)
@@ -163,6 +157,12 @@ public abstract class AirslipSqlServerContextBase : DbContext, ISearchContext, I
                     : QueryBuilder.ThenByDescending(orderBy, sortModel.Field);
         }
         query = orderBy ?? query;
+        
+        if (entitySearch.Page > 0)
+            query = query.Skip(entitySearch.Page * entitySearch.RecordsPerPage);
+        
+        if (entitySearch.RecordsPerPage > 0)
+            query = query.Take(entitySearch.RecordsPerPage);
         
         _metricService.LogMetric(nameof(AirslipSqlServerContextBase), "Running Query", RepositoryMetricType.Start);
         List<TEntity> list = await query
