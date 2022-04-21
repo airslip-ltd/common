@@ -43,5 +43,69 @@ namespace Airslip.Common.Utilities.UnitTests
             
             snakeCaseString.Should().Be(expectedString);
         }
+        
+        [Theory]
+        [InlineData("I|Can|Get|A|String")]
+        [InlineData("ICan_GetAString")]
+        [InlineData("i-can-get-a-string")]
+        [InlineData("i_can_get_a_string")]
+        [InlineData("I Can Get A String")]
+        [InlineData("ICanGetAString")]
+        public void Can_get_spaced_pascal_case_from_string_with_single_letter_at_start(string value)
+        {
+            string expectedString = "I Can Get A String";
+
+            string spacedPascalCase = value.ToSpacedPascalCase();
+            
+            spacedPascalCase.Should().Be(expectedString);
+        }
+        
+        [Theory]
+        [InlineData("Lovely|A|String")]
+        [InlineData("Lovely_AString")]
+        [InlineData("lovely-a-string")]
+        [InlineData("lovely_a_string")]
+        [InlineData("Lovely A String")]
+        [InlineData("LovelyAString")]
+        public void Can_get_spaced_pascal_case_from_string_with_single_letter_in_middle(string value)
+        {
+            string expectedString = "Lovely A String";
+
+            string spacedPascalCase = value.ToSpacedPascalCase();
+            
+            spacedPascalCase.Should().Be(expectedString);
+        }
+        
+        [Theory]
+        [InlineData("Lovely|A|String")]
+        [InlineData("Lovely_AString")]
+        [InlineData("lovely-a-string")]
+        [InlineData("lovely_a_string")]
+        [InlineData("Lovely A String")]
+        [InlineData("LovelyAString")]
+        public void Can_get_pascal_case_from_string_with_single_letter_in_middle(string value)
+        {
+            string expectedString = "LovelyAString";
+
+            string spacedPascalCase = value.ToPascalCase();
+            
+            spacedPascalCase.Should().Be(expectedString);
+        }
+        
+        [Theory]
+        [InlineData("I|Can|Get|A|String")]
+        [InlineData("ICan_GetAString")]
+        [InlineData("i-can-get-a-string")]
+        [InlineData("i_can_get_a_string")]
+        [InlineData("I Can Get A String")]
+        [InlineData("ICanGetAString")]
+        public void Can_get_camel_case_from_string_with_single_letter_at_start(string value)
+        {
+            string expectedString = "iCanGetAString";
+
+            string spacedPascalCase = value.ToCamelCase();
+            
+            spacedPascalCase.Should().Be(expectedString);
+        }
     }
 }
