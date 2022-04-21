@@ -86,10 +86,10 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
         
         public static string GenerateUserToken(string withIpAddress, 
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE,
-            string userId = "SomeUserId", 
-            string yapilyUserId = "SomeYapilyUserId", 
-            string entityId = "SomeEntityId",
-            AirslipUserType airslipUserType = AirslipUserType.Standard)
+            string userId = "a537fc13b3034df9a37834463903579a", 
+            string yapilyUserId = "", 
+            string entityId = "012d42fb03104f6da999e47a2c95b698",
+            AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
             ITokenGenerationService<GenerateUserToken> service = CreateTokenGenerationService<GenerateUserToken>
                 (withIpAddress, "",  withUserAgent: withUserAgent);
