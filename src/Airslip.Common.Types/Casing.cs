@@ -5,6 +5,7 @@ namespace Airslip.Common.Types
         CAMEL_CASE,
         SNAKE_CASE,
         KEBAB_CASE,
-        PASCAL_CASE
+        PASCAL_CASE,
+        SPACED_PASCAL_CASE,
     }
 }
