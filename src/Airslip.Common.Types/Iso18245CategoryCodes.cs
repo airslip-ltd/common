@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Airslip.Common.Types.Enums;
+namespace Airslip.Common.Types;
 
 public static class Iso18245CategoryCodes
 {
