@@ -2,7 +2,7 @@
 
 namespace Airslip.Common.Types;
 
-public static class Iso18245CategoryCodes
+public static class Iso18245MerchantCategoryCodes
 {
     public static string? LoadValue(string code)
     {
