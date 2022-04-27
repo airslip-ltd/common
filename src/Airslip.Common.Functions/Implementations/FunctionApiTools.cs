@@ -75,8 +75,6 @@ namespace Airslip.Common.Functions.Implementations
         public async Task<HttpResponseData> Conflict<T>(HttpRequestData req, T response)
             where T : class, IResponse
         {
-            if (response is ConflictResponse conflictResponse)
-                Logger.Warning("Conflict: {ErrorMessage}", conflictResponse.Message);
             return await _generateResponse(req, response, HttpStatusCode.Conflict);
         }
 
