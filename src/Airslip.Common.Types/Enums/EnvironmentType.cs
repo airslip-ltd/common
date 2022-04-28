@@ -1,4 +1,4 @@
-﻿namespace Airslip.Integrations.Banking.Types.Enums
+﻿namespace Airslip.Common.Types.Enums
 {
     public enum EnvironmentType
     {
