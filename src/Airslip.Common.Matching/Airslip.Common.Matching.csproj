@@ -13,7 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Airslip.Common.Repository.Types" Version="6.1.7" />
+		<PackageReference Include="Airslip.Common.Repository.Types" Version="6.1.8" />
 		<PackageReference Include="Airslip.Common.Types" Version="6.2.18" />
 		<PackageReference Include="Airslip.Common.MerchantTransactions" Version="6.1.2" />
 		<PackageReference Include="Airslip.Common.Services.Handoff" Version="6.0.2" />
