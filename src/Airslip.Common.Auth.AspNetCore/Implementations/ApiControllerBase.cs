@@ -140,6 +140,7 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             return theResult.ResultType switch
             {
                 ResultType.NotFound => NotFound(theResult),
+                ResultType.Conflict => Conflict(theResult),
                 ResultType.FailedValidation or ResultType.FailedVerification => BadRequest(theResult),
                 _ => Ok(theResult)
             };
@@ -163,6 +164,7 @@ namespace Airslip.Common.Auth.AspNetCore.Implementations
             {
                 TExpectedType r => Ok(r),
                 NotFoundResponse r => NotFound(r),
+                ConflictResponse r => Conflict(r),
                 IFail r => BadRequest(r),
                 _ => throw new InvalidOperationException()
             };
