@@ -1,3 +1,6 @@
+using Airslip.Common.Types.Enums;
+
+namespace Airslip.Common.Types;
 
 /// <summary>
 /// A standardised address using the xNAL format <see cref="http://xml.coverpages.org/xnal.html" />
