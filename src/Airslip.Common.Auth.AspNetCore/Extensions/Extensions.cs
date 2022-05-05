@@ -92,7 +92,6 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
         {
             AuthenticationBuilder? result = null;
 
-            
             services
                 .AddScoped<IRemoteIpAddressService, RemoteIpAddressService>()
                 .AddScoped<IUserAgentService, UserAgentService>()
@@ -116,7 +115,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
             {
                 result = services
                     .AddScoped<IApiKeyRequestHandler, ApiKeyRequestHandler>()
-                    .AddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>()
+                    .AddScoped<ITokenDecodeService<ApiKeyToken>, CryptoTokenDecodeService<ApiKeyToken>>()
                     .AddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>()
                     .AddAuthentication(ApiKeyAuthenticationSchemeOptions.ApiKeyScheme)
                     .AddApiKeyAuth(opt =>
@@ -142,9 +141,8 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
                 .AddSingleton<IQrCodeRequestHandler, QrCodeRequestHandler>()
                 .AddAuthorization()
                 .Configure<TokenEncryptionSettings>(configuration.GetSection(nameof(TokenEncryptionSettings)))
-                .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
                 .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
-                .AddScoped<ITokenDecodeService<QrCodeToken>, TokenDecodeService<QrCodeToken>>()
+                .AddScoped<ITokenDecodeService<QrCodeToken>, CryptoTokenDecodeService<QrCodeToken>>()
                 .AddScoped<ITokenValidator<QrCodeToken>, TokenValidator<QrCodeToken>>();
             
             AuthenticationBuilder result = services
@@ -171,7 +169,7 @@ namespace Airslip.Common.Auth.AspNetCore.Extensions
                 .TryAddScoped<IApiKeyRequestHandler, ApiKeyRequestHandler>();
             
             services.TryAddScoped<ITokenValidator<ApiKeyToken>, TokenValidator<ApiKeyToken>>();
-            services.TryAddScoped<ITokenDecodeService<ApiKeyToken>, TokenDecodeService<ApiKeyToken>>();
+            services.TryAddScoped<ITokenDecodeService<ApiKeyToken>, CryptoTokenDecodeService<ApiKeyToken>>();
             services.TryAddScoped<IRemoteIpAddressService, RemoteIpAddressService>();
             services.TryAddScoped<IUserAgentService, UserAgentService>();
             services.TryAddScoped<IClaimsPrincipalLocator, HttpContextPrincipalLocator>();
