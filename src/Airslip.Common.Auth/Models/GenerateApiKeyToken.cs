@@ -23,7 +23,7 @@ namespace Airslip.Common.Auth.Models
         {
             List<Claim> claims = new()
             {
-                new Claim(AirslipClaimTypes.API_KEY, ApiKey.Encrypt(settings))
+                new Claim(AirslipClaimTypes.API_KEY_SHORT, ApiKey)
             };
 
             return claims;

@@ -15,22 +15,6 @@ namespace Airslip.Common.Auth.UnitTests
     public class ApiKeyTokenServiceTests
     {
         [Fact]
-        public void Fails_with_invalid_key()
-        {
-            ITokenGenerationService<GenerateApiKeyToken> service = HelperFunctions
-                .CreateTokenGenerationService<GenerateApiKeyToken>("", "", "Insecure Key");
-
-            GenerateApiKeyToken apiTokenKey = new("SomeApiKey",
-                "SomeEntityId", 
-                AirslipUserType.Merchant);
-            
-            service.Invoking(y => y.GenerateNewToken(apiTokenKey))
-                .Should()
-                .Throw<ArgumentException>()
-                .WithParameterName(nameof(JwtSettings.Key));
-        }
-        
-        [Fact]
         public void Can_generate_new_token()
         {
             string newToken = HelperFunctions.GenerateApiKeyToken("10.0.0.0");
@@ -41,7 +25,7 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Can_generate_new_token_with_null_ip()
         {
-            string newToken = HelperFunctions.GenerateApiKeyToken(null);
+            string newToken = HelperFunctions.GenerateApiKeyToken();
 
             newToken.Should().NotBeNullOrWhiteSpace();
         }
@@ -49,22 +33,20 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public void Can_decode_token()
         {
-            const string ipAddress = "10.0.0.0";
             const string apiKey = "MyNewApiKey";
             const string entityId = "MyEntityId";
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
-            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, entityId, 
+            string newToken = HelperFunctions.GenerateApiKeyToken(apiKey, entityId, 
                 airslipUserType);
 
             ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
-                CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey);
+                CreateCyrptoTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey);
             
             Tuple<ApiKeyToken, ICollection<Claim>> decodedToken = service.DecodeToken(newToken);
 
             decodedToken.Should().NotBeNull();
 
-            decodedToken.Item1.IpAddress.Should().Be(ipAddress);
             decodedToken.Item1.ApiKey.Should().Be(apiKey);
             decodedToken.Item1.EntityId.Should().Be(entityId);
             decodedToken.Item1.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
@@ -74,28 +56,26 @@ namespace Airslip.Common.Auth.UnitTests
         [Fact]
         public async Task Can_decode_token_from_principal()
         {
-            const string ipAddress = "10.0.0.0";
             const string apiKey = "MyNewApiKey";
             const string entityId = "MyEntityId";
             const AirslipUserType airslipUserType = AirslipUserType.Merchant;
             
-            string newToken = HelperFunctions.GenerateApiKeyToken(ipAddress, apiKey, 
+            string newToken = HelperFunctions.GenerateApiKeyToken(apiKey, 
                 entityId, airslipUserType);
 
             // Prepare test data...
-            ITokenValidator<ApiKeyToken> tempService = HelperFunctions.GenerateValidator<ApiKeyToken>(TokenType.ApiKey);
+            ITokenValidator<ApiKeyToken> tempService = HelperFunctions.GenerateCryptoValidator<ApiKeyToken>(TokenType.ApiKey);
             ClaimsPrincipal claimsPrincipal = await tempService.GetClaimsPrincipalFromToken(newToken, 
                 AirslipSchemeOptions.ApiKeyScheme,
                 AirslipSchemeOptions.ThisEnvironment);
 
             ITokenDecodeService<ApiKeyToken> service = HelperFunctions.
-                CreateTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey, claimsPrincipal);
+                CreateCyrptoTokenDecodeService<ApiKeyToken>(newToken, TokenType.ApiKey, claimsPrincipal);
             
             ApiKeyToken currentToken = service.GetCurrentToken();
 
             currentToken.Should().NotBeNull();
 
-            currentToken.IpAddress.Should().Be(ipAddress);
             currentToken.ApiKey.Should().Be(apiKey);
             currentToken.EntityId.Should().Be(entityId);
             currentToken.Environment.Should().Be(AirslipSchemeOptions.ThisEnvironment);
@@ -106,7 +86,7 @@ namespace Airslip.Common.Auth.UnitTests
         public void Can_generate_new_token_with_claims()
         {
             ITokenGenerationService<GenerateApiKeyToken> service = HelperFunctions
-                .CreateTokenGenerationService<GenerateApiKeyToken>("10.0.0.1", "");
+                .CreateCryptoTokenGenerationService<GenerateApiKeyToken>();
 
             List<Claim> claims = new()
             {

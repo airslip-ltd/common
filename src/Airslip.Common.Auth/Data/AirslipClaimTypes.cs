@@ -16,5 +16,10 @@ namespace Airslip.Common.Auth.Data
         public const string CORRELATION = "correlation";
         public const string AIRSLIP_USER_TYPE = "airslipusertype";
         public const string API_KEY = "apikey";
+        
+        public const string ENTITY_ID_SHORT = "i";
+        public const string AIRSLIP_USER_TYPE_SHORT = "a";
+        public const string API_KEY_SHORT = "k";
+        public const string ENVIRONMENT_SHORT = "e";
     }
 }
