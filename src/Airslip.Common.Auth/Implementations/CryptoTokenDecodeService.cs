@@ -47,6 +47,7 @@ namespace Airslip.Common.Auth.Implementations
 
                 claims.AddRange(splitValues
                     .Select(o => new Claim(o[0], o[1]))
+                    .Where(o => !claims.Any(p => p.Type.Equals(o.Type)))
                     .ToList());
                 
                 return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(claims, true),
