@@ -56,10 +56,20 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return userAgentService;
         }
 
-        public static ITokenValidator<TTokenType> GenerateValidator<TTokenType>(TokenType tokenType) where TTokenType : IDecodeToken, new()
+        public static ITokenValidator<TTokenType> GenerateJwtValidator<TTokenType>(TokenType tokenType) 
+            where TTokenType : IDecodeToken, new()
         {
             TokenValidator<TTokenType> apiKeyValidator = 
-                new(CreateTokenDecodeService<TTokenType>("", tokenType));
+                new(CreateJwtTokenDecodeService<TTokenType>("", tokenType));
+
+            return apiKeyValidator;
+        }
+
+        public static ITokenValidator<TTokenType> GenerateCryptoValidator<TTokenType>(TokenType tokenType) 
+            where TTokenType : IDecodeToken, new()
+        {
+            TokenValidator<TTokenType> apiKeyValidator = 
+                new(CreateCyrptoTokenDecodeService<TTokenType>("", tokenType));
 
             return apiKeyValidator;
         }
@@ -91,7 +101,7 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             string entityId = "012d42fb03104f6da999e47a2c95b698",
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
-            ITokenGenerationService<GenerateUserToken> service = CreateTokenGenerationService<GenerateUserToken>
+            ITokenGenerationService<GenerateUserToken> service = CreateJwtTokenGenerationService<GenerateUserToken>
                 (withIpAddress, "",  withUserAgent: withUserAgent);
             
             GenerateUserToken apiTokenKey = new(entityId, 
@@ -107,7 +117,8 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }
         
-        public static ITokenGenerationService<TTokenType> CreateTokenGenerationService<TTokenType>(string withIpAddress, 
+        public static ITokenGenerationService<TTokenType> CreateJwtTokenGenerationService<TTokenType>(
+            string withIpAddress, 
             string withToken, string withKey = "WowThisIsSuchASecureKeyICantBelieveIt",
             ClaimsPrincipal withClaimsPrincipal = null,
             string withUserAgent = Constants.UA_WINDOWS_10_EDGE) where TTokenType : IGenerateToken
@@ -126,7 +137,21 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             return service;
         }
         
-        public static ITokenDecodeService<TTokenType> CreateTokenDecodeService<TTokenType>(string withToken, 
+        public static ITokenGenerationService<TTokenType> CreateCryptoTokenGenerationService<TTokenType>(
+            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt") where TTokenType : IGenerateToken
+        {
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = withKey
+            };
+            CryptoTokenGenerationService<TTokenType> service = 
+                new(Options.Create(encryptionSettings));
+
+            return service;
+        }
+        
+        public static ITokenDecodeService<TTokenType> CreateJwtTokenDecodeService<TTokenType>(string withToken, 
             TokenType tokenType, ClaimsPrincipal withClaimsPrincipal = null) where TTokenType : IDecodeToken, new()
         {
             Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContext(withToken, tokenType, 
@@ -143,13 +168,33 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
 
             return service;
         }
+        
+        public static ITokenDecodeService<TTokenType> CreateCyrptoTokenDecodeService<TTokenType>(string withToken, 
+            TokenType tokenType, ClaimsPrincipal withClaimsPrincipal = null,
+            string withKey = "WowThisIsSuchASecureKeyICantBelieveIt") where TTokenType : IDecodeToken, new()
+        {
+            Mock<IHttpContextAccessor> contextAccessor = ContextHelpers.GenerateContext(withToken, tokenType, 
+                withClaimsPrincipal: withClaimsPrincipal);
+            IClaimsPrincipalLocator claimsPrincipalLocator = new HttpContextPrincipalLocator(contextAccessor.Object);
+            IHttpContentLocator httpHeaderLocator = new HttpContextContentLocator(contextAccessor.Object);
+            TokenEncryptionSettings encryptionSettings = new()
+            {
+                UseEncryption = true,
+                Passphrase = withKey
+            };
+            CryptoTokenDecodeService<TTokenType> service = new(httpHeaderLocator, claimsPrincipalLocator, 
+                Options.Create(encryptionSettings));
 
-        public static string GenerateApiKeyToken(string withIpAddress, 
+            return service;
+        }
+
+        public static string GenerateApiKeyToken( 
             string apiKey = "SomeApiKey", 
             string entityId = "SomeEntityId", 
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
-            ITokenGenerationService<GenerateApiKeyToken> service = CreateTokenGenerationService<GenerateApiKeyToken>(withIpAddress, "");
+            ITokenGenerationService<GenerateApiKeyToken> service = CreateCryptoTokenGenerationService<GenerateApiKeyToken>
+                ();
             
             GenerateApiKeyToken apiTokenKey = new(
                 entityId,
@@ -168,7 +213,8 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             string ipAddress = "",
             AirslipUserType airslipUserType = AirslipUserType.Merchant)
         {
-            ITokenGenerationService<GenerateQrCodeToken> service = CreateTokenGenerationService<GenerateQrCodeToken>(ipAddress, "");
+            ITokenGenerationService<GenerateQrCodeToken> service = CreateCryptoTokenGenerationService<GenerateQrCodeToken>
+                ();
             
             GenerateQrCodeToken apiTokenKey = new(entityId,
                 storeId,

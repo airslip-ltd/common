@@ -17,7 +17,7 @@ namespace Airslip.Common.Auth.UnitTests
         public void Fails_with_invalid_key()
         {
             ITokenGenerationService<GenerateUserToken> service = HelperFunctions
-                .CreateTokenGenerationService<GenerateUserToken>("", "", "Insecure Key");
+                .CreateJwtTokenGenerationService<GenerateUserToken>("", "", "Insecure Key");
 
             GenerateUserToken apiTokenKey = new("Some Entity",
                 AirslipUserType.Standard, 
@@ -68,7 +68,7 @@ namespace Airslip.Common.Auth.UnitTests
                 withUserAgent: Constants.UA_APPLE_IPHONE_XR_SAFARI);
 
             ITokenDecodeService<UserToken> service = HelperFunctions.
-                CreateTokenDecodeService<UserToken>("<irrelevant token>", TokenType.BearerToken);
+                CreateJwtTokenDecodeService<UserToken>("<irrelevant token>", TokenType.BearerToken);
             
             Tuple<UserToken, ICollection<Claim>> decodedToken = service.DecodeToken(newToken);
 
@@ -86,7 +86,7 @@ namespace Airslip.Common.Auth.UnitTests
         public void Can_generate_new_token_with_claims()
         {
             ITokenGenerationService<GenerateUserToken> service = HelperFunctions.
-                CreateTokenGenerationService<GenerateUserToken>("10.0.0.1", "");
+                CreateJwtTokenGenerationService<GenerateUserToken>("10.0.0.1", "");
 
             List<Claim> claims = new()
             {

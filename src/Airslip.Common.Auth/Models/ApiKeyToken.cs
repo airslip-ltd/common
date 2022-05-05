@@ -11,7 +11,7 @@ namespace Airslip.Common.Auth.Models
         
         public override void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings)
         {
-            ApiKey = tokenClaims.GetValue(AirslipClaimTypes.API_KEY).Decrypt(settings);
+            ApiKey = tokenClaims.GetValue(AirslipClaimTypes.API_KEY_SHORT);
         }
     }
 }
