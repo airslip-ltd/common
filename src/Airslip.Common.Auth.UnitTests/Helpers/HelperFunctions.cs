@@ -199,7 +199,8 @@ namespace Airslip.Common.Auth.UnitTests.Helpers
             GenerateApiKeyToken apiTokenKey = new(
                 entityId,
                 apiKey,
-                airslipUserType);
+                airslipUserType,
+                "SomeUserId");
             
             return service.GenerateNewToken(apiTokenKey).TokenValue;
         }

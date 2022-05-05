@@ -7,11 +7,15 @@ namespace Airslip.Common.Auth.Models
 {
     public class ApiKeyToken : TokenBase
     {
+        public string UserId { get; private set; } = "";
         public string ApiKey { get; private set; } = "";
+        public string UserRole { get; private set; } = UserRoles.User;
+        public string[] ApplicationRoles { get; private set; } = {};
         
         public override void SetCustomClaims(List<Claim> tokenClaims, TokenEncryptionSettings settings)
         {
             ApiKey = tokenClaims.GetValue(AirslipClaimTypes.API_KEY_SHORT);
+            UserId = tokenClaims.GetValue(AirslipClaimTypes.USER_ID_SHORT);
         }
     }
 }
