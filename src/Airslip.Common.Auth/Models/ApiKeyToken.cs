@@ -16,6 +16,9 @@ namespace Airslip.Common.Auth.Models
         {
             ApiKey = tokenClaims.GetValue(AirslipClaimTypes.API_KEY_SHORT);
             UserId = tokenClaims.GetValue(AirslipClaimTypes.USER_ID_SHORT);
+            UserRole = tokenClaims.GetValue(AirslipClaimTypes.USER_ROLE_SHORT);
+            ApplicationRoles = tokenClaims.GetValue(AirslipClaimTypes.APPLCATION_ROLES_SHORT)
+                .Split(";");
         }
     }
 }

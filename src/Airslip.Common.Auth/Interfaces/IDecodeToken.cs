@@ -7,7 +7,6 @@ namespace Airslip.Common.Auth.Interfaces
 {
     public interface IDecodeToken
     {
-        string TokenType { get; init; }
         bool? IsAuthenticated { get; init; }
         string CorrelationId { get; init; }
         string IpAddress { get; init; }
