@@ -40,7 +40,7 @@ namespace Airslip.Common.Auth.AspNetCore.Tests
             var obj1 = provider.GetService<ITokenDecodeService<ApiKeyToken>>();
             var obj2 = provider.GetService<IApiKeyRequestHandler>();
 
-            obj1.Should().BeAssignableTo<TokenDecodeService<ApiKeyToken>>();
+            obj1.Should().BeAssignableTo<CryptoTokenDecodeService<ApiKeyToken>>();
             obj2.Should().BeAssignableTo<ApiKeyRequestHandler>();
         }
         

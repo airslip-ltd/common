@@ -38,7 +38,7 @@ public static class AirslipClaimTypes
                 API_KEY_SHORT => API_KEY,
                 USER_ROLE_SHORT => USER_ROLE,
                 APPLCATION_ROLES_SHORT => APPLCATION_ROLES,
-                _ => throw new ArgumentOutOfRangeException(nameof(claimType), $"Not expected claimType value: {claimType}")
+                _ => claimType
             };
     }
 }
