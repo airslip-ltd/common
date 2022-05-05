@@ -37,11 +37,18 @@ namespace Airslip.Common.Auth.Implementations
             {
                 string decryptedString = tokenValue.Decrypt(_settings);
                 string[] values = decryptedString.Split("~");
-                List<Claim> claims = values
+                IEnumerable<string[]> splitValues = values
                     .Select(o => o.Split("@"))
-                    .Select(o => new Claim(o[0], o[1]))
+                    .ToList();
+                
+                List<Claim> claims = splitValues
+                    .Select(o => new Claim(o[0].MapToLong(), o[1]))
                     .ToList();
 
+                claims.AddRange(splitValues
+                    .Select(o => new Claim(o[0], o[1]))
+                    .ToList());
+                
                 return new Tuple<TTokenType, ICollection<Claim>>(GenerateTokenFromClaims(claims, true),
                     claims);
             }
@@ -94,7 +101,6 @@ namespace Airslip.Common.Auth.Implementations
                 CorrelationId = CommonFunctions.GetId(),
                 AirslipUserType = airslipUserType,
                 IsAuthenticated = isAuthenticated,
-                TokenType = nameof(TTokenType),
                 EntityId = tokenClaims.GetValue(AirslipClaimTypes.ENTITY_ID_SHORT),
                 Environment = tokenClaims.GetValue(AirslipClaimTypes.ENVIRONMENT_SHORT)
             };

@@ -91,7 +91,6 @@ namespace Airslip.Common.Auth.Implementations
                 AirslipUserType = airslipUserType,
                 IsAuthenticated = isAuthenticated,
                 BearerToken = _httpContentLocator.GetHeaderValue("Authorization") ?? "",
-                TokenType = nameof(TTokenType),
                 IpAddress = tokenClaims.GetValue(AirslipClaimTypes.IP_ADDRESS).Decrypt(_settings),
                 EntityId = tokenClaims.GetValue(AirslipClaimTypes.ENTITY_ID).Decrypt(_settings),
                 Environment = tokenClaims.GetValue(AirslipClaimTypes.ENVIRONMENT).Decrypt(_settings),
