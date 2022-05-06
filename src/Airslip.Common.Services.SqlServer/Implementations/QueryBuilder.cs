@@ -1,5 +1,4 @@
 using Airslip.Common.Repository.Types.Constants;
-using Airslip.Common.Repository.Types.Interfaces;
 using Airslip.Common.Repository.Types.Models;
 using Airslip.Common.Services.SqlServer.Interfaces;
 using Airslip.Common.Utilities.Extensions;
@@ -158,8 +157,11 @@ public class QueryBuilder : IQueryBuilder
     {
         Expression<Func<TEntity, bool>>? lambda = BuildFilterQuery<TEntity>(mandatoryFilters);
         if (lambda != null) q = q.Where(lambda);
+
+        if (entitySearch.Search?.Items == null || entitySearch.Search.Items.Count == 0)
+            return q;
         
-        lambda = BuildFilterQuery<TEntity>(entitySearch.Search?.Items, entitySearch.Search.LinkOperator);
+        lambda = BuildFilterQuery<TEntity>(entitySearch.Search.Items, entitySearch.Search.LinkOperator);
         if (lambda != null) q = q.Where(lambda);
         
         return q;
