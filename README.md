@@ -15,7 +15,6 @@ You must have configurstion sections for JwtSettings and EnvironmentSettings in 
     .Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)))
     .Configure<EnvironmentSettings>(configuration.GetSection(nameof(EnvironmentSettings)))
 
-
 ### Getting Started
 
 To get started, install the Common Auth package into your API project:
