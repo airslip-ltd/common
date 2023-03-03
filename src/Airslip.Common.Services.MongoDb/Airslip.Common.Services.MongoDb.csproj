@@ -17,7 +17,7 @@
 		<PackageReference Include="Airslip.Common.Repository.Types" Version="6.1.8" />
 		<PackageReference Include="Airslip.Common.Types" Version="6.2.18" />
 		<PackageReference Include="Airslip.Common.Monitoring" Version="6.1.1" />
-		<PackageReference Include="MongoDB.Driver" Version="2.14.1" />
+		<PackageReference Include="MongoDB.Driver" Version="2.19.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
 	</ItemGroup>
 	
